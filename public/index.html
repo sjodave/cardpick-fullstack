@@ -1,0 +1,3159 @@
+<!DOCTYPE html>
+<html lang="en"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIwNTA0MjU4NzgxMDc4NTM5MTk1OCIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzA4MzE0M2UwZWU3NTVlZjdfZjQwZjY5MWRfY2MtcmV3YXJkLWZpbmRlci5odG1sLTY0NCJ9LCJleHAiOjE3OTQ1NjUyNzcsImlhdCI6MTc5NDU2MTY3NywiYWxnIjoiUlMyNTYifQ.DNf28T7Ryl3mvdphoV7jv2Rpi1oRQubmBT1e-MVmqcEcnx8Zok6_BYAEYL4tM1cRRIuD4dBrPJ-p0qSutGv8TSQmJPd_pVt7W4Yi6b1FTpaj0ywAyhBMSsgr5IkwUpCebM9eY_cBl_aU08Zcbdz4yCmTz7HcfoCwT-StiEeei5_P7f4EZCyLE-xLgEgmMUKePPKWLZ8fY6suSiMNgn3_QBnX-yYGt8KIRAn0cO5E-VD9WWi9YPcTPbTmlHfn4rddm__j0H3vzUpGRdVU_tUTZ4930qHOLDyoQc-qOeiynFMVxKkpdmxGUAQLSb5ttiffMLDJTj-GH0Mx1CS42m-AKg","c_083143e0ee755ef7_f40f691d_cc-reward-finder.html-644")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function(){'use strict';var k=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,d){if(a==Array.prototype||a==Object.prototype)return a;a[b]=d.value;return a};function m(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var d=a[b];if(d&&d.Math==Math)return d}throw Error("Cannot find global object");}var q=m(this);
+function r(a,b){if(b)a:{var d=q;a=a.split(".");for(var c=0;c<a.length-1;c++){var e=a[c];if(!(e in d))break a;d=d[e]}a=a[a.length-1];c=d[a];b=b(c);b!=c&&b!=null&&k(d,a,{configurable:!0,writable:!0,value:b})}}function t(a){function b(c){return a.next(c)}function d(c){return a.throw(c)}return new Promise(function(c,e){function f(g){g.done?c(g.value):Promise.resolve(g.value).then(b,d).then(f,e)}f(a.next())})}function u(a){return t(a())}
+r("Object.values",function(a){return a?a:function(b){var d=[],c;for(c in b)Object.prototype.hasOwnProperty.call(b,c)&&d.push(b[c]);return d}});r("Array.prototype.includes",function(a){return a?a:function(b,d){var c=this;c instanceof String&&(c=String(c));var e=c.length;d=d||0;for(d<0&&(d=Math.max(d+e,0));d<e;d++){var f=c[d];if(f===b||Object.is(f,b))return!0}return!1}});/*
+
+ MIT License
+
+ Copyright (c) 2017-2023 W.Y.
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+*/
+function v(a,b){var d=a.style;b.backgroundColor&&(d.backgroundColor=b.backgroundColor);b.width&&(d.width=`${b.width}px`);b.height&&(d.height=`${b.height}px`);var c=b.style;c!=null&&Object.keys(c).forEach(e=>{d[e]=c[e]})};var aa=(()=>{var a=0;return()=>{a+=1;return`u${`0000${(Math.random()*1679616<<0).toString(36)}`.slice(-4)}${a}`}})();function w(a){var b=[];for(let d=0,c=a.length;d<c;d++)b.push(a[d]);return b}let y=null;function z(a={}){return y?y:a.u?y=a.u:y=w(window.getComputedStyle(document.documentElement))}function A(a,b){return(a=(a.ownerDocument.defaultView||window).getComputedStyle(a).getPropertyValue(b))?parseFloat(a.replace("px","")):0}
+function B(a,b={}){var d;if(!(d=b.width)){d=A(a,"border-left-width");var c=A(a,"border-right-width");d=a.clientWidth+d+c}(b=b.height)||(b=A(a,"border-top-width"),c=A(a,"border-bottom-width"),b=a.clientHeight+b+c);return{width:d,height:b}}function C(a){return new Promise((b,d)=>{var c=new Image;c.onload=()=>{c.decode().then(()=>{requestAnimationFrame(()=>b(c))})};c.onerror=d;c.crossOrigin="anonymous";c.decoding="async";c.src=a})}
+function ba(a){return u(function*(){return Promise.resolve().then(()=>(new XMLSerializer).serializeToString(a)).then(encodeURIComponent).then(b=>`data:image/svg+xml;charset=utf-8,${b}`)})}
+function ca(a,b,d){return u(function*(){var c=document.createElementNS("http://www.w3.org/2000/svg","svg"),e=document.createElementNS("http://www.w3.org/2000/svg","foreignObject");c.setAttribute("width",`${b}`);c.setAttribute("height",`${d}`);c.setAttribute("viewBox",`0 0 ${b} ${d}`);e.setAttribute("width","100%");e.setAttribute("height","100%");e.setAttribute("x","0");e.setAttribute("y","0");e.setAttribute("externalResourcesRequired","true");c.appendChild(e);e.appendChild(a);return ba(c)})}
+var D=(a,b)=>{if(a instanceof b)return!0;a=Object.getPrototypeOf(a);return a===null?!1:a.constructor.name===b.name||D(a,b)};function da(a,b){return z(b).map(d=>{var c=a.getPropertyValue(d),e=a.getPropertyPriority(d);return`${d}: ${c}${e?" !important":""};`}).join(" ")}
+function E(a,b,d,c){a=window.getComputedStyle(a,d);var e=a.getPropertyValue("content");if(e!==""&&e!=="none"){var f=aa();try{b.className=`${b.className} ${f}`}catch(h){return}e=document.createElement("style");var g=e.appendChild;d=`.${f}:${d}`;a.cssText?(c=a.getPropertyValue("content"),c=`${a.cssText} content: '${c.replace(/'|"/g,"")}';`):c=da(a,c);g.call(e,document.createTextNode(`${d}{${c}}`));b.appendChild(e)}};function F(a){return a.search(/^(data:)/)!==-1}function G(a,b,d){return u(function*(){var c=yield fetch(a,b);if(c.status===404)throw Error(`Resource "${c.url}" not found`);var e=yield c.blob();return new Promise((f,g)=>{var h=new FileReader;h.onerror=g;h.onloadend=()=>{try{f(d({v:c,result:h.result}))}catch(l){g(l)}};h.readAsDataURL(e)})})}const H={};function ea(a,b,d){var c=a.replace(/\?.*/,"");d&&(c=a);/ttf|otf|eot|woff2?/i.test(c)&&(c=c.replace(/.*\//,""));return b?`[${b}]${c}`:c}
+function I(a,b,d){return u(function*(){var c=ea(a,b,d.F);if(H[c]!=null)return H[c];d.B&&(a+=(/\?/.test(a)?"&":"?")+(new Date).getTime());try{let f=yield G(a,d.l,({v:g,result:h})=>{b||(b=g.headers.get("Content-Type")||"");return h.split(/,/)[1]});var e=`data:${b};base64,${f}`}catch(f){e=d.o||""}return H[c]=e})};const J={R:"application/font-woff",S:"application/font-woff",O:"application/font-truetype",C:"application/vnd.ms-fontobject",J:"image/png",H:"image/jpeg",G:"image/jpeg",D:"image/gif",N:"image/tiff",M:"image/svg+xml",P:"image/webp"};function K(a){return(a=/\.([^./]*?)$/g.exec(a))?a[1]:""};function fa(a){return u(function*(){var b=a.toDataURL();return b==="data:,"?a.cloneNode(!1):C(b)})}function ha(a,b){return u(function*(){if(a.currentSrc){var d=document.createElement("canvas");let c=d.getContext("2d");d.width=a.clientWidth;d.height=a.clientHeight;c==null||c.drawImage(a,0,0,d.width,d.height);d=d.toDataURL();return C(d)}d=a.poster;d=yield I(d,J[K(d).toLowerCase()]||"",b);return C(d)})}
+function ia(a,b){return u(function*(){try{let d;if(a==null?0:(d=a.contentDocument)==null?0:d.body)return yield L(a.contentDocument.body,b,!0)}catch(d){}return a.cloneNode(!1)})}function ja(a,b){return u(function*(){return D(a,HTMLCanvasElement)?fa(a):D(a,HTMLVideoElement)?ha(a,b):D(a,HTMLIFrameElement)?ia(a,b):a.cloneNode(a.tagName!=null&&a.tagName.toUpperCase()==="SVG")})}
+function ka(a,b,d){return u(function*(){if(b.tagName!=null&&b.tagName.toUpperCase()==="SVG")return b;var c=[];if(a.tagName!=null&&a.tagName.toUpperCase()==="SLOT"&&a.assignedNodes)c=w(a.assignedNodes());else{let e;if(D(a,HTMLIFrameElement)&&((e=a.contentDocument)==null?0:e.body))c=w(a.contentDocument.body.childNodes);else{let f;c=w(((f=a.shadowRoot)!=null?f:a).childNodes)}}if(c.length===0||D(a,HTMLVideoElement))return b;yield c.reduce((e,f)=>e.then(()=>L(f,d)).then(g=>{g&&b.appendChild(g)}),Promise.resolve());
+return b})}function la(a,b,d){var c=b.style;if(c){var e=window.getComputedStyle(a);e.cssText?(c.cssText=e.cssText,c.transformOrigin=e.transformOrigin):z(d).forEach(f=>{var g=e.getPropertyValue(f);f==="font-size"&&g.endsWith("px")&&(g=`${Math.floor(parseFloat(g.substring(0,g.length-2)))-.1}px`);D(a,HTMLIFrameElement)&&f==="display"&&g==="inline"&&(g="block");f==="d"&&b.getAttribute("d")&&(g=`path(${b.getAttribute("d")})`);c.setProperty(f,g,e.getPropertyPriority(f))})}}
+function ma(a,b){D(a,HTMLSelectElement)&&(b=Array.from(b.children).find(d=>a.value===d.getAttribute("value")))&&b.setAttribute("selected","")}
+function na(a,b){return u(function*(){var d=a.querySelectorAll?a.querySelectorAll("use"):[];if(d.length===0)return a;var c={};for(var e=0;e<d.length;e++){var f=d[e].getAttribute("xlink:href");if(f){let g=document.querySelector(f);a.querySelector(f)||!g||c[f]||(c[f]=yield L(g,b,!0))}}d=Object.values(c);if(d.length){c=document.createElementNS("http://www.w3.org/1999/xhtml","svg");c.setAttribute("xmlns","http://www.w3.org/1999/xhtml");c.style.position="absolute";c.style.width="0";c.style.height="0";
+c.style.overflow="hidden";c.style.display="none";e=document.createElementNS("http://www.w3.org/1999/xhtml","defs");c.appendChild(e);for(f=0;f<d.length;f++)e.appendChild(d[f]);a.appendChild(c)}return a})}
+function L(a,b,d){return u(function*(){return d||!b.filter||b.filter(a)?Promise.resolve(a).then(c=>ja(c,b)).then(c=>ka(a,c,b)).then(c=>{D(c,Element)&&(la(a,c,b),E(a,c,":before",b),E(a,c,":after",b),D(a,HTMLTextAreaElement)&&(c.textContent=a.value),D(a,HTMLInputElement)&&c.setAttribute("value",a.value),ma(a,c));return c}).then(c=>na(c,b)):null})};const M=/url\((['"]?)([^'"]+?)\1\)/g,oa=/url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g,pa=/src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g;function qa(a){var b=[];a.replace(M,(d,c,e)=>{b.push(e);return d});return b.filter(d=>!F(d))}
+function ra(a,b,d,c){return u(function*(){try{let e=d?(new URL(b,d||void 0)).toString():b,f;f=yield I(e,J[K(b).toLowerCase()]||"",c);return a.replace(new RegExp(`(url\\(['"]?)(${b.replace(/([.*+?^${}()|\[\]\/\\])/g,"\\$1")})(['"]?\\))`,"g"),`$1${f}$3`)}catch(e){}return a})}function sa(a,{K:b}){return b?a.replace(pa,d=>{for(;;){let [c,,e]=oa.exec(d)||[];if(!e)return"";if(e===b)return`src: ${c};`}}):a}
+function N(a,b,d){return u(function*(){if(a.search(M)===-1)return a;var c=sa(a,d);return qa(c).reduce((e,f)=>e.then(g=>ra(g,f,b,d)),Promise.resolve(c))})};function O(a,b,d){return u(function*(){var c,e=(c=b.style)==null?void 0:c.getPropertyValue(a);return e?(c=yield N(e,null,d),b.style.setProperty(a,c,b.style.getPropertyPriority(a)),!0):!1})}function ta(a,b){return u(function*(){(yield O("background",a,b))||(yield O("background-image",a,b));(yield O("mask",a,b))||(yield O("-webkit-mask",a,b))||(yield O("mask-image",a,b))||(yield O("-webkit-mask-image",a,b))})}
+function ua(a,b){return u(function*(){var d=D(a,HTMLImageElement);if(d&&!F(a.src)||D(a,SVGImageElement)&&!F(a.href.baseVal)){var c=d?a.src:a.href.baseVal,e=yield I(c,J[K(c).toLowerCase()]||"",b);yield new Promise((f,g)=>{a.onload=f;a.onerror=b.h?(...h)=>{try{f(b.h(...h))}catch(l){g(l)}}:g;a.decode&&(a.decode=f);a.loading==="lazy"&&(a.loading="eager");d?(a.srcset="",a.src=e):a.href.baseVal=e})}})}
+function va(a,b){return u(function*(){var d=w(a.childNodes).map(c=>P(c,b));yield Promise.all(d).then(()=>a)})}function P(a,b){return u(function*(){D(a,Element)&&(yield ta(a,b),yield ua(a,b),yield va(a,b))})};const Q={};function R(a){return u(function*(){var b=Q[a];if(b!=null)return b;b=yield(yield fetch(a)).text();b={url:a,cssText:b};return Q[a]=b})}function S(a,b){return u(function*(){var d=a.cssText,c=/url\(["']?([^"')]+)["']?\)/g,e=(d.match(/url\([^)]+\)/g)||[]).map(f=>u(function*(){var g=f.replace(c,"$1");g.startsWith("https://")||(g=(new URL(g,a.url)).href);return G(g,b.l,({result:h})=>{d=d.replace(f,`url(${h})`);return[f,h]})}));return Promise.all(e).then(()=>d)})}
+function T(a){if(a==null)return[];var b=[];a=a.replace(/(\/\*[\s\S]*?\*\/)/gi,"");for(var d=RegExp("((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})","gi");;){var c=d.exec(a);if(c===null)break;b.push(c[0])}a=a.replace(d,"");d=/@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi;for(c=RegExp("((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})","gi");;){let e=d.exec(a);if(e===null)if(e=c.exec(a),e===null)break;else d.lastIndex=c.lastIndex;else c.lastIndex=
+d.lastIndex;b.push(e[0])}return b}
+function wa(a,b){return u(function*(){var d=[],c=[];a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach((f,g)=>{if(f.type===CSSRule.IMPORT_RULE){let h=g+1;f=R(f.href).then(l=>S(l,b)).then(l=>T(l).forEach(p=>{try{e.insertRule(p,p.startsWith("@import")?h+=1:e.cssRules.length)}catch(x){}})).catch(()=>{});c.push(f)}})}catch(f){let g=a.find(h=>h.href==null)||document.styleSheets[0];e.href!=null&&c.push(R(e.href).then(h=>S(h,b)).then(h=>T(h).forEach(l=>{g.insertRule(l,g.cssRules.length)})).catch(()=>
+{}))}});return Promise.all(c).then(()=>{a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach(f=>{d.push(f)})}catch(f){}});return d})})}function xa(a){return a.filter(b=>b.type===CSSRule.FONT_FACE_RULE).filter(b=>b.style.getPropertyValue("src").search(M)!==-1)}function ya(a,b){return u(function*(){if(a.ownerDocument==null)throw Error("Provided element is not within a Document");var d=yield wa(w(a.ownerDocument.styleSheets),b);return xa(d)})}
+function za(a){function b(c){(c.style.fontFamily||getComputedStyle(c).fontFamily).split(",").forEach(e=>{d.add(e.trim().replace(/["']/g,""))});Array.from(c.children).forEach(e=>{e instanceof HTMLElement&&b(e)})}var d=new Set;b(a);return d}function Aa(a,b){return u(function*(){var d=yield ya(a,b),c=za(a);return(yield Promise.all(d.filter(e=>c.has(e.style.fontFamily.trim().replace(/["']/g,""))).map(e=>N(e.cssText,e.parentStyleSheet?e.parentStyleSheet.href:null,b)))).join("\n")})}
+function Ba(a,b){return u(function*(){var d=b.m!=null?b.m:b.A?null:yield Aa(a,b);if(d){let c=document.createElement("style");c.appendChild(document.createTextNode(d));a.firstChild?a.insertBefore(c,a.firstChild):a.appendChild(c)}})};function Ca(a,b={}){return u(function*(){var {width:d,height:c}=B(a,b),e=yield L(a,b,!0);yield Ba(e,b);yield P(e,b);v(e,b);return yield ca(e,d,c)})}
+function Da(a,b={}){return u(function*(){var {width:d,height:c}=B(a,b),e=yield Ca(a,b);e=yield C(e);var f=document.createElement("canvas"),g=f.getContext("2d"),h=b.I||window.devicePixelRatio||1,l=b.j||d,p=b.i||c;f.width=l*h;f.height=p*h;!b.L&&(f.width>16384||f.height>16384)&&(f.width>16384&&f.height>16384?f.width>f.height?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=16384):f.width>16384?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=16384));
+f.style.width=`${l}`;f.style.height=`${p}`;b.backgroundColor&&(g.fillStyle=b.backgroundColor,g.fillRect(0,0,f.width,f.height));g.drawImage(e,0,0,f.width,f.height);return f})}function Ea(a,b={}){return u(function*(){return(yield Da(a,b)).toDataURL()})};const Fa=["gemini.google.com","corp.google.com","proxy.googlers.com"];function V(a){a=Number(a.replace(/px$/,""));return Number.isFinite(a)?a:0}function W(){return document.body.querySelectorAll('[class*="animate"]').length>0}function X(a,b){var d=document.createElement("canvas");d.width=a;d.height=b;return d.toDataURL("image/png")}const Y=X(1,1);
+function Z(a,b){return u(function*(){var d=Math.max(b?b.width:a.offsetWidth,1),c=Math.max(b?b.height:a.offsetHeight,1),e=HTMLCanvasElement.prototype.toDataURL;b&&(HTMLCanvasElement.prototype.toDataURL=function(f,g){var h;if(h=this.isConnected&&a.contains(this)){{let n=this.getBoundingClientRect();if(n.width===0||n.height===0)h=!1;else if(window.getComputedStyle(this).position==="fixed")h=n.bottom>0&&n.top<b.height&&n.right>0&&n.left<b.width;else{h=a.getBoundingClientRect();var l=n.top-h.top,p=n.left-
+h.left,x=n.right-h.left;h=n.bottom-h.top>b.scrollTop&&l<b.scrollTop+b.height&&x>b.scrollLeft&&p<b.scrollLeft+b.width}}h=!h}return h?"data:,":e.call(this,f,g)});try{let f=window.getComputedStyle(a),g=b?`${V(f.marginTop)-b.scrollTop}px`:void 0,h=b?`${V(f.marginLeft)-b.scrollLeft}px`:void 0,l=`${Math.max(a.offsetWidth,d)}px`,p,x=`${Math.max(a.offsetHeight,c+((p=b==null?void 0:b.scrollTop)!=null?p:0))}px`;return yield Ea(a,Object.assign({},{width:d,height:c,j:d,i:c},b?{style:{width:l,height:x,marginTop:g,
+marginLeft:h,marginBlockStart:g,marginInlineStart:h}}:{},{A:!0,filter:n=>{if(n.tagName==="IMG"){let U=n.getAttribute("src");if(!U||U.trim()===""||n.style.display==="none")return!1}return!0},o:Y,h:()=>Y}))}catch(f){return X(d,c)}finally{HTMLCanvasElement.prototype.toDataURL=e}})}
+function Ga(){return u(function*(){var a=document.body.offsetWidth,b=document.body.offsetHeight,d=document.body.cloneNode(!0);d.querySelectorAll('[class*="animate"]').forEach(c=>{c.classList.remove(...Array.from(c.classList).filter(e=>e.startsWith("animate")))});d.style.width=`${a}px`;d.style.height=`${b}px`;return d})}
+function Ha(a){return u(function*(){var b={width:window.innerWidth||document.documentElement.clientWidth||document.body.offsetWidth,height:window.innerHeight||document.documentElement.clientHeight||document.body.offsetHeight,scrollTop:window.scrollY||document.documentElement.scrollTop||document.body.scrollTop||0,scrollLeft:window.scrollX||document.documentElement.scrollLeft||document.body.scrollLeft||0},d=document.body;if(W()){let c=yield Ga();d=c;document.body.appendChild(c)}b=yield Z(d,b);W()&&
+document.body.removeChild(d);window.parent.postMessage({type:"SEND_SCREENSHOT",image:b,topOffset:0},a.origin)})}function Ia(a){return u(function*(){var b={type:"SEND_SCREENSHOT_FOR_DATA_VISUALIZATION",image:yield Z(document.body),topOffset:0};window.parent.postMessage(b,a.origin)})}window.addEventListener("message",a=>u(function*(){if(Fa.some(d=>a.origin.includes(d))){var b=a.data;b&&(b.type==="MAKE_SCREENSHOT"&&(yield Ha(a)),b.type==="MAKE_SCREENSHOT_FOR_DATA_VISUALIZATION"&&(yield Ia(a)))}}));
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function() {
+  function normalizeSlug(str) {
+    try {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^p{L}p{N}s_-]/gu, '')
+        .replace(/s+/g, '-');
+    } catch (e) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9s_-]/g, '')
+        .replace(/s+/g, '-');
+    }
+  }
+
+  function findTargetElement(hash) {
+    if (!hash || hash === '#') {
+      return null;
+    }
+    const rawId = hash.startsWith('#') ? hash.slice(1) : hash;
+    let decodedId = rawId;
+    try {
+      decodedId = decodeURIComponent(rawId);
+    } catch (e) {
+      // Ignore URI malformed errors.
+    }
+
+    // 1. Direct ID match (raw and decoded).
+    let target = document.getElementById(rawId) || document.getElementById(decodedId);
+    if (target) {
+      return target;
+    }
+
+    // 2. Name attribute match (<a name="...">).
+    try {
+      if (typeof CSS !== 'undefined' && CSS.escape) {
+        target =
+          document.querySelector('[name="' + CSS.escape(rawId) + '"]') ||
+          document.querySelector('[name="' + CSS.escape(decodedId) + '"]');
+      } else {
+        const namedElements = document.getElementsByName(rawId);
+        if (namedElements && namedElements.length > 0) {
+          return namedElements[0];
+        }
+      }
+    } catch (e) {
+      // Ignore querySelector syntax errors.
+    }
+    if (target) {
+      return target;
+    }
+
+    // 3. Match heading text by slug (for Markdown TOCs where headings lack explicit IDs).
+    const targetSlug = normalizeSlug(decodedId);
+    if (targetSlug) {
+      for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+        if (normalizeSlug(heading.textContent || '') === targetSlug) {
+          return heading;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    const anchor = target && typeof target.closest === 'function' ? target.closest('a') : null;
+    if (!anchor) {
+      return;
+    }
+
+    const href = anchor.getAttribute('href');
+    if (
+      !href ||
+      href.trim().toLowerCase().startsWith('javascript:') ||
+      anchor.hasAttribute('download')
+    ) {
+      return;
+    }
+
+    // Check if the link is an in-page hash / anchor link.
+    if (href.startsWith('#')) {
+      event.preventDefault();
+      const targetElement = findTargetElement(href);
+      if (targetElement) {
+        targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+      return;
+    }
+
+    // Check if the URL has the same origin/pathname but with a hash.
+    try {
+      const url = new URL(anchor.href, window.location.href);
+      if (
+        url.hash &&
+        url.origin === window.location.origin &&
+        url.pathname === window.location.pathname
+      ) {
+        event.preventDefault();
+        const targetElement = findTargetElement(url.hash);
+        if (targetElement) {
+          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+        return;
+      }
+    } catch (e) {
+      // Fall through if URL parsing fails.
+    }
+
+    // For all external or full navigation links, prevent iframe-level navigation
+    // (which breaks in AGSA WebView or sandboxed iframes) and ensure they open
+    // safely in a new tab/window.
+    if (anchor.target !== '_blank') {
+      event.preventDefault();
+      window.open(anchor.href, '_blank', 'noopener,noreferrer');
+    }
+  }, {capture: true});
+})();</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#059669">
+  <title>CardPick — Multi-Store Price &amp; Credit Card Optimizer</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #059669;
+      --accent-dark: #047857;
+      --accent-soft: #ecfdf5;
+      --accent-border: #a7f3d0;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --warn-soft: #fffbeb;
+      --warn-border: #fde68a;
+      --warn-text: #b45309;
+      --debit-soft: #eff6ff;
+      --debit-border: #bfdbfe;
+      --debit-text: #1d4ed8;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: 0 0 88px 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+    button, input, select, textarea { font-family: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+    .brand-title { font-size: 16px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+    .brand-sub { font-size: 11px; color: var(--muted); margin: 0; font-weight: 500; }
+
+    .header-actions { display: flex; align-items: center; gap: 6px; }
+    .btn-outline-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .btn-outline-sm:active { transform: scale(0.97); }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+    .status-dot.online { background: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 14px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .stack-sm { display: flex; flex-direction: column; gap: 10px; }
+    .stack-md { display: flex; flex-direction: column; gap: 14px; }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+
+    .label-caps {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border: 1px solid var(--accent-border);
+    }
+    .debit-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--debit-soft);
+      color: var(--debit-text);
+      border: 1px solid var(--debit-border);
+    }
+
+    .url-wrap { position: relative; display: flex; align-items: center; }
+    .input-field {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 14px;
+      padding: 12px 92px 12px 14px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input-field:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+    }
+    .url-actions {
+      position: absolute;
+      right: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-icon-clear {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-paste {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .btn-paste:active { background: var(--accent-dark); transform: scale(0.97); }
+
+    .samples-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .samples-row::-webkit-scrollbar { display: none; }
+    .sample-pill {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: #334155;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .sample-pill:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-soft); }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 460px) {
+      .split-grid { grid-template-columns: 1fr; }
+    }
+    .amt-wrap { position: relative; }
+    .amt-prefix {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .amt-input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 10px 8px 26px;
+      outline: none;
+    }
+    .amt-input:focus { border-color: var(--accent); background: #fff; }
+    .amt-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+    .amt-chip {
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: #334155;
+      border-radius: 8px;
+      padding: 5px 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .amt-chip:active { background: #e2e8f0; }
+
+    .scope-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .scope-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      background: transparent;
+      color: var(--muted);
+    }
+    .scope-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25);
+    }
+    .link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--accent-dark);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      margin-top: 6px;
+    }
+
+    .winner-card {
+      background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 65%);
+      border: 1.5px solid #34d399;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 20px -8px rgba(5, 150, 105, 0.22);
+    }
+    .best-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .catalog-tag {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .savings-big { font-size: 24px; font-weight: 800; color: var(--accent-dark); margin: 0; }
+    .rate-sub { font-size: 11.5px; font-weight: 600; color: #059669; margin: 0; }
+    .note-box {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 11px;
+      font-size: 12px;
+      color: #334155;
+    }
+    .promo-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #d1fae5;
+      border: 1px solid #6ee7b7;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #065f46;
+    }
+    .promo-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 800; font-size: 13px; }
+    .btn-copy {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .other-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toolbar-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--accent); color: #fff; border: none; border-radius: 11px;
+      padding: 10px 12px; font-size: 12px; font-weight: 700;
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 11px;
+      padding: 10px 12px; font-size: 12px; font-weight: 600;
+    }
+    .btn-danger-sm {
+      background: var(--danger-soft); color: var(--danger); border: 1px solid #fecaca;
+      border-radius: 8px; padding: 5px 10px; font-size: 11.5px; font-weight: 600;
+    }
+
+    .compare-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 4fr 3fr 3fr 1.5fr;
+      gap: 8px;
+      align-items: end;
+    }
+    @media (max-width: 460px) {
+      .compare-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .store-link-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .store-link-chip:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-soft); }
+
+    .preset-product-chip {
+      flex-shrink: 0;
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+      color: #065f46;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background-color: #cbd5e1; transition: 0.2s; border-radius: 999px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+      background-color: white; transition: 0.2s; border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .switch input:checked + .slider { background-color: var(--accent); }
+    .switch input:checked + .slider:before { transform: translateX(20px); }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 620px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      padding: 9px 4px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .nav-tab.active { color: var(--accent-dark); font-weight: 700; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 50;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(3px);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding: 0;
+    }
+    @media (min-width: 600px) {
+      .modal-backdrop { align-items: center; padding: 16px; }
+    }
+    .modal-box {
+      width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+      background: var(--surface);
+      border-radius: 20px 20px 0 0;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    }
+    @media (min-width: 600px) {
+      .modal-box { border-radius: 18px; }
+    }
+    .form-input {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--surface-2); color: var(--text);
+      padding: 8px 10px; font-size: 13px; outline: none;
+    }
+    .form-input:focus { border-color: var(--accent); background: #fff; }
+    .rule-row {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .rule-grid-top { display: grid; grid-template-columns: 5fr 4fr 3fr; gap: 6px; }
+    .rule-grid-bot { display: grid; grid-template-columns: 3fr 3fr 4fr 2fr; gap: 6px; }
+
+    .toast-wrap {
+      position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
+      z-index: 60; pointer-events: none; transition: opacity 0.2s;
+    }
+    .toast-pill {
+      background: #0f172a; color: #fff; padding: 8px 16px;
+      border-radius: 10px; font-size: 12px; font-weight: 600;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <rect x="2" y="5" width="20" height="14" rx="2.5"></rect>
+            <path d="M2 10h20M6 15h4"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">CardPick Pro</h1>
+          <p class="brand-sub">Multi-Store Price &amp; Card Optimizer</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-open-github" type="button" class="btn-outline-sm" style="border-color:#a7f3d0;background:#ecfdf5;color:#047857;">
+          <span>Push to GitHub</span>
+        </button>
+        <button id="btn-api-settings" type="button" class="btn-outline-sm" title="Configure Node.js Backend URL &amp; API Keys">
+          <span id="backend-status-dot" class="status-dot"></span>
+          <span id="backend-status-label">Backend</span>
+        </button>
+        <button id="btn-install-tip" type="button" class="btn-outline-sm">
+          <svg width="13" height="13" fill="none" stroke="#059669" stroke-width="2.2" viewBox="0 0 24 24">
+            <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path>
+          </svg>
+          <span>Add to Phone</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ==================== VIEW 1: CHECK LINK ==================== -->
+    <section id="view-check" class="stack-md">
+      <div class="card stack-sm">
+        <div class="row-between">
+          <label for="url-input" class="label-caps">Paste E-Commerce Link</label>
+          <span id="active-wallet-pill" class="pill-badge">13 Active Cards</span>
+        </div>
+
+        <div class="url-wrap">
+          <input id="url-input" type="text" inputmode="url" autocomplete="off" class="input-field" placeholder="https://www.amazon.in/dp/... or flipkart.com">
+          <div class="url-actions">
+            <button id="btn-clear-url" type="button" class="btn-icon-clear hidden" title="Clear link">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <button id="btn-paste-url" type="button" class="btn-paste">Paste</button>
+          </div>
+        </div>
+
+        <div class="samples-row">
+          <span style="font-size:11px;font-weight:600;color:#94a3b8;flex-shrink:0;">Try:</span>
+          <button type="button" data-sample="https://www.amazon.in/Apple-iPhone-16-128-GB/dp/B0DF6W8X9" class="sample-pill">Amazon</button>
+          <button type="button" data-sample="https://www.flipkart.com/apple-iphone-16-black-128-gb/p/itm123" class="sample-pill">Flipkart</button>
+          <button type="button" data-sample="https://www.myntra.com/shoes/nike/nike-air-max/123" class="sample-pill">Myntra</button>
+          <button type="button" data-sample="https://www.swiggy.com" class="sample-pill">Swiggy</button>
+          <button type="button" data-sample="https://www.zomato.com/pune" class="sample-pill">Zomato</button>
+          <button type="button" data-sample="https://blinkit.com" class="sample-pill">Blinkit</button>
+          <button type="button" data-sample="https://www.bookmyshow.com" class="sample-pill">BookMyShow</button>
+          <button type="button" data-sample="https://www.nykaa.com" class="sample-pill">Nykaa</button>
+        </div>
+
+        <div class="split-grid">
+          <div>
+            <label for="amount-input" style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;">Order Amount (₹)</label>
+            <div class="amt-wrap">
+              <span class="amt-prefix">₹</span>
+              <input id="amount-input" type="number" min="1" step="1" value="2000" class="amt-input">
+            </div>
+            <div class="amt-chips">
+              <button type="button" data-amt="500" class="amt-chip">₹500</button>
+              <button type="button" data-amt="1500" class="amt-chip">₹1.5k</button>
+              <button type="button" data-amt="5000" class="amt-chip">₹5k</button>
+              <button type="button" data-amt="15000" class="amt-chip">₹15k</button>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;justify-content:space-between;">
+            <div>
+              <span style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;">Card Pool</span>
+              <div class="scope-toggle">
+                <button id="scope-mine" type="button" class="scope-btn active">My Cards</button>
+                <button id="scope-all" type="button" class="scope-btn">All Catalog</button>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button id="btn-manage-shortcut" type="button" class="link-btn">+ Edit or add your cards →</button>
+              <button id="btn-send-to-compare" type="button" class="link-btn" style="color:#0284c7;">Compare all stores →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="results-container" class="stack-sm">
+            <div class="card" style="text-align:center;padding:24px 16px;">
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;">Paste any e-commerce link above</p>
+              <p style="margin:0;font-size:12px;color:var(--muted);">Ready with your 12 credit cards + 1 debit card. Or switch to <strong>Compare</strong> to auto-fetch prices across stores.</p>
+            </div>
+          </div>
+    </section>
+
+    <!-- ==================== VIEW 2: MULTI-STORE COMPARE ==================== -->
+    <section id="view-compare" class="stack-md hidden">
+      <div class="card stack-sm">
+        <div class="row-between">
+          <div>
+            <h2 style="margin:0;font-size:16px;font-weight:800;">Auto Multi-Store Price &amp; Card Compare</h2>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Paste any Amazon/Flipkart link to fetch prices across stores via the Node.js backend, or load a preset below.</p>
+          </div>
+        </div>
+
+        <div class="url-wrap">
+          <input id="compare-query-input" type="text" class="input-field" placeholder="Paste Amazon/Flipkart link or product name...">
+          <div class="url-actions">
+            <button id="btn-clear-compare-query" type="button" class="btn-icon-clear hidden" title="Clear">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <button id="btn-paste-compare" type="button" class="btn-paste">Paste</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;">
+          <button id="btn-auto-fetch-prices" type="button" class="btn-primary">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+            </svg>
+            <span id="fetch-btn-text">Auto-Fetch Live Store Prices</span>
+          </button>
+          <button id="btn-open-backend-cfg" type="button" class="btn-secondary">API Setup</button>
+        </div>
+
+        <!-- Sample Multi-Store Product Presets -->
+        <div class="samples-row">
+          <span style="font-size:11px;font-weight:600;color:#64748b;flex-shrink:0;">Instant Demos:</span>
+          <button type="button" data-preset="iphone16" class="preset-product-chip">iPhone 16 (128GB)</button>
+          <button type="button" data-preset="nord6" class="preset-product-chip">OnePlus Nord 6</button>
+          <button type="button" data-preset="xm5" class="preset-product-chip">Sony WH-1000XM5</button>
+          <button type="button" data-preset="airpods" class="preset-product-chip">AirPods Pro 2</button>
+        </div>
+
+        <div id="scraped-offers-banner" class="note-box hidden"></div>
+
+        <div class="stack-sm" style="padding-top:4px;border-top:1px solid var(--border);">
+          <span class="label-caps">Direct Store Search Links (Tap to Verify)</span>
+          <div id="compare-links-row" class="samples-row"></div>
+        </div>
+      </div>
+
+      <div id="compare-winner-container" class="stack-sm"></div>
+
+      <div class="stack-sm">
+        <div class="row-between" style="padding:0 2px;">
+          <span class="label-caps">Store Breakdown (Editable Prices &amp; Bank Offers)</span>
+          <button id="btn-add-compare-store" type="button" class="btn-outline-sm" style="color:var(--accent-dark);">+ Add Store</button>
+        </div>
+        <div id="compare-rows-container" class="stack-sm"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: MY CARDS ==================== -->
+    <section id="view-cards" class="stack-md hidden">
+      <div class="card stack-sm">
+        <div class="row-between">
+          <div>
+            <h2 style="margin:0;font-size:16px;font-weight:800;">Your Cards (12 CC + 1 Debit)</h2>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Toggle cards you own or add custom cards anytime.</p>
+          </div>
+          <span id="cards-count-badge" class="pill-badge">13 Active Cards</span>
+        </div>
+
+        <div class="toolbar-3">
+          <button id="btn-add-card" type="button" class="btn-primary">+ Add Card</button>
+          <button id="btn-bulk-import" type="button" class="btn-secondary">Paste List</button>
+          <button id="btn-export-cards" type="button" class="btn-secondary">Export</button>
+        </div>
+
+        <input id="card-search-input" type="text" class="form-input" placeholder="Filter cards by name or bank...">
+      </div>
+
+      <div id="cards-list-container" class="stack-sm"></div>
+    </section>
+
+    <!-- ==================== VIEW 4: HISTORY ==================== -->
+    <section id="view-history" class="stack-md hidden">
+      <div class="card row-between">
+        <div>
+          <h2 style="margin:0;font-size:16px;font-weight:800;">Recent Link Checks</h2>
+          <p style="margin:2px 0 0;font-size:12px;color:var(--muted);">Tap any past check to load it again.</p>
+        </div>
+        <button id="btn-clear-history" type="button" class="btn-danger-sm">Clear</button>
+      </div>
+      <div id="history-list-container" class="stack-sm"></div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-inner">
+      <button type="button" data-tab="check" class="nav-tab active">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"></path>
+        </svg>
+        <span>Check Link</span>
+      </button>
+      <button type="button" data-tab="compare" class="nav-tab">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 6h18M3 12h18M3 18h18"></path>
+        </svg>
+        <span>Compare</span>
+      </button>
+      <button type="button" data-tab="cards" class="nav-tab">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="2.5"></rect>
+          <path d="M2 10h20"></path>
+        </svg>
+        <span>My Cards</span>
+      </button>
+      <button type="button" data-tab="history" class="nav-tab">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7v5l3 2"></path>
+        </svg>
+        <span>History</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== MODAL: BACKEND & API SETTINGS ==================== -->
+  <div id="modal-backend" class="modal-backdrop hidden">
+    <div class="modal-box stack-md">
+      <div class="row-between">
+        <h3 style="margin:0;font-size:16px;font-weight:800;">Node.js Backend &amp; API Settings</h3>
+        <button id="btn-close-backend" type="button" class="btn-icon-clear">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <p style="margin:0;font-size:12px;color:var(--muted);">
+        Connect to the bundled Node.js Express server (<code>server.js</code> in the zip download) to automatically resolve shortlinks and scrape live prices across Amazon.in, Flipkart, Croma, and Google Shopping.
+      </p>
+      <div class="stack-sm">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Backend Server URL</label>
+          <input id="cfg-backend-url" type="text" class="form-input" placeholder="http://localhost:3000 (or your Render URL)">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">SerpApi Key (Optional — Google Shopping India)</label>
+          <input id="cfg-serp-key" type="password" class="form-input" placeholder="Optional: 100% accurate multi-store prices">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">ScraperAPI Key (Optional — Anti-Captcha Proxy)</label>
+          <input id="cfg-scraper-key" type="password" class="form-input" placeholder="Optional: bypasses Amazon/Flipkart IP blocks">
+        </div>
+      </div>
+      <div class="note-box" style="font-size:11.5px;">
+        <strong>How to run locally:</strong> Unzip <code>cardpick-fullstack.zip</code>, run <code>npm install &amp;&amp; npm start</code>, and open <code>http://localhost:3000</code>.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button id="btn-test-backend" type="button" class="btn-secondary">Test Connection</button>
+        <button id="btn-save-backend" type="button" class="btn-primary">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD / EDIT CARD ==================== -->
+  <div id="modal-card" class="modal-backdrop hidden">
+    <div class="modal-box stack-md">
+      <div class="row-between">
+        <h3 id="modal-card-title" style="margin:0;font-size:16px;font-weight:800;">Add Custom Credit Card</h3>
+        <button id="btn-close-card-modal" type="button" class="btn-icon-clear">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <form id="form-custom-card" class="stack-sm">
+        <input type="hidden" id="edit-card-id">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Card Name *</label>
+            <input id="cc-name" type="text" required="" placeholder="e.g. HDFC Swiggy" class="form-input">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Bank / Issuer</label>
+            <input id="cc-bank" type="text" placeholder="e.g. HDFC Bank" class="form-input">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Base Online %</label>
+            <input id="cc-base-rate" type="number" step="0.1" min="0" max="50" value="1" class="form-input">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Monthly Cap ₹</label>
+            <input id="cc-base-cap" type="number" min="0" value="0" placeholder="0 = ∞" class="form-input">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Annual Fee</label>
+            <input id="cc-fee" type="text" value="₹0" class="form-input">
+          </div>
+        </div>
+
+        <div style="padding-top:8px;border-top:1px solid var(--border);" class="stack-sm">
+          <div class="row-between">
+            <span style="font-size:12px;font-weight:700;">Merchant-Specific Offers</span>
+            <button id="btn-add-rule-row" type="button" class="btn-outline-sm" style="color:var(--accent-dark);">+ Add Rule</button>
+          </div>
+          <div id="custom-rules-container" class="stack-sm"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:6px;">
+          <button type="button" id="btn-cancel-card-modal" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Save Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: BULK PASTE / IMPORT ==================== -->
+  <div id="modal-import" class="modal-backdrop hidden">
+    <div class="modal-box stack-sm">
+      <div class="row-between">
+        <h3 style="margin:0;font-size:16px;font-weight:800;">Paste Your Credit Card List</h3>
+        <button id="btn-close-import" type="button" class="btn-icon-clear">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <p style="margin:0;font-size:12px;color:var(--muted);">
+        Paste card names (one per line or comma-separated) or a JSON backup. Known cards are matched automatically; new ones are added so you can edit their rates.
+      </p>
+      <textarea id="import-textarea" rows="5" class="form-input" placeholder="Amazon Pay ICICI
+SBI Cashback
+Axis Neo
+HDFC Swiggy"></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button id="btn-cancel-import" type="button" class="btn-secondary">Cancel</button>
+        <button id="btn-apply-import" type="button" class="btn-primary">Import &amp; Enable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: INSTALL TIP ==================== -->
+  <div id="modal-install" class="modal-backdrop hidden">
+    <div class="modal-box stack-sm">
+      <div class="row-between">
+        <h3 style="margin:0;font-size:16px;font-weight:800;">Install as an Android App (PWA)</h3>
+        <button id="btn-close-install" type="button" class="btn-icon-clear">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <ol style="margin:0;padding-left:18px;font-size:13px;color:#334155;display:flex;flex-direction:column;gap:6px;">
+        <li>Deploy <code>cardpick-fullstack.zip</code> to <strong>Render.com</strong> (free web service) or run <code>npm start</code> locally.</li>
+        <li>When served by the Node.js server, the included <code>manifest.json</code> and Service Worker (<code>sw.js</code>) activate Chrome's native <strong>Install app / Add to Home screen</strong> prompt.</li>
+      </ol>
+      <button id="btn-ok-install" type="button" class="btn-primary" style="width:100%;">Got it</button>
+    </div>
+  </div>
+
+    <!-- ==================== MODAL: GITHUB AUTO-PUSH ==================== -->
+  <div id="modal-github" class="modal-backdrop">
+    <div class="modal-box stack-md">
+      <div class="row-between">
+        <h3 style="margin:0;font-size:16px;font-weight:800;">1-Tap Push to GitHub</h3>
+        <button id="btn-close-github" type="button" class="btn-icon-clear">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <p style="margin:0;font-size:12px;color:var(--muted);">
+        Since my cloud workspace is offline, tap below to push all 6 full-stack files (<code>server.js</code>, <code>package.json</code>, <code>public/index.html</code>, <code>manifest.json</code>, <code>sw.js</code>) directly from your phone's browser to your GitHub account.
+      </p>
+      <div class="stack-sm">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">1. GitHub Personal Access Token (with <code>repo</code> scope)</label>
+          <input id="gh-token-input" type="password" class="form-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+          <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=CardPick+Deploy" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:4px;font-size:11.5px;font-weight:600;color:var(--accent-dark);">
+            ↗ Tap here to generate a token on GitHub (just scroll down &amp; tap Generate token)
+          </a>
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">2. Repository Name</label>
+          <input id="gh-repo-input" type="text" class="form-input" value="cardpick-fullstack">
+        </div>
+      </div>
+      <div id="gh-status-box" class="note-box" style="font-size:12px;word-break:break-all;">Creating repository <strong>sjodave/cardpick-fullstack</strong>...</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button id="btn-cancel-github" type="button" class="btn-secondary">Cancel</button>
+        <button id="btn-run-github-push" type="button" class="btn-primary" disabled="">Pushing to GitHub...</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-box" class="toast-wrap hidden">
+    <div id="toast-msg" class="toast-pill"></div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'cardpick_state_v3';
+      function safeGetStorage(key) {
+        try { return window.localStorage.getItem(key); } catch (e) { return null; }
+      }
+      function safeSetStorage(key, val) {
+        try { window.localStorage.setItem(key, val); } catch (e) {}
+      }
+
+      const MERCHANTS = [
+        { id: 'amazon', name: 'Amazon India', category: 'E-Commerce', domains: ['amazon.in', 'amzn.in', 'amzn.to', 'amazon.com', 'a.co'] },
+        { id: 'flipkart', name: 'Flipkart', category: 'E-Commerce', domains: ['flipkart.com', 'dl.flipkart.com', 'fkrt.it', 'fkrt.cc'] },
+        { id: 'croma', name: 'Croma', category: 'Electronics', domains: ['croma.com'] },
+        { id: 'reliancedigital', name: 'Reliance Digital', category: 'Electronics', domains: ['reliancedigital.in'] },
+        { id: 'vijaysales', name: 'Vijay Sales', category: 'Electronics', domains: ['vijaysales.com'] },
+        { id: 'myntra', name: 'Myntra', category: 'Fashion', domains: ['myntra.com', 'myntr.it'] },
+        { id: 'ajio', name: 'AJIO', category: 'Fashion', domains: ['ajio.com'] },
+        { id: 'tatacliq', name: 'Tata CLiQ', category: 'E-Commerce', domains: ['tatacliq.com'] },
+        { id: 'nykaa', name: 'Nykaa', category: 'Beauty & Lifestyle', domains: ['nykaa.com', 'nykaafashion.com'] },
+        { id: 'zomato', name: 'Zomato', category: 'Food Delivery', domains: ['zomato.com', 'zoma.to'] },
+        { id: 'swiggy', name: 'Swiggy', category: 'Food & Instamart', domains: ['swiggy.com', 'swig.gy'] },
+        { id: 'blinkit', name: 'Blinkit', category: 'Quick Commerce', domains: ['blinkit.com', 'grofers.com'] },
+        { id: 'zepto', name: 'Zepto', category: 'Quick Commerce', domains: ['zeptonow.com', 'zepto.co.in'] },
+        { id: 'bigbasket', name: 'BigBasket', category: 'Groceries', domains: ['bigbasket.com'] },
+        { id: 'bookmyshow', name: 'BookMyShow', category: 'Movies & Events', domains: ['bookmyshow.com', 'bms.co.in'] },
+        { id: 'district', name: 'District by Zomato', category: 'Movies & Dining', domains: ['district.in'] },
+        { id: 'eazydiner', name: 'EazyDiner', category: 'Dining', domains: ['eazydiner.com'] },
+        { id: 'airtel', name: 'Airtel Thanks', category: 'Telecom & Bills', domains: ['airtel.in'] },
+        { id: 'cleartrip', name: 'Cleartrip', category: 'Travel', domains: ['cleartrip.com'] },
+        { id: 'makemytrip', name: 'MakeMyTrip', category: 'Travel', domains: ['makemytrip.com', 'mmt.co'] },
+        { id: 'paytm', name: 'Paytm', category: 'Recharges & Utilities', domains: ['paytm.com', 'paytm.in'] },
+        { id: 'smartbuy', name: 'HDFC SmartBuy / PayZapp', category: 'Bank Portal', domains: ['smartbuy.hdfcbank.com', 'offers.smartbuy.hdfc.bank.in', 'payzapp.in'] },
+        { id: 'uber', name: 'Uber', category: 'Rides', domains: ['uber.com'] },
+        { id: 'sonyliv', name: 'Sony LIV', category: 'OTT / Streaming', domains: ['sonyliv.com'] },
+        { id: 'cultfit', name: 'Cult.fit', category: 'Fitness', domains: ['cult.fit', 'cure.fit'] },
+        { id: 'reliancesmart', name: 'Reliance Smart / JioMart', category: 'Groceries', domains: ['jiomart.com', 'reliancesmart.in'] }
+      ];
+
+      // Multi-store instant demo presets
+      const PRODUCT_PRESETS = {
+        iphone16: {
+          title: 'Apple iPhone 16 (128 GB, Black)',
+          offerBanner: 'Ongoing Bank Offer: ₹4,000 instant discount on ICICI / Axis / Kotak Credit Cards at Croma & Reliance Digital; ₹2,500 off on Flipkart.',
+          rows: [
+            { id: 101, merchantId: 'amazon', price: 74900, saleDiscount: 3000 },
+            { id: 102, merchantId: 'flipkart', price: 74900, saleDiscount: 2500 },
+            { id: 103, merchantId: 'croma', price: 74900, saleDiscount: 4000 },
+            { id: 104, merchantId: 'reliancedigital', price: 74900, saleDiscount: 4000 }
+          ]
+        },
+        nord6: {
+          title: 'OnePlus Nord 6 5G (256 GB)',
+          offerBanner: 'Ongoing Sale Offer: ₹2,000 instant bank discount on ICICI Bank Credit Cards on Amazon.in & Croma.',
+          rows: [
+            { id: 201, merchantId: 'amazon', price: 29999, saleDiscount: 2000 },
+            { id: 202, merchantId: 'flipkart', price: 29850, saleDiscount: 0 },
+            { id: 203, merchantId: 'croma', price: 29999, saleDiscount: 2000 },
+            { id: 204, merchantId: 'vijaysales', price: 29999, saleDiscount: 1500 }
+          ]
+        },
+        xm5: {
+          title: 'Sony WH-1000XM5 Wireless Noise Cancelling Headphones',
+          offerBanner: 'Ongoing Sale Offer: ₹2,500 coupon + bank offer on Amazon.in; ₹2,000 instant discount on Croma.',
+          rows: [
+            { id: 301, merchantId: 'amazon', price: 26990, saleDiscount: 2500 },
+            { id: 302, merchantId: 'flipkart', price: 26990, saleDiscount: 1500 },
+            { id: 303, merchantId: 'croma', price: 26990, saleDiscount: 2000 }
+          ]
+        },
+        airpods: {
+          title: 'Apple AirPods Pro (2nd Gen, USB-C)',
+          offerBanner: 'Ongoing Festival Price Drop on Flipkart & Amazon; ₹1,500 instant bank discount on ICICI / HDFC cards.',
+          rows: [
+            { id: 401, merchantId: 'flipkart', price: 18999, saleDiscount: 1000 },
+            { id: 402, merchantId: 'amazon', price: 19490, saleDiscount: 1500 },
+            { id: 403, merchantId: 'reliancedigital', price: 19900, saleDiscount: 1500 }
+          ]
+        }
+      };
+
+      const DEFAULT_CARDS = [
+        {
+          id: 'amazon-pay-icici',
+          name: 'ICICI Amazon Pay',
+          bank: 'ICICI Bank',
+          fee: 'Lifetime Free',
+          isPreset: true,
+          owned: true,
+          isPrime: true,
+          baseOnlineRate: 1,
+          baseCap: 0,
+          rules: [
+            { merchant: 'amazon', type: 'percent', value: 5, nonPrimeValue: 3, minOrder: 0, cap: 0, code: '', note: '5% uncapped for Prime (3% Non-Prime) as Amazon Pay balance' },
+            { merchant: 'bookmyshow', type: 'percent', value: 2, minOrder: 0, cap: 0, code: '', note: '2% via Amazon Pay partner checkout' },
+            { merchant: 'uber', type: 'percent', value: 2, minOrder: 0, cap: 0, code: '', note: '2% via Amazon Pay partner checkout' }
+          ]
+        },
+        {
+          id: 'hdfc-swiggy',
+          name: 'HDFC Swiggy (BLCK)',
+          bank: 'HDFC Bank',
+          fee: '₹500 + GST',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 1,
+          baseCap: 1000,
+          baseNote: '1% cashback on other eligible spends (cap ₹1,000/month)',
+          rules: [
+            { merchant: 'swiggy', type: 'percent', value: 10, minOrder: 249, cap: 1500, code: '', note: '10% cashback on Swiggy Food, Instamart & Dineout (min ₹249, cap ₹1,500/mo)' },
+            { merchant: 'amazon', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on eligible online shopping (cap ₹1,500/mo)' },
+            { merchant: 'flipkart', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on eligible online shopping (cap ₹1,500/mo)' },
+            { merchant: 'myntra', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on apparel/online shopping (cap ₹1,500/mo)' },
+            { merchant: 'nykaa', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on personal care/online shopping (cap ₹1,500/mo)' },
+            { merchant: 'ajio', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on apparel MCCs (cap ₹1,500/mo)' },
+            { merchant: 'tatacliq', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on department/apparel MCCs (cap ₹1,500/mo)' },
+            { merchant: 'croma', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on electronics MCCs (cap ₹1,500/mo)' },
+            { merchant: 'reliancedigital', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on electronics MCCs (cap ₹1,500/mo)' },
+            { merchant: 'vijaysales', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on electronics MCCs (cap ₹1,500/mo)' },
+            { merchant: 'cleartrip', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on Cleartrip (cap ₹1,500/mo)' },
+            { merchant: 'uber', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on local cabs (cap ₹1,500/mo)' },
+            { merchant: 'bookmyshow', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on entertainment MCCs (cap ₹1,500/mo)' }
+          ]
+        },
+        {
+          id: 'hdfc-swiggy-orange',
+          name: 'HDFC Swiggy Orange',
+          bank: 'HDFC Bank',
+          fee: '₹500 + GST',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 1,
+          baseCap: 1000,
+          baseNote: '1% cashback on other eligible spends (cap ₹1,000/month)',
+          rules: [
+            { merchant: 'swiggy', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on Swiggy Ornge tier (cap ₹1,500/mo)' },
+            { merchant: 'amazon', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on eligible online shopping MCCs (cap ₹1,500/mo)' },
+            { merchant: 'flipkart', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on eligible online shopping MCCs (cap ₹1,500/mo)' },
+            { merchant: 'myntra', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on apparel MCCs (cap ₹1,500/mo)' },
+            { merchant: 'nykaa', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on personal care MCCs (cap ₹1,500/mo)' },
+            { merchant: 'croma', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on electronics MCCs (cap ₹1,500/mo)' },
+            { merchant: 'reliancedigital', type: 'percent', value: 5, minOrder: 100, cap: 1500, code: '', note: '5% cashback on electronics MCCs (cap ₹1,500/mo)' }
+          ]
+        },
+        {
+          id: 'axis-airtel',
+          name: 'Axis Airtel',
+          bank: 'Axis Bank',
+          fee: '₹500 + GST',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 1,
+          baseCap: 0,
+          baseNote: '1% unlimited base cashback on other spends',
+          rules: [
+            { merchant: 'airtel', type: 'percent', value: 25, minOrder: 0, cap: 250, code: '', note: '25% on Airtel bills via Airtel Thanks (cap tied to monthly base cashback)' },
+            { merchant: 'zomato', type: 'percent', value: 10, minOrder: 499, cap: 200, code: '', note: '10% value-back to Zomato wallet on min ₹499 (cap ₹200/mo)' },
+            { merchant: 'blinkit', type: 'percent', value: 10, minOrder: 499, cap: 200, code: '', note: '10% value-back to Blinkit wallet on min ₹499 (cap ₹200/mo)' },
+            { merchant: 'district', type: 'percent', value: 10, minOrder: 0, cap: 200, code: '', note: '10% value-back on District Movies (cap ₹200/mo)' },
+            { merchant: 'swiggy', type: 'flat', value: 200, minOrder: 1000, cap: 200, code: '', note: '₹200 off on ₹1,000+ Swiggy orders (2x/month)' }
+          ]
+        },
+        {
+          id: 'axis-neo',
+          name: 'Axis Neo',
+          bank: 'Axis Bank',
+          fee: '₹250 / LTF Promo',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 0.1,
+          baseCap: 0,
+          rules: [
+            { merchant: 'zomato', type: 'flat', value: 120, minOrder: 499, cap: 120, code: 'AXISNEO', note: 'Flat ₹120 off on min ₹499 (2x/month)' },
+            { merchant: 'blinkit', type: 'percent', value: 10, minOrder: 750, cap: 250, code: '', note: '10% off up to ₹250/month on min ₹750' },
+            { merchant: 'myntra', type: 'flat', value: 150, minOrder: 999, cap: 150, code: '', note: 'Flat ₹150 off on min ₹999' },
+            { merchant: 'bookmyshow', type: 'percent', value: 10, minOrder: 0, cap: 100, code: '', note: '10% off up to ₹100/month' },
+            { merchant: 'paytm', type: 'percent', value: 5, minOrder: 299, cap: 150, code: 'AXISNEO', note: '5% off utility/recharges up to ₹150/month (min ₹299)' },
+            { merchant: 'cleartrip', type: 'percent', value: 7, minOrder: 0, cap: 2000, code: 'CTAXISNEO', note: '7% off flights up to ₹2,000 (18% off hotels min ₹4,000)' }
+          ]
+        },
+        {
+          id: 'cub-salaryse-levelup',
+          name: 'CUB Level UP SalarySe',
+          bank: 'City Union Bank',
+          fee: 'Lifetime Free',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 5,
+          baseCap: 0,
+          baseNote: '5% SCoins on online/SalarySe UPI (<₹20k/mo); 10% above ₹20k/mo; 25% on Salary Day (1st/last day)',
+          rules: []
+        },
+        {
+          id: 'hdfc-moneyback-plus',
+          name: 'HDFC MoneyBack+',
+          bank: 'HDFC Bank',
+          fee: '₹500 + GST',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 0.25,
+          baseCap: 0,
+          baseNote: '2 CashPoints per ₹200 (0.25% valueback)',
+          rules: [
+            { merchant: 'amazon', type: 'percent', value: 2.5, minOrder: 200, cap: 625, code: '', note: '10X CashPoints = 2.5% valueback (cap 2,500 pts/mo = ₹625)' },
+            { merchant: 'flipkart', type: 'percent', value: 2.5, minOrder: 200, cap: 625, code: '', note: '10X CashPoints = 2.5% valueback (cap 2,500 pts/mo)' },
+            { merchant: 'swiggy', type: 'percent', value: 2.5, minOrder: 200, cap: 625, code: '', note: '10X CashPoints = 2.5% valueback (cap 2,500 pts/mo)' },
+            { merchant: 'bigbasket', type: 'percent', value: 2.5, minOrder: 200, cap: 625, code: '', note: '10X CashPoints = 2.5% valueback (cap 2,500 pts/mo)' },
+            { merchant: 'reliancesmart', type: 'percent', value: 2.5, minOrder: 200, cap: 625, code: '', note: '10X CashPoints on Reliance Smart SuperStore' }
+          ]
+        },
+        {
+          id: 'axis-indianoil',
+          name: 'Axis IndianOil',
+          bank: 'Axis Bank',
+          fee: '₹500 + GST',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 1,
+          baseCap: 50,
+          baseNote: '1% value-back (5 EDGE pts/₹100) on online shopping ₹100–₹5,000',
+          rules: [
+            { merchant: 'bookmyshow', type: 'percent', value: 10, minOrder: 0, cap: 0, code: '', note: '10% instant discount on BookMyShow movie tickets' }
+          ]
+        },
+        {
+          id: 'indusind-legend',
+          name: 'IndusInd Signature Legend',
+          bank: 'IndusInd Bank',
+          fee: 'Lifetime Free',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 0.5,
+          baseCap: 0,
+          baseNote: '0.5% weekday / 1% weekend (1–2 RP per ₹100 @ ₹0.50/pt)',
+          rules: [
+            { merchant: 'bookmyshow', type: 'percent', value: 50, minOrder: 0, cap: 200, code: '', note: 'Buy 1 Get 1 on BookMyShow once a month (up to ₹200)' }
+          ]
+        },
+        {
+          id: 'indusind-eazydiner-platinum',
+          name: 'IndusInd EazyDiner Platinum',
+          bank: 'IndusInd Bank',
+          fee: 'Lifetime Free',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 0.4,
+          baseCap: 0,
+          baseNote: '2 RP per ₹100 (₹0.20/pt = 0.4% valueback)',
+          rules: [
+            { merchant: 'eazydiner', type: 'percent', value: 20, minOrder: 0, cap: 500, code: '', note: 'Extra 20% instant off up to ₹500 on EazyDiner app' }
+          ]
+        },
+        {
+          id: 'icici-rubyx-mc',
+          name: 'ICICI Rubyx Mastercard',
+          bank: 'ICICI Bank',
+          fee: '₹2,000 + GST',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 0.5,
+          baseCap: 0,
+          baseNote: '2 RP per ₹100 domestic (@ ₹0.25/pt = 0.5%)',
+          rules: [
+            { merchant: 'bookmyshow', type: 'percent', value: 25, minOrder: 0, cap: 150, code: '', note: '25% off up to ₹150 on BookMyShow (2x/month)' }
+          ]
+        },
+        {
+          id: 'icici-rubyx-amex',
+          name: 'ICICI Rubyx Amex',
+          bank: 'ICICI Bank',
+          fee: 'Dual Variant',
+          isPreset: true,
+          owned: true,
+          baseOnlineRate: 0.5,
+          baseCap: 0,
+          baseNote: '2 RP per ₹100 domestic (@ ₹0.25/pt = 0.5%)',
+          rules: [
+            { merchant: 'bookmyshow', type: 'percent', value: 25, minOrder: 0, cap: 150, code: '', note: '25% off up to ₹150 on BookMyShow (2x/month)' }
+          ]
+        },
+        {
+          id: 'hdfc-millennia-debit',
+          name: 'HDFC Millennia Debit Card',
+          bank: 'HDFC Bank',
+          fee: '₹500 / yr',
+          isPreset: true,
+          isDebit: true,
+          owned: true,
+          baseOnlineRate: 2.5,
+          baseCap: 400,
+          baseNote: '2.5% CashBack points on all online spends (min ₹400, cap ₹400/month)',
+          rules: [
+            { merchant: 'smartbuy', type: 'percent', value: 5, minOrder: 400, cap: 400, code: '', note: '5% CashBack points via PayZapp & SmartBuy (cap ₹400/mo)' },
+            { merchant: 'paytm', type: 'percent', value: 1, minOrder: 400, cap: 400, code: '', note: '1% CashBack on wallet reloads (cap ₹400/mo)' }
+          ]
+        },
+        {
+          id: 'sbi-cashback',
+          name: 'SBI Cashback Card',
+          bank: 'SBI Card',
+          fee: '₹999 + GST',
+          isPreset: true,
+          owned: false,
+          baseOnlineRate: 5,
+          baseCap: 2000,
+          baseNote: '5% on almost all online spends, capped at ₹2,000/statement cycle',
+          rules: [
+            { merchant: 'paytm', type: 'percent', value: 0, minOrder: 0, cap: 0, code: '', note: 'Utilities/wallet loads excluded from 5% cashback' }
+          ]
+        },
+        {
+          id: 'flipkart-axis',
+          name: 'Flipkart Axis Bank',
+          bank: 'Axis Bank',
+          fee: '₹500 + GST',
+          isPreset: true,
+          owned: false,
+          baseOnlineRate: 1,
+          baseCap: 0,
+          rules: [
+            { merchant: 'myntra', type: 'percent', value: 7.5, minOrder: 0, cap: 4000, code: '', note: '7.5% cashback capped at ₹4,000/quarter' },
+            { merchant: 'flipkart', type: 'percent', value: 5, minOrder: 0, cap: 4000, code: '', note: '5% cashback capped at ₹4,000/quarter' },
+            { merchant: 'cleartrip', type: 'percent', value: 5, minOrder: 0, cap: 4000, code: '', note: '5% cashback capped at ₹4,000/quarter' }
+          ]
+        }
+      ];
+
+      let state = {
+        cards: JSON.parse(JSON.stringify(DEFAULT_CARDS)),
+        scope: 'mine',
+        history: [],
+        backendUrl: 'http://localhost:3000',
+        serpApiKey: '',
+        scraperApiKey: '',
+        compareRows: [
+          { id: 1, merchantId: 'amazon', price: 29999, saleDiscount: 2000 },
+          { id: 2, merchantId: 'flipkart', price: 29850, saleDiscount: 0 },
+          { id: 3, merchantId: 'croma', price: 29999, saleDiscount: 2000 }
+        ]
+      };
+
+      function loadState() {
+        const raw = safeGetStorage(STORAGE_KEY);
+        if (!raw) return;
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed.cards) && parsed.cards.length > 0) state.cards = parsed.cards;
+          if (parsed.scope === 'mine' || parsed.scope === 'all') state.scope = parsed.scope;
+          if (Array.isArray(parsed.history)) state.history = parsed.history;
+          if (Array.isArray(parsed.compareRows) && parsed.compareRows.length > 0) state.compareRows = parsed.compareRows;
+          if (typeof parsed.backendUrl === 'string') state.backendUrl = parsed.backendUrl;
+          if (typeof parsed.serpApiKey === 'string') state.serpApiKey = parsed.serpApiKey;
+          if (typeof parsed.scraperApiKey === 'string') state.scraperApiKey = parsed.scraperApiKey;
+        } catch (e) {}
+      }
+
+      function saveState() {
+        safeSetStorage(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      const urlInput = document.getElementById('url-input');
+      const amountInput = document.getElementById('amount-input');
+      const btnClearUrl = document.getElementById('btn-clear-url');
+      const btnPasteUrl = document.getElementById('btn-paste-url');
+      const resultsContainer = document.getElementById('results-container');
+      const activeWalletPill = document.getElementById('active-wallet-pill');
+      const cardsCountBadge = document.getElementById('cards-count-badge');
+      const cardsListContainer = document.getElementById('cards-list-container');
+      const cardSearchInput = document.getElementById('card-search-input');
+      const historyListContainer = document.getElementById('history-list-container');
+      const scopeMineBtn = document.getElementById('scope-mine');
+      const scopeAllBtn = document.getElementById('scope-all');
+      const modalCard = document.getElementById('modal-card');
+      const modalImport = document.getElementById('modal-import');
+      const modalInstall = document.getElementById('modal-install');
+      const modalBackend = document.getElementById('modal-backend');
+      const customRulesContainer = document.getElementById('custom-rules-container');
+
+      const compareQueryInput = document.getElementById('compare-query-input');
+      const btnClearCompareQuery = document.getElementById('btn-clear-compare-query');
+      const compareLinksRow = document.getElementById('compare-links-row');
+      const compareRowsContainer = document.getElementById('compare-rows-container');
+      const compareWinnerContainer = document.getElementById('compare-winner-container');
+      const scrapedOffersBanner = document.getElementById('scraped-offers-banner');
+
+      let toastTimer = null;
+      function showToast(msg) {
+        const box = document.getElementById('toast-box');
+        document.getElementById('toast-msg').textContent = msg;
+        box.classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => box.classList.add('hidden'), 2600);
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function detectMerchant(rawInput) {
+        const text = (rawInput || '').trim();
+        if (!text) return null;
+
+        let hostname = '';
+        try {
+          const normalized = /^https?:\/\//i.test(text) ? text : 'https://' + text;
+          const u = new URL(normalized);
+          hostname = u.hostname.toLowerCase().replace(/^www\./, '');
+        } catch (e) {
+          hostname = text.toLowerCase().replace(/^www\./, '').split('/')[0];
+        }
+
+        const lowerFull = text.toLowerCase();
+        for (const m of MERCHANTS) {
+          for (const d of m.domains) {
+            if (hostname === d || hostname.endsWith('.' + d) || lowerFull.includes(d)) {
+              return { ...m, hostname };
+            }
+          }
+        }
+        for (const m of MERCHANTS) {
+          if (lowerFull.includes(m.id)) {
+            return { ...m, hostname: hostname || m.domains[0] };
+          }
+        }
+
+        const cleanDomain = hostname || 'online-store';
+        const prettyName = cleanDomain.split('.')[0]
+          ? cleanDomain.split('.')[0].charAt(0).toUpperCase() + cleanDomain.split('.')[0].slice(1)
+          : 'Online Store';
+
+        return {
+          id: cleanDomain,
+          name: prettyName,
+          category: 'General Online Store',
+          domains: [cleanDomain],
+          hostname: cleanDomain
+        };
+      }
+
+      function extractSearchTerm(raw) {
+        const text = (raw || '').trim();
+        if (!text) return { term: '', isShortLink: false };
+        if (/^https?:\/\//i.test(text) || /\.[a-z]{2,}(\/|$)/i.test(text)) {
+          try {
+            const u = new URL(/^https?:\/\//i.test(text) ? text : 'https://' + text);
+            const host = u.hostname.toLowerCase();
+            if (host.includes('amzn.in') || host.includes('amzn.to') || host.includes('fkrt.it') || host.includes('fkrt.cc') || host.includes('myntr.it') || u.pathname.startsWith('/s/')) {
+              return { term: '', isShortLink: true };
+            }
+            const qParam = u.searchParams.get('k') || u.searchParams.get('q') || u.searchParams.get('text');
+            if (qParam && qParam.trim().length > 1) {
+              return { term: qParam.trim(), isShortLink: false };
+            }
+            const stop = new Set(['dp', 'p', 's', 'gp', 'd', 'product', 'buy', 'shop', 'ref', 'itm', 'shoes', 'clothing', 'electronics', 'mobile', 'mobiles']);
+            const parts = u.pathname.split('/').filter(p => {
+              if (!p) return false;
+              const lp = p.toLowerCase();
+              if (stop.has(lp)) return false;
+              if (/^[A-Z0-9]{10}$/.test(p)) return false;
+              if (/^itm[a-z0-9]+$/i.test(p)) return false;
+              if (/^\d+$/.test(p)) return false;
+              return true;
+            });
+            if (parts.length > 0) {
+              const bestSlug = parts.sort((a, b) => b.length - a.length)[0];
+              const cleaned = decodeURIComponent(bestSlug).replace(/[-_+]+/g, ' ').trim();
+              if (cleaned.length >= 3) return { term: cleaned, isShortLink: false };
+            }
+            return { term: '', isShortLink: true };
+          } catch (e) {}
+        }
+        return { term: text, isShortLink: false };
+      }
+
+      function evaluateCard(card, merchant, amount) {
+        const rules = Array.isArray(card.rules) ? card.rules : [];
+        let matchedRule = null;
+
+        for (const r of rules) {
+          const ruleKey = (r.merchant || '').toLowerCase().trim();
+          if (!ruleKey) continue;
+          if (ruleKey === merchant.id || (merchant.hostname && merchant.hostname.includes(ruleKey)) || merchant.name.toLowerCase().includes(ruleKey)) {
+            matchedRule = r;
+            break;
+          }
+        }
+
+        let savings = 0;
+        let headline = '';
+        let note = '';
+        let promoCode = '';
+        let unmetMinOrder = false;
+
+        if (matchedRule) {
+          promoCode = matchedRule.code || '';
+          note = matchedRule.note || '';
+          const minOrder = Number(matchedRule.minOrder) || 0;
+          const cap = Number(matchedRule.cap) || 0;
+
+          if (matchedRule.type === 'flat') {
+            const flatVal = Number(matchedRule.value) || 0;
+            if (amount >= minOrder) {
+              savings = Math.min(flatVal, amount);
+              headline = `Flat ₹${flatVal} Off`;
+            } else {
+              unmetMinOrder = true;
+              const baseRate = Number(card.baseOnlineRate) || 0;
+              savings = amount * (baseRate / 100);
+              headline = `${baseRate}% Base (₹${minOrder - amount} away from ₹${flatVal} off)`;
+            }
+          } else {
+            let pct = Number(matchedRule.value) || 0;
+            if (card.id === 'amazon-pay-icici' && matchedRule.merchant === 'amazon' && card.isPrime === false) {
+              pct = Number(matchedRule.nonPrimeValue) || 3;
+            }
+            if (amount >= minOrder) {
+              const rawSav = amount * (pct / 100);
+              savings = cap > 0 ? Math.min(rawSav, cap) : rawSav;
+              headline = `${pct}% ${cap > 0 ? `(Cap ₹${cap})` : 'Uncapped'}`;
+            } else {
+              unmetMinOrder = true;
+              const baseRate = Number(card.baseOnlineRate) || 0;
+              savings = amount * (baseRate / 100);
+              headline = `${baseRate}% Base (Min ₹${minOrder} for ${pct}%)`;
+            }
+          }
+        } else {
+          const baseRate = Number(card.baseOnlineRate) || 0;
+          const baseCap = Number(card.baseCap) || 0;
+          const rawSav = amount * (baseRate / 100);
+          savings = baseCap > 0 ? Math.min(rawSav, baseCap) : rawSav;
+          headline = `${baseRate}% Base Online${baseCap > 0 ? ` (Cap ₹${baseCap})` : ''}`;
+          note = card.baseNote || 'Standard online spend reward rate';
+        }
+
+        savings = Math.round(savings * 100) / 100;
+        const effectiveRate = amount > 0 ? Math.round((savings / amount) * 1000) / 10 : 0;
+
+        return { card, savings, effectiveRate, headline, note, promoCode, unmetMinOrder };
+      }
+
+      function updateCounts() {
+        const ownedCount = state.cards.filter(c => c.owned).length;
+        const label = `${ownedCount} Active ${ownedCount === 1 ? 'Card' : 'Cards'}`;
+        activeWalletPill.textContent = label;
+        cardsCountBadge.textContent = label;
+      }
+
+      function renderScopeButtons() {
+        scopeMineBtn.classList.toggle('active', state.scope === 'mine');
+        scopeAllBtn.classList.toggle('active', state.scope === 'all');
+      }
+
+      function renderResults(recordHistory) {
+        updateCounts();
+        renderScopeButtons();
+
+        const rawUrl = urlInput.value.trim();
+        btnClearUrl.classList.toggle('hidden', rawUrl.length === 0);
+
+        const amount = Math.max(1, Number(amountInput.value) || 2000);
+        const merchant = detectMerchant(rawUrl);
+
+        if (!merchant) {
+          resultsContainer.innerHTML = `
+            <div class="card" style="text-align:center;padding:24px 16px;">
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;">Paste any e-commerce link above</p>
+              <p style="margin:0;font-size:12px;color:var(--muted);">Ready with your 12 credit cards + 1 debit card. Or switch to <strong>Compare</strong> to auto-fetch prices across stores.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const pool = state.scope === 'mine' ? state.cards.filter(c => c.owned) : state.cards;
+
+        if (pool.length === 0) {
+          resultsContainer.innerHTML = `
+            <div class="card" style="text-align:center;padding:22px 16px;border-color:var(--warn-border);background:var(--warn-soft);">
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:var(--warn-text);">No active cards in your wallet</p>
+              <p style="margin:0 0 12px;font-size:12px;color:var(--muted);">Turn on cards you own or add custom cards in My Cards.</p>
+              <button type="button" id="btn-empty-go-cards" class="btn-primary">Go to My Cards</button>
+            </div>
+          `;
+          document.getElementById('btn-empty-go-cards').addEventListener('click', () => switchTab('cards'));
+          return;
+        }
+
+        const ranked = pool
+          .map(card => evaluateCard(card, merchant, amount))
+          .sort((a, b) => {
+            if (b.savings !== a.savings) return b.savings - a.savings;
+            if (b.effectiveRate !== a.effectiveRate) return b.effectiveRate - a.effectiveRate;
+            if ((a.card.isDebit ? 1 : 0) !== (b.card.isDebit ? 1 : 0)) return (a.card.isDebit ? 1 : 0) - (b.card.isDebit ? 1 : 0);
+            return (b.card.owned ? 1 : 0) - (a.card.owned ? 1 : 0);
+          });
+
+        const winner = ranked[0];
+        const others = ranked.slice(1);
+
+        if (recordHistory && winner) {
+          const entry = {
+            id: Date.now(),
+            url: rawUrl,
+            merchantName: merchant.name,
+            amount,
+            bestCard: winner.card.name,
+            savings: winner.savings,
+            effectiveRate: winner.effectiveRate,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          state.history = [entry, ...state.history.filter(h => !(h.url === rawUrl && h.amount === amount))].slice(0, 20);
+          saveState();
+        }
+
+        let html = `
+          <div class="card row-between">
+            <div style="min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:14px;font-weight:800;">${escapeHtml(merchant.name)}</span>
+                <span class="pill-badge">${escapeHtml(merchant.category)}</span>
+              </div>
+              <p style="margin:2px 0 0;font-size:11.5px;color:var(--muted);">${escapeHtml(merchant.hostname)}</p>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <p style="margin:0;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);">Order</p>
+              <p style="margin:0;font-size:14px;font-weight:800;">₹${amount.toLocaleString('en-IN')}</p>
+            </div>
+          </div>
+
+          <div class="winner-card stack-sm">
+            <div class="row-between" style="align-items:flex-start;">
+              <div>
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span class="best-tag">★ Best Pick</span>
+                  ${winner.card.isDebit ? '<span class="debit-badge">Debit Card</span>' : ''}
+                  ${!winner.card.owned ? '<span class="catalog-tag">Not in My Cards</span>' : ''}
+                </div>
+                <h3 style="margin:8px 0 2px;font-size:18px;font-weight:800;">${escapeHtml(winner.card.name)}</h3>
+                <p style="margin:0;font-size:12px;color:#475569;font-weight:500;">${escapeHtml(winner.card.bank)} • ${escapeHtml(winner.headline)}</p>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <p class="savings-big">₹${winner.savings.toLocaleString('en-IN')}</p>
+                <p class="rate-sub">${winner.effectiveRate}% effective</p>
+              </div>
+            </div>
+            ${winner.note ? `<div class="note-box">${escapeHtml(winner.note)}</div>` : ''}
+            ${winner.promoCode ? `
+              <div class="promo-box">
+                <span>Use Code: <span class="promo-code">${escapeHtml(winner.promoCode)}</span></span>
+                <button type="button" data-copy="${escapeHtml(winner.promoCode)}" class="btn-copy btn-copy-code">Copy</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        if (others.length > 0) {
+          html += `<div class="stack-sm">
+            <span class="label-caps" style="padding:0 4px;">Other ${state.scope === 'mine' ? 'Owned' : 'Catalog'} Cards</span>`;
+          for (const item of others) {
+            html += `
+              <div class="other-card">
+                <div style="min-width:0;">
+                  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                    <span style="font-size:13.5px;font-weight:700;">${escapeHtml(item.card.name)}</span>
+                    ${item.card.isDebit ? '<span class="debit-badge">Debit</span>' : ''}
+                    ${!item.card.owned ? '<span class="catalog-tag">Catalog</span>' : ''}
+                  </div>
+                  <p style="margin:2px 0 0;font-size:11.5px;color:var(--muted);">${escapeHtml(item.headline)}</p>
+                  ${item.promoCode ? `<p style="margin:2px 0 0;font-size:11px;font-family:monospace;color:var(--accent-dark);font-weight:700;">Code: ${escapeHtml(item.promoCode)}</p>` : ''}
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                  <p style="margin:0;font-size:14px;font-weight:800;">₹${item.savings.toLocaleString('en-IN')}</p>
+                  <p style="margin:0;font-size:11px;color:var(--muted);">${item.effectiveRate}%</p>
+                </div>
+              </div>
+            `;
+          }
+          html += `</div>`;
+        }
+
+        resultsContainer.innerHTML = html;
+        resultsContainer.querySelectorAll('.btn-copy-code').forEach(btn => {
+          btn.addEventListener('click', () => copyText(btn.getAttribute('data-copy')));
+        });
+      }
+
+      // -------------------- MULTI-STORE COMPARE & BACKEND FETCH --------------------
+      function getApiBase() {
+        const custom = (state.backendUrl || '').trim().replace(/\/+$/, '');
+        if (window.location.protocol.startsWith('http') && !custom) {
+          return window.location.origin;
+        }
+        return custom || 'http://localhost:3000';
+      }
+
+      async function checkBackendHealth(silent) {
+        const dot = document.getElementById('backend-status-dot');
+        const label = document.getElementById('backend-status-label');
+        try {
+          const resp = await fetch(`${getApiBase()}/api/health`);
+          const data = await resp.json();
+          if (data && data.ok) {
+            dot.classList.add('online');
+            label.textContent = 'API Live';
+            if (!silent) showToast('Connected to Node.js backend!');
+            return true;
+          }
+        } catch (e) {}
+        dot.classList.remove('online');
+        label.textContent = 'Backend';
+        if (!silent) showToast('Backend offline — run npm start locally');
+        return false;
+      }
+
+      async function autoFetchPricesFromBackend() {
+        const raw = compareQueryInput.value.trim();
+        if (!raw) {
+          showToast('Paste an Amazon/Flipkart link or product name first');
+          compareQueryInput.focus();
+          return;
+        }
+
+        const btn = document.getElementById('btn-auto-fetch-prices');
+        const btnText = document.getElementById('fetch-btn-text');
+        btn.disabled = true;
+        btnText.textContent = 'Fetching Live Prices...';
+
+        try {
+          const resp = await fetch(`${getApiBase()}/api/fetch-prices`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              queryOrUrl: raw,
+              serpApiKey: state.serpApiKey || '',
+              scraperApiKey: state.scraperApiKey || ''
+            })
+          });
+          const data = await resp.json();
+          if (data && data.ok && Array.isArray(data.stores) && data.stores.length > 0) {
+            if (data.productTitle) {
+              compareQueryInput.value = data.productTitle;
+              renderCompareLinks();
+            }
+            if (data.originData && Array.isArray(data.originData.bankOffers) && data.originData.bankOffers.length > 0) {
+              scrapedOffersBanner.textContent = 'Detected Offer: ' + data.originData.bankOffers[0];
+              scrapedOffersBanner.classList.remove('hidden');
+            } else {
+              scrapedOffersBanner.classList.add('hidden');
+            }
+            state.compareRows = data.stores.map((s, idx) => ({
+              id: Date.now() + idx,
+              merchantId: s.merchantId || 'amazon',
+              price: Number(s.price) || 0,
+              saleDiscount: Number(s.saleDiscount) || 0
+            }));
+            saveState();
+            renderCompareRows();
+            showToast(`Loaded live prices from ${data.stores.length} stores!`);
+          } else {
+            showToast('No direct prices returned — check API Setup or tap store links');
+          }
+        } catch (err) {
+          showToast('Node.js server not running — tap API Setup or try Instant Demos');
+        } finally {
+          btn.disabled = false;
+          btnText.textContent = 'Auto-Fetch Live Store Prices';
+        }
+      }
+
+      function renderCompareLinks() {
+        const raw = compareQueryInput.value.trim();
+        btnClearCompareQuery.classList.toggle('hidden', raw.length === 0);
+        const parsed = extractSearchTerm(raw);
+        if (parsed.isShortLink) {
+          compareLinksRow.innerHTML = `<span style="font-size:11.5px;color:var(--warn-text);font-weight:600;">Short link detected — tap "Auto-Fetch Live Store Prices" (with Node.js backend) or type the product name above.</span>`;
+          return;
+        }
+        const q = parsed.term || 'OnePlus Nord 6';
+        const enc = encodeURIComponent(q);
+
+        const stores = [
+          { name: 'Amazon.in', url: `https://www.amazon.in/s?k=${enc}` },
+          { name: 'Flipkart', url: `https://www.flipkart.com/search?q=${enc}` },
+          { name: 'Croma', url: `https://www.croma.com/searchB?q=${enc}` },
+          { name: 'Reliance Digital', url: `https://www.reliancedigital.in/search?q=${enc}` },
+          { name: 'Vijay Sales', url: `https://www.vijaysales.com/search/${enc}` },
+          { name: 'Myntra', url: `https://www.myntra.com/${enc.replace(/%20/g, '-')}` },
+          { name: 'Google Shopping', url: `https://www.google.com/search?tbm=shop&q=${enc}` }
+        ];
+
+        compareLinksRow.innerHTML = stores.map(s => `
+          <a href="${s.url}" target="_blank" rel="noopener noreferrer" class="store-link-chip">
+            <span>${escapeHtml(s.name)}</span>
+            <span style="color:var(--accent-dark);">↗</span>
+          </a>
+        `).join('');
+      }
+
+      function renderCompareRows() {
+        const storeOptions = MERCHANTS.filter(m => ['amazon', 'flipkart', 'croma', 'reliancedigital', 'vijaysales', 'myntra', 'ajio', 'tatacliq', 'nykaa', 'swiggy', 'zomato', 'blinkit', 'cleartrip'].includes(m.id));
+        const pool = state.cards.filter(c => c.owned);
+
+        const evaluatedRows = state.compareRows.map(row => {
+          const merchant = MERCHANTS.find(m => m.id === row.merchantId) || MERCHANTS[0];
+          const price = Math.max(0, Number(row.price) || 0);
+          const saleDisc = Math.max(0, Number(row.saleDiscount) || 0);
+          const postSale = Math.max(0, price - saleDisc);
+
+          let bestEval = null;
+          if (postSale > 0 && pool.length > 0) {
+            bestEval = pool
+              .map(card => evaluateCard(card, { ...merchant, hostname: merchant.domains[0] }, postSale))
+              .sort((a, b) => b.savings - a.savings)[0];
+          }
+          const cardCashback = bestEval ? bestEval.savings : 0;
+          const netPrice = Math.max(0, Math.round((postSale - cardCashback) * 100) / 100);
+          return { row, merchant, price, saleDisc, postSale, bestEval, cardCashback, netPrice };
+        });
+
+        compareRowsContainer.innerHTML = evaluatedRows.map(item => `
+          <div class="compare-row" data-row-id="${item.row.id}">
+            <div class="compare-grid">
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px;">Store</label>
+                <select class="form-input cmp-store">
+                  ${storeOptions.map(m => `<option value="${m.id}" ${m.id === item.row.merchantId ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px;">Price (₹)</label>
+                <input type="number" min="0" class="form-input cmp-price" value="${item.price}" />
+              </div>
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px;">Sale / Bank Off (₹)</label>
+                <input type="number" min="0" class="form-input cmp-sale" value="${item.saleDisc}" />
+              </div>
+              <div style="text-align:right;">
+                <button type="button" class="btn-danger-sm cmp-del" ${state.compareRows.length <= 1 ? 'disabled style="opacity:0.4;"' : ''}>Del</button>
+              </div>
+            </div>
+            <div class="row-between" style="padding-top:4px;border-top:1px dashed var(--border);font-size:12px;">
+              <span style="color:var(--muted);">
+                ${item.bestEval ? `Best card: <strong style="color:var(--text);">${escapeHtml(item.bestEval.card.name)}</strong> (−₹${item.cardCashback.toLocaleString('en-IN')})` : 'Add active cards in My Cards'}
+              </span>
+              <span style="font-weight:800;color:var(--accent-dark);">Net: ₹${item.netPrice.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        `).join('');
+
+        compareRowsContainer.querySelectorAll('.compare-row').forEach(el => {
+          const id = Number(el.getAttribute('data-row-id'));
+          const target = state.compareRows.find(r => r.id === id);
+          if (!target) return;
+
+          el.querySelector('.cmp-store').addEventListener('change', e => {
+            target.merchantId = e.target.value;
+            saveState();
+            renderCompareRows();
+          });
+          el.querySelector('.cmp-price').addEventListener('input', e => {
+            target.price = Number(e.target.value) || 0;
+            saveState();
+            renderCompareSummaryOnly();
+          });
+          el.querySelector('.cmp-sale').addEventListener('input', e => {
+            target.saleDiscount = Number(e.target.value) || 0;
+            saveState();
+            renderCompareSummaryOnly();
+          });
+          el.querySelector('.cmp-del').addEventListener('click', () => {
+            if (state.compareRows.length <= 1) return;
+            state.compareRows = state.compareRows.filter(r => r.id !== id);
+            saveState();
+            renderCompareRows();
+          });
+        });
+
+        renderCompareWinner(evaluatedRows);
+      }
+
+      function renderCompareSummaryOnly() {
+        const pool = state.cards.filter(c => c.owned);
+        const evaluatedRows = state.compareRows.map(row => {
+          const merchant = MERCHANTS.find(m => m.id === row.merchantId) || MERCHANTS[0];
+          const price = Math.max(0, Number(row.price) || 0);
+          const saleDisc = Math.max(0, Number(row.saleDiscount) || 0);
+          const postSale = Math.max(0, price - saleDisc);
+          let bestEval = null;
+          if (postSale > 0 && pool.length > 0) {
+            bestEval = pool
+              .map(card => evaluateCard(card, { ...merchant, hostname: merchant.domains[0] }, postSale))
+              .sort((a, b) => b.savings - a.savings)[0];
+          }
+          const cardCashback = bestEval ? bestEval.savings : 0;
+          const netPrice = Math.max(0, Math.round((postSale - cardCashback) * 100) / 100);
+          return { row, merchant, price, saleDisc, postSale, bestEval, cardCashback, netPrice };
+        });
+
+        compareRowsContainer.querySelectorAll('.compare-row').forEach((el, idx) => {
+          const item = evaluatedRows[idx];
+          if (!item) return;
+          const footer = el.querySelector('.row-between');
+          if (footer) {
+            footer.innerHTML = `
+              <span style="color:var(--muted);">
+                ${item.bestEval ? `Best card: <strong style="color:var(--text);">${escapeHtml(item.bestEval.card.name)}</strong> (−₹${item.cardCashback.toLocaleString('en-IN')})` : 'Add active cards in My Cards'}
+              </span>
+              <span style="font-weight:800;color:var(--accent-dark);">Net: ₹${item.netPrice.toLocaleString('en-IN')}</span>
+            `;
+          }
+        });
+
+        renderCompareWinner(evaluatedRows);
+      }
+
+      function renderCompareWinner(evaluatedRows) {
+        const valid = evaluatedRows.filter(x => x.price > 0).sort((a, b) => a.netPrice - b.netPrice);
+        if (valid.length === 0) {
+          compareWinnerContainer.innerHTML = '';
+          return;
+        }
+        const best = valid[0];
+        const totalSaved = Math.round((best.saleDisc + best.cardCashback) * 100) / 100;
+
+        compareWinnerContainer.innerHTML = `
+          <div class="winner-card stack-sm">
+            <div class="row-between" style="align-items:flex-start;">
+              <div>
+                <span class="best-tag">★ Lowest Final Net Price</span>
+                <h3 style="margin:8px 0 2px;font-size:18px;font-weight:800;">Buy on ${escapeHtml(best.merchant.name)}</h3>
+                <p style="margin:0;font-size:12px;color:#475569;font-weight:600;">
+                  Use Card: ${best.bestEval ? escapeHtml(best.bestEval.card.name) : 'Any Card'}
+                </p>
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <p class="savings-big">₹${best.netPrice.toLocaleString('en-IN')}</p>
+                <p class="rate-sub">Total saved: ₹${totalSaved.toLocaleString('en-IN')}</p>
+              </div>
+            </div>
+            <div class="note-box">
+              Listed ₹${best.price.toLocaleString('en-IN')} − Sale/Bank Off ₹${best.saleDisc.toLocaleString('en-IN')} − Card Cashback ₹${best.cardCashback.toLocaleString('en-IN')} = <strong>₹${best.netPrice.toLocaleString('en-IN')}</strong>
+            </div>
+          </div>
+        `;
+      }
+
+      // -------------------- MY CARDS & HISTORY --------------------
+      function renderCardsList() {
+        updateCounts();
+        const query = (cardSearchInput.value || '').trim().toLowerCase();
+        const filtered = state.cards.filter(c =>
+          c.name.toLowerCase().includes(query) || (c.bank || '').toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+          cardsListContainer.innerHTML = `<div class="card" style="text-align:center;font-size:12px;color:var(--muted);">No cards match "${escapeHtml(query)}".</div>`;
+          return;
+        }
+
+        cardsListContainer.innerHTML = filtered.map(card => {
+          const rulesSummary = (card.rules || []).slice(0, 3).map(r => {
+            const label = r.type === 'flat' ? `₹${r.value} off` : `${r.value}%`;
+            return `${r.merchant} (${label})`;
+          }).join(' • ');
+
+          return `
+            <div class="card stack-sm" style="${card.owned ? 'border-color:#6ee7b7;' : ''}">
+              <div class="row-between" style="align-items:flex-start;">
+                <div style="min-width:0;">
+                  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                    <h3 style="margin:0;font-size:14.5px;font-weight:800;">${escapeHtml(card.name)}</h3>
+                    ${card.isDebit ? '<span class="debit-badge">Debit Card</span>' : ''}
+                    ${!card.isPreset ? '<span class="pill-badge">Custom</span>' : ''}
+                  </div>
+                  <p style="margin:2px 0 0;font-size:11.5px;color:var(--muted);">${escapeHtml(card.bank || 'Bank')} • ${escapeHtml(card.fee || '₹0')} • Base ${card.baseOnlineRate}%</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" class="card-own-toggle" data-id="${escapeHtml(card.id)}" ${card.owned ? 'checked' : ''} />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              ${rulesSummary ? `<div class="note-box" style="font-size:11.5px;">${escapeHtml(rulesSummary)}${card.rules.length > 3 ? ` +${card.rules.length - 3} more` : ''}</div>` : ''}
+              <div class="row-between">
+                <div>
+                  ${card.id === 'amazon-pay-icici' ? `
+                    <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#334155;cursor:pointer;">
+                      <input type="checkbox" id="toggle-amazon-prime" ${card.isPrime !== false ? 'checked' : ''} />
+                      <span>Amazon Prime (5% vs 3%)</span>
+                    </label>
+                  ` : ''}
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button type="button" data-edit-id="${escapeHtml(card.id)}" class="btn-outline-sm btn-edit-card">Edit</button>
+                  ${!card.isPreset ? `<button type="button" data-del-id="${escapeHtml(card.id)}" class="btn-danger-sm btn-del-card">Delete</button>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        cardsListContainer.querySelectorAll('.card-own-toggle').forEach(cb => {
+          cb.addEventListener('change', () => {
+            const target = state.cards.find(c => c.id === cb.getAttribute('data-id'));
+            if (target) {
+              target.owned = cb.checked;
+              saveState();
+              renderCardsList();
+              renderResults(false);
+            }
+          });
+        });
+
+        const primeCb = document.getElementById('toggle-amazon-prime');
+        if (primeCb) {
+          primeCb.addEventListener('change', () => {
+            const target = state.cards.find(c => c.id === 'amazon-pay-icici');
+            if (target) {
+              target.isPrime = primeCb.checked;
+              saveState();
+              renderResults(false);
+            }
+          });
+        }
+
+        cardsListContainer.querySelectorAll('.btn-edit-card').forEach(btn => {
+          btn.addEventListener('click', () => openCardModal(btn.getAttribute('data-edit-id')));
+        });
+
+        cardsListContainer.querySelectorAll('.btn-del-card').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-del-id');
+            state.cards = state.cards.filter(c => c.id !== id);
+            saveState();
+            renderCardsList();
+            renderResults(false);
+            showToast('Card removed');
+          });
+        });
+      }
+
+      function renderHistory() {
+        if (state.history.length === 0) {
+          historyListContainer.innerHTML = `<div class="card" style="text-align:center;font-size:12px;color:var(--muted);">No link checks yet. Paste an e-commerce link in Check Link to start.</div>`;
+          return;
+        }
+        historyListContainer.innerHTML = state.history.map(h => `
+          <button type="button" data-url="${escapeHtml(h.url)}" data-amt="${h.amount}" class="other-card history-item" style="width:100%;text-align:left;">
+            <div style="min-width:0;">
+              <p style="margin:0;font-size:13.5px;font-weight:700;">${escapeHtml(h.merchantName)} • ₹${Number(h.amount).toLocaleString('en-IN')}</p>
+              <p style="margin:2px 0 0;font-size:11.5px;color:var(--muted);">Best: ${escapeHtml(h.bestCard)} • ${escapeHtml(h.time)}</p>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <p style="margin:0;font-size:14px;font-weight:800;color:var(--accent-dark);">₹${Number(h.savings).toLocaleString('en-IN')}</p>
+              <p style="margin:0;font-size:11px;color:var(--muted);">${h.effectiveRate}%</p>
+            </div>
+          </button>
+        `).join('');
+
+        historyListContainer.querySelectorAll('.history-item').forEach(btn => {
+          btn.addEventListener('click', () => {
+            urlInput.value = btn.getAttribute('data-url');
+            amountInput.value = btn.getAttribute('data-amt');
+            switchTab('check');
+            renderResults(false);
+          });
+        });
+      }
+
+      function switchTab(tabName) {
+        document.getElementById('view-check').classList.toggle('hidden', tabName !== 'check');
+        document.getElementById('view-compare').classList.toggle('hidden', tabName !== 'compare');
+        document.getElementById('view-cards').classList.toggle('hidden', tabName !== 'cards');
+        document.getElementById('view-history').classList.toggle('hidden', tabName !== 'history');
+
+        document.querySelectorAll('.nav-tab').forEach(t => {
+          t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
+        });
+
+        if (tabName === 'compare') { renderCompareLinks(); renderCompareRows(); }
+        if (tabName === 'cards') renderCardsList();
+        if (tabName === 'history') renderHistory();
+      }
+
+      document.querySelectorAll('.nav-tab').forEach(t => {
+        t.addEventListener('click', () => switchTab(t.getAttribute('data-tab')));
+      });
+      document.getElementById('btn-manage-shortcut').addEventListener('click', () => switchTab('cards'));
+      document.getElementById('btn-send-to-compare').addEventListener('click', () => {
+        if (urlInput.value.trim()) {
+          compareQueryInput.value = urlInput.value.trim();
+        }
+        switchTab('compare');
+      });
+
+      // Backend Modal events
+      function openBackendModal() {
+        document.getElementById('cfg-backend-url').value = state.backendUrl || 'http://localhost:3000';
+        document.getElementById('cfg-serp-key').value = state.serpApiKey || '';
+        document.getElementById('cfg-scraper-key').value = state.scraperApiKey || '';
+        modalBackend.classList.remove('hidden');
+      }
+      function closeBackendModal() { modalBackend.classList.add('hidden'); }
+      document.getElementById('btn-api-settings').addEventListener('click', openBackendModal);
+      document.getElementById('btn-open-backend-cfg').addEventListener('click', openBackendModal);
+      document.getElementById('btn-close-backend').addEventListener('click', closeBackendModal);
+      document.getElementById('btn-test-backend').addEventListener('click', () => {
+        state.backendUrl = document.getElementById('cfg-backend-url').value.trim() || 'http://localhost:3000';
+        checkBackendHealth(false);
+      });
+      document.getElementById('btn-save-backend').addEventListener('click', () => {
+        state.backendUrl = document.getElementById('cfg-backend-url').value.trim() || 'http://localhost:3000';
+        state.serpApiKey = document.getElementById('cfg-serp-key').value.trim();
+        state.scraperApiKey = document.getElementById('cfg-scraper-key').value.trim();
+        saveState();
+        closeBackendModal();
+        checkBackendHealth(false);
+      });
+
+      function addRuleRow(rule = {}) {
+        const row = document.createElement('div');
+        row.className = 'rule-row';
+        row.innerHTML = `
+          <div class="rule-grid-top">
+            <input type="text" class="form-input rule-merchant" placeholder="Merchant (e.g. amazon)" value="${escapeHtml(rule.merchant || '')}" />
+            <select class="form-input rule-type">
+              <option value="percent" ${rule.type !== 'flat' ? 'selected' : ''}>% Cashback</option>
+              <option value="flat" ${rule.type === 'flat' ? 'selected' : ''}>Flat ₹ Off</option>
+            </select>
+            <input type="number" step="0.1" min="0" class="form-input rule-value" placeholder="Val" value="${rule.value !== undefined ? rule.value : 5}" />
+          </div>
+          <div class="rule-grid-bot">
+            <input type="number" min="0" class="form-input rule-min" placeholder="Min ₹" value="${rule.minOrder || ''}" />
+            <input type="number" min="0" class="form-input rule-cap" placeholder="Cap ₹" value="${rule.cap || ''}" />
+            <input type="text" class="form-input rule-code" placeholder="Promo code" value="${escapeHtml(rule.code || '')}" />
+            <button type="button" class="btn-danger-sm btn-rm-rule">Del</button>
+          </div>
+        `;
+        row.querySelector('.btn-rm-rule').addEventListener('click', () => row.remove());
+        customRulesContainer.appendChild(row);
+      }
+
+      function openCardModal(editId) {
+        const title = document.getElementById('modal-card-title');
+        const idField = document.getElementById('edit-card-id');
+        customRulesContainer.innerHTML = '';
+
+        if (editId) {
+          const card = state.cards.find(c => c.id === editId);
+          if (!card) return;
+          title.textContent = 'Edit Card';
+          idField.value = card.id;
+          document.getElementById('cc-name').value = card.name;
+          document.getElementById('cc-bank').value = card.bank || '';
+          document.getElementById('cc-base-rate').value = card.baseOnlineRate ?? 1;
+          document.getElementById('cc-base-cap').value = card.baseCap ?? 0;
+          document.getElementById('cc-fee').value = card.fee || '₹0';
+          (card.rules || []).forEach(r => addRuleRow(r));
+        } else {
+          title.textContent = 'Add Custom Card';
+          idField.value = '';
+          document.getElementById('cc-name').value = '';
+          document.getElementById('cc-bank').value = '';
+          document.getElementById('cc-base-rate').value = 1;
+          document.getElementById('cc-base-cap').value = 0;
+          document.getElementById('cc-fee').value = '₹0';
+          addRuleRow({ merchant: 'amazon', type: 'percent', value: 5 });
+        }
+
+        modalCard.classList.remove('hidden');
+      }
+
+      function closeCardModal() { modalCard.classList.add('hidden'); }
+      document.getElementById('btn-add-card').addEventListener('click', () => openCardModal(null));
+      document.getElementById('btn-close-card-modal').addEventListener('click', closeCardModal);
+      document.getElementById('btn-cancel-card-modal').addEventListener('click', closeCardModal);
+      document.getElementById('btn-add-rule-row').addEventListener('click', () => addRuleRow());
+
+      document.getElementById('form-custom-card').addEventListener('submit', e => {
+        e.preventDefault();
+        const editId = document.getElementById('edit-card-id').value;
+        const name = document.getElementById('cc-name').value.trim();
+        if (!name) return;
+
+        const rules = [];
+        customRulesContainer.querySelectorAll('.rule-row').forEach(row => {
+          const merchant = row.querySelector('.rule-merchant').value.trim().toLowerCase();
+          if (!merchant) return;
+          const type = row.querySelector('.rule-type').value;
+          const value = Number(row.querySelector('.rule-value').value) || 0;
+          const minOrder = Number(row.querySelector('.rule-min').value) || 0;
+          const cap = Number(row.querySelector('.rule-cap').value) || 0;
+          const code = row.querySelector('.rule-code').value.trim();
+          rules.push({
+            merchant, type, value, minOrder, cap, code,
+            note: `${type === 'flat' ? `Flat ₹${value} off` : `${value}% cashback`}${minOrder ? ` on min ₹${minOrder}` : ''}${cap ? ` (cap ₹${cap})` : ''}`
+          });
+        });
+
+        if (editId) {
+          const existing = state.cards.find(c => c.id === editId);
+          if (existing) {
+            existing.name = name;
+            existing.bank = document.getElementById('cc-bank').value.trim() || 'Bank';
+            existing.baseOnlineRate = Number(document.getElementById('cc-base-rate').value) || 0;
+            existing.baseCap = Number(document.getElementById('cc-base-cap').value) || 0;
+            existing.fee = document.getElementById('cc-fee').value.trim() || '₹0';
+            existing.rules = rules;
+          }
+          showToast('Card updated');
+        } else {
+          state.cards.unshift({
+            id: 'custom-' + Date.now(),
+            name,
+            bank: document.getElementById('cc-bank').value.trim() || 'Custom Bank',
+            fee: document.getElementById('cc-fee').value.trim() || '₹0',
+            isPreset: false,
+            owned: true,
+            baseOnlineRate: Number(document.getElementById('cc-base-rate').value) || 0,
+            baseCap: Number(document.getElementById('cc-base-cap').value) || 0,
+            rules
+          });
+          showToast('Custom card added & enabled');
+        }
+
+        saveState();
+        closeCardModal();
+        renderCardsList();
+        renderResults(false);
+      });
+
+      document.getElementById('btn-bulk-import').addEventListener('click', () => {
+        document.getElementById('import-textarea').value = '';
+        modalImport.classList.remove('hidden');
+      });
+      function closeImportModal() { modalImport.classList.add('hidden'); }
+      document.getElementById('btn-close-import').addEventListener('click', closeImportModal);
+      document.getElementById('btn-cancel-import').addEventListener('click', closeImportModal);
+
+      document.getElementById('btn-apply-import').addEventListener('click', () => {
+        const raw = document.getElementById('import-textarea').value.trim();
+        if (!raw) { showToast('Paste card names or JSON first'); return; }
+
+        if (raw.startsWith('[') || raw.startsWith('{')) {
+          try {
+            const parsed = JSON.parse(raw);
+            const arr = Array.isArray(parsed) ? parsed : (parsed.cards || []);
+            if (Array.isArray(arr) && arr.length > 0) {
+              state.cards = arr;
+              saveState();
+              closeImportModal();
+              renderCardsList();
+              renderResults(false);
+              showToast(`Imported ${arr.length} cards from JSON`);
+              return;
+            }
+          } catch (e) {}
+        }
+
+        const names = raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+        let matched = 0, created = 0;
+
+        names.forEach(n => {
+          const lower = n.toLowerCase();
+          const existing = state.cards.find(c =>
+            c.name.toLowerCase().includes(lower) || lower.includes(c.name.toLowerCase().split(' ')[0] + ' ' + (c.name.toLowerCase().split(' ')[1] || ''))
+          );
+          if (existing) {
+            existing.owned = true;
+            matched++;
+          } else {
+            state.cards.unshift({
+              id: 'custom-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+              name: n,
+              bank: n.split(' ')[0] || 'Custom',
+              fee: '₹0',
+              isPreset: false,
+              owned: true,
+              baseOnlineRate: 1,
+              baseCap: 0,
+              rules: []
+            });
+            created++;
+          }
+        });
+
+        saveState();
+        closeImportModal();
+        renderCardsList();
+        renderResults(false);
+        showToast(`Enabled ${matched} preset, added ${created} custom`);
+      });
+
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => showToast(`Copied: ${text}`)).catch(() => fallbackCopy(text));
+        } else {
+          fallbackCopy(text);
+        }
+      }
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showToast('Copied to clipboard'); } catch (e) { showToast('Copy failed'); }
+        document.body.removeChild(ta);
+      }
+
+      document.getElementById('btn-export-cards').addEventListener('click', () => {
+        copyText(JSON.stringify(state.cards, null, 2));
+        showToast('Card list JSON copied');
+      });
+
+      document.getElementById('btn-install-tip').addEventListener('click', () => modalInstall.classList.remove('hidden'));
+      function closeInstall() { modalInstall.classList.add('hidden'); }
+      document.getElementById('btn-close-install').addEventListener('click', closeInstall);
+      document.getElementById('btn-ok-install').addEventListener('click', closeInstall);
+
+      let debounceTimer = null;
+      urlInput.addEventListener('input', () => {
+        renderResults(false);
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => { if (urlInput.value.trim()) renderResults(true); }, 700);
+      });
+      amountInput.addEventListener('input', () => renderResults(false));
+
+      btnClearUrl.addEventListener('click', () => {
+        urlInput.value = '';
+        renderResults(false);
+        urlInput.focus();
+      });
+
+      btnPasteUrl.addEventListener('click', async () => {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          try {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              urlInput.value = text.trim();
+              renderResults(true);
+              showToast('Link pasted');
+              return;
+            }
+          } catch (e) {}
+        }
+        urlInput.focus();
+        showToast('Tap input & paste your link');
+      });
+
+      // Compare events
+      compareQueryInput.addEventListener('input', renderCompareLinks);
+      btnClearCompareQuery.addEventListener('click', () => {
+        compareQueryInput.value = '';
+        scrapedOffersBanner.classList.add('hidden');
+        renderCompareLinks();
+        compareQueryInput.focus();
+      });
+      document.getElementById('btn-paste-compare').addEventListener('click', async () => {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          try {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              compareQueryInput.value = text.trim();
+              renderCompareLinks();
+              autoFetchPricesFromBackend();
+              return;
+            }
+          } catch (e) {}
+        }
+        compareQueryInput.focus();
+        showToast('Tap input & paste link or name');
+      });
+      document.getElementById('btn-auto-fetch-prices').addEventListener('click', autoFetchPricesFromBackend);
+
+      document.querySelectorAll('.preset-product-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-preset');
+          const preset = PRODUCT_PRESETS[key];
+          if (!preset) return;
+          compareQueryInput.value = preset.title;
+          scrapedOffersBanner.textContent = preset.offerBanner;
+          scrapedOffersBanner.classList.remove('hidden');
+          state.compareRows = JSON.parse(JSON.stringify(preset.rows));
+          saveState();
+          renderCompareLinks();
+          renderCompareRows();
+          showToast(`Loaded ${preset.title}`);
+        });
+      });
+
+      document.getElementById('btn-add-compare-store').addEventListener('click', () => {
+        state.compareRows.push({ id: Date.now(), merchantId: 'reliancedigital', price: 0, saleDiscount: 0 });
+        saveState();
+        renderCompareRows();
+      });
+
+      document.querySelectorAll('.sample-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          urlInput.value = btn.getAttribute('data-sample');
+          renderResults(true);
+        });
+      });
+
+      document.querySelectorAll('.amt-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          amountInput.value = btn.getAttribute('data-amt');
+          renderResults(false);
+        });
+      });
+
+      scopeMineBtn.addEventListener('click', () => { state.scope = 'mine'; saveState(); renderResults(false); });
+      scopeAllBtn.addEventListener('click', () => { state.scope = 'all'; saveState(); renderResults(false); });
+      cardSearchInput.addEventListener('input', renderCardsList);
+
+      document.getElementById('btn-clear-history').addEventListener('click', () => {
+        state.history = [];
+        saveState();
+        renderHistory();
+        showToast('History cleared');
+      });
+
+
+      // -------------------- 1-TAP GITHUB AUTO-PUSH --------------------
+      const modalGithub = document.getElementById('modal-github');
+      const ghStatusBox = document.getElementById('gh-status-box');
+      document.getElementById('btn-open-github').addEventListener('click', () => {
+        modalGithub.classList.remove('hidden');
+      });
+      function closeGithubModal() { modalGithub.classList.add('hidden'); }
+      document.getElementById('btn-close-github').addEventListener('click', closeGithubModal);
+      document.getElementById('btn-cancel-github').addEventListener('click', closeGithubModal);
+
+      function toBase64Utf8(str) {
+        return btoa(unescape(encodeURIComponent(str)));
+      }
+
+      document.getElementById('btn-run-github-push').addEventListener('click', async () => {
+        const token = document.getElementById('gh-token-input').value.trim();
+        const repoName = (document.getElementById('gh-repo-input').value.trim() || 'cardpick-fullstack').replace(/[^a-zA-Z0-9._-]/g, '-');
+        if (!token) {
+          showToast('Paste your GitHub token first');
+          return;
+        }
+        const btn = document.getElementById('btn-run-github-push');
+        btn.disabled = true;
+        btn.textContent = 'Pushing to GitHub...';
+        ghStatusBox.classList.remove('hidden');
+        ghStatusBox.innerHTML = 'Authenticating with GitHub...';
+
+        const headers = {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        };
+
+        try {
+          const userResp = await fetch('https://api.github.com/user', { headers });
+          if (!userResp.ok) throw new Error('Invalid GitHub token (check repo scope)');
+          const userData = await userResp.json();
+          const owner = userData.login;
+
+          ghStatusBox.innerHTML = `Creating repository <strong>${owner}/${repoName}</strong>...`;
+          await fetch('https://api.github.com/user/repos', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              name: repoName,
+              description: 'CardPick Pro — Multi-Store Price & Credit Card Optimizer',
+              private: false,
+              auto_init: true
+            })
+          });
+
+          const filesToPush = [
+            { path: 'package.json', content: "{\n  \"name\": \"cardpick-fullstack\",\n  \"version\": \"2.0.0\",\n  \"description\": \"Production-ready Multi-Store Price & Credit Card Cashback Optimizer with Node.js Express backend and PWA support\",\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"start\": \"node server.js\",\n    \"dev\": \"node --watch server.js\"\n  },\n  \"dependencies\": {\n    \"axios\": \"^1.7.7\",\n    \"cheerio\": \"^1.0.0\",\n    \"cors\": \"^2.8.5\",\n    \"express\": \"^4.21.1\"\n  },\n  \"engines\": {\n    \"node\": \">=18.0.0\"\n  }\n}\n" },
+            { path: 'server.js', content: "const express = require('express');\nconst cors = require('cors');\nconst axios = require('axios');\nconst cheerio = require('cheerio');\nconst path = require('path');\n\nconst app = express();\nconst PORT = process.env.PORT || 3000;\nconst SERPAPI_KEY = process.env.SERPAPI_KEY || '';\nconst SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY || '';\n\napp.use(cors());\napp.use(express.json());\napp.use(express.static(path.join(__dirname, 'public')));\n\n// Standard desktop browser headers to minimize blocks\nconst BROWSER_HEADERS = {\n  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',\n  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',\n  'Accept-Language': 'en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',\n  'Cache-Control': 'no-cache'\n};\n\nfunction buildFetchUrl(targetUrl, apiKey) {\n  const key = apiKey || SCRAPERAPI_KEY;\n  if (key) {\n    return `https://api.scraperapi.com/?api_key=${encodeURIComponent(key)}&url=${encodeURIComponent(targetUrl)}&country_code=in`;\n  }\n  return targetUrl;\n}\n\nfunction parsePriceNumber(raw) {\n  if (!raw) return 0;\n  const cleaned = String(raw).replace(/[^0-9.]/g, '');\n  const num = parseFloat(cleaned);\n  return Number.isFinite(num) && num > 0 ? Math.round(num) : 0;\n}\n\nfunction detectStoreId(hostname) {\n  const h = (hostname || '').toLowerCase();\n  if (h.includes('amazon') || h.includes('amzn')) return { id: 'amazon', name: 'Amazon India' };\n  if (h.includes('flipkart') || h.includes('fkrt')) return { id: 'flipkart', name: 'Flipkart' };\n  if (h.includes('croma')) return { id: 'croma', name: 'Croma' };\n  if (h.includes('reliancedigital')) return { id: 'reliancedigital', name: 'Reliance Digital' };\n  if (h.includes('vijaysales')) return { id: 'vijaysales', name: 'Vijay Sales' };\n  if (h.includes('myntra')) return { id: 'myntra', name: 'Myntra' };\n  if (h.includes('ajio')) return { id: 'ajio', name: 'AJIO' };\n  if (h.includes('tatacliq')) return { id: 'tatacliq', name: 'Tata CLiQ' };\n  if (h.includes('nykaa')) return { id: 'nykaa', name: 'Nykaa' };\n  return { id: 'other', name: h.replace(/^www\\./, '') || 'Online Store' };\n}\n\nfunction extractTitleFromSlug(urlStr) {\n  try {\n    const u = new URL(urlStr);\n    const stop = new Set(['dp', 'p', 's', 'gp', 'd', 'product', 'buy', 'shop', 'ref', 'itm']);\n    const parts = u.pathname.split('/').filter(p => {\n      if (!p) return false;\n      if (stop.has(p.toLowerCase())) return false;\n      if (/^[A-Z0-9]{10}$/.test(p)) return false;\n      if (/^itm[a-z0-9]+$/i.test(p)) return false;\n      if (/^\\d+$/.test(p)) return false;\n      return true;\n    });\n    if (parts.length > 0) {\n      const longest = parts.sort((a, b) => b.length - a.length)[0];\n      return decodeURIComponent(longest).replace(/[-_+]+/g, ' ').trim();\n    }\n  } catch (e) {}\n  return '';\n}\n\nasync function resolveAndExtractOriginProduct(inputUrl, scraperKey) {\n  let finalUrl = inputUrl;\n  let html = '';\n\n  try {\n    const resp = await axios.get(buildFetchUrl(inputUrl, scraperKey), {\n      headers: BROWSER_HEADERS,\n      maxRedirects: 5,\n      timeout: 12000\n    });\n    html = typeof resp.data === 'string' ? resp.data : '';\n    if (resp.request && resp.request.res && resp.request.res.responseUrl && !scraperKey) {\n      finalUrl = resp.request.res.responseUrl;\n    }\n  } catch (err) {\n    // Fallback to slug extraction if blocked\n  }\n\n  let hostname = '';\n  try { hostname = new URL(finalUrl).hostname; } catch (e) {}\n  const storeInfo = detectStoreId(hostname);\n\n  let title = '';\n  let price = 0;\n  let bankOffers = [];\n\n  if (html) {\n    const $ = cheerio.load(html);\n\n    // 1. JSON-LD Product schema\n    $('script[type=\"application/ld+json\"]').each((_, el) => {\n      try {\n        const data = JSON.parse($(el).html());\n        const items = Array.isArray(data) ? data : (data['@graph'] || [data]);\n        for (const item of items) {\n          if (item && (item['@type'] === 'Product' || item['@type'] === 'Book')) {\n            if (!title && item.name) title = String(item.name).trim();\n            const offers = Array.isArray(item.offers) ? item.offers[0] : item.offers;\n            if (!price && offers && (offers.price || offers.lowPrice)) {\n              price = parsePriceNumber(offers.price || offers.lowPrice);\n            }\n          }\n        }\n      } catch (e) {}\n    });\n\n    // 2. Store-specific DOM selectors (Amazon / Flipkart / Croma / Meta tags)\n    if (!title) {\n      title = $('#productTitle').text().trim() ||\n              $('span.VU-ZEz').text().trim() ||\n              $('h1.pd-title').text().trim() ||\n              $('meta[property=\"og:title\"]').attr('content') ||\n              $('title').text().trim();\n    }\n\n    if (!price) {\n      const amzWhole = $('.a-price.priceToPay .a-price-whole, #corePriceDisplay_desktop_feature_div .a-price-whole, #corePrice_feature_div .a-price-whole').first().text();\n      const fkPrice = $('div.Nx9bqj.CxhGGd, div._30jeq3._16Jk6d').first().text();\n      const metaPrice = $('meta[property=\"product:price:amount\"], meta[property=\"og:price:amount\"]').attr('content');\n      price = parsePriceNumber(amzWhole) || parsePriceNumber(fkPrice) || parsePriceNumber(metaPrice);\n    }\n\n    // 3. Extract visible bank offer / sale snippets\n    $('.offers-items-content, .vsx-offers-count, .WT_R32, ._3j4Zjq, .bank-offer').each((_, el) => {\n      const t = $(el).text().replace(/\\s+/g, ' ').trim();\n      if (t && t.length > 10 && t.length < 180 && bankOffers.length < 4) {\n        bankOffers.push(t);\n      }\n    });\n  }\n\n  if (!title) {\n    title = extractTitleFromSlug(finalUrl) || extractTitleFromSlug(inputUrl) || inputUrl;\n  }\n  title = title.replace(/\\s*[:|\u2013-]\\s*(Amazon\\.in|Flipkart\\.com|Buy Online.*).*$/i, '').trim();\n\n  return {\n    title,\n    originStore: storeInfo,\n    originPrice: price,\n    originUrl: finalUrl,\n    bankOffers\n  };\n}\n\nasync function searchStorePrices(productTitle, serpApiKey, scraperKey) {\n  const cleanTitle = (productTitle || '').split(/[(|,]/)[0].trim().slice(0, 90);\n  if (!cleanTitle) return [];\n\n  const results = [];\n  const activeSerpKey = serpApiKey || SERPAPI_KEY;\n\n  // Route A: SerpApi Google Shopping India (if API key provided)\n  if (activeSerpKey) {\n    try {\n      const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(cleanTitle)}&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;\n      const resp = await axios.get(serpUrl, { timeout: 12000 });\n      const shopping = (resp.data && resp.data.shopping_results) || [];\n      for (const item of shopping) {\n        const source = (item.source || '').toLowerCase();\n        const price = parsePriceNumber(item.extracted_price || item.price);\n        if (!price) continue;\n\n        let merchantId = '';\n        let storeName = item.source;\n        if (source.includes('amazon')) { merchantId = 'amazon'; storeName = 'Amazon India'; }\n        else if (source.includes('flipkart')) { merchantId = 'flipkart'; storeName = 'Flipkart'; }\n        else if (source.includes('croma')) { merchantId = 'croma'; storeName = 'Croma'; }\n        else if (source.includes('reliance')) { merchantId = 'reliancedigital'; storeName = 'Reliance Digital'; }\n        else if (source.includes('vijay sales')) { merchantId = 'vijaysales'; storeName = 'Vijay Sales'; }\n        else if (source.includes('myntra')) { merchantId = 'myntra'; storeName = 'Myntra'; }\n        else if (source.includes('ajio')) { merchantId = 'ajio'; storeName = 'AJIO'; }\n        else if (source.includes('tata cliq') || source.includes('tatacliq')) { merchantId = 'tatacliq'; storeName = 'Tata CLiQ'; }\n        else if (source.includes('nykaa')) { merchantId = 'nykaa'; storeName = 'Nykaa'; }\n\n        if (merchantId && !results.some(r => r.merchantId === merchantId)) {\n          results.push({\n            merchantId,\n            storeName,\n            price,\n            saleDiscount: 0,\n            productTitle: item.title,\n            url: item.link || item.product_link || '',\n            delivery: item.delivery || ''\n          });\n        }\n      }\n      if (results.length > 0) return results;\n    } catch (e) {}\n  }\n\n  // Route B: Concurrent direct search across Amazon.in, Flipkart, and Croma\n  const enc = encodeURIComponent(cleanTitle);\n  const targets = [\n    {\n      merchantId: 'amazon',\n      storeName: 'Amazon India',\n      searchUrl: `https://www.amazon.in/s?k=${enc}`,\n      parse: ($) => {\n        const first = $('div[data-component-type=\"s-search-result\"]').first();\n        const price = parsePriceNumber(first.find('.a-price-whole').first().text());\n        const title = first.find('h2 span').first().text().trim();\n        const href = first.find('h2 a').attr('href');\n        return price ? { price, productTitle: title, url: href ? `https://www.amazon.in${href}` : `https://www.amazon.in/s?k=${enc}` } : null;\n      }\n    },\n    {\n      merchantId: 'flipkart',\n      storeName: 'Flipkart',\n      searchUrl: `https://www.flipkart.com/search?q=${enc}`,\n      parse: ($) => {\n        const priceText = $('div.Nx9bqj, div._30jeq3').first().text();\n        const price = parsePriceNumber(priceText);\n        const title = $('div.KzDlHZ, a.wjcEIp, div._4rR01T').first().text().trim();\n        return price ? { price, productTitle: title || cleanTitle, url: `https://www.flipkart.com/search?q=${enc}` } : null;\n      }\n    },\n    {\n      merchantId: 'croma',\n      storeName: 'Croma',\n      searchUrl: `https://www.croma.com/searchB?q=${enc}`,\n      parse: ($) => {\n        const priceText = $('span.amount').first().text();\n        const price = parsePriceNumber(priceText);\n        const title = $('h3.product-title').first().text().trim();\n        return price ? { price, productTitle: title || cleanTitle, url: `https://www.croma.com/searchB?q=${enc}` } : null;\n      }\n    }\n  ];\n\n  await Promise.allSettled(targets.map(async (t) => {\n    try {\n      const resp = await axios.get(buildFetchUrl(t.searchUrl, scraperKey), {\n        headers: BROWSER_HEADERS,\n        timeout: 10000\n      });\n      const $ = cheerio.load(resp.data || '');\n      const parsed = t.parse($);\n      if (parsed && parsed.price > 0) {\n        results.push({\n          merchantId: t.merchantId,\n          storeName: t.storeName,\n          price: parsed.price,\n          saleDiscount: 0,\n          productTitle: parsed.productTitle,\n          url: parsed.url\n        });\n      }\n    } catch (e) {}\n  }));\n\n  return results;\n}\n\n// Health check\napp.get('/api/health', (req, res) => {\n  res.json({\n    ok: true,\n    service: 'CardPick Multi-Store Price & Card Backend',\n    hasSerpApi: Boolean(SERPAPI_KEY),\n    hasScraperApi: Boolean(SCRAPERAPI_KEY)\n  });\n});\n\n// Main endpoint: POST /api/fetch-prices\napp.post('/api/fetch-prices', async (req, res) => {\n  try {\n    const { queryOrUrl, serpApiKey, scraperApiKey } = req.body || {};\n    if (!queryOrUrl || !String(queryOrUrl).trim()) {\n      return res.status(400).json({ ok: false, error: 'Provide a product URL or product name' });\n    }\n\n    const input = String(queryOrUrl).trim();\n    const isUrl = /^https?:\\/\\//i.test(input) || /\\.(in|com|co)\\//i.test(input);\n\n    let productTitle = input;\n    let originData = null;\n\n    if (isUrl) {\n      const normalizedUrl = /^https?:\\/\\//i.test(input) ? input : `https://${input}`;\n      originData = await resolveAndExtractOriginProduct(normalizedUrl, scraperApiKey);\n      if (originData && originData.title) {\n        productTitle = originData.title;\n      }\n    }\n\n    const stores = await searchStorePrices(productTitle, serpApiKey, scraperApiKey);\n\n    // Ensure origin store price is included if scraped directly from product URL\n    if (originData && originData.originPrice > 0 && originData.originStore.id !== 'other') {\n      const existing = stores.find(s => s.merchantId === originData.originStore.id);\n      if (!existing) {\n        stores.unshift({\n          merchantId: originData.originStore.id,\n          storeName: originData.originStore.name,\n          price: originData.originPrice,\n          saleDiscount: 0,\n          productTitle: originData.title,\n          url: originData.originUrl\n        });\n      }\n    }\n\n    return res.json({\n      ok: true,\n      productTitle,\n      originData,\n      stores\n    });\n  } catch (err) {\n    return res.status(500).json({\n      ok: false,\n      error: err.message || 'Failed to fetch multi-store prices'\n    });\n  }\n});\n\napp.listen(PORT, () => {\n  console.log(`CardPick Full-Stack Server running on http://localhost:${PORT}`);\n});\n" },
+            { path: 'README.md', content: "# CardPick Full-Stack (Node.js + Express + PWA)\n\nCardPick is a mobile-first Progressive Web App (PWA) and Node.js backend that:\n1. **Resolves any pasted e-commerce link** (including shortlinks like `amzn.in` and `fkrt.it`) and extracts the product title, price, and visible bank offers.\n2. **Automatically fetches multi-store prices** across Amazon.in, Flipkart, Croma, Reliance Digital, Vijay Sales, Myntra, AJIO, Tata CLiQ, and Nykaa (via direct scraping or SerpApi Google Shopping India).\n3. **Calculates the lowest net price** across all stores using your 12 credit cards + 1 debit card (`HDFC Millennia Debit Card`).\n4. **Installs as a native-like app on Android** (`Add to Home screen` / `Install app`) via `manifest.json` and Service Worker (`sw.js`).\n\n## Quick Start (Local PC / Termux on Android)\n\n```bash\nnpm install\nnpm start\n```\n\nOpen `http://localhost:3000` in Chrome.\n\n## Optional Environment Variables (For 100% Captcha-Free Live Prices)\n\nAmazon and Flipkart occasionally rate-limit server IPs. For rock-solid accuracy across all Indian stores, you can pass a free-tier **SerpApi** key (Google Shopping India) or **ScraperAPI** key either in the app's **Backend Settings** modal or via environment variables:\n\n```bash\nSERPAPI_KEY=your_serpapi_key SCRAPERAPI_KEY=your_scraperapi_key npm start\n```\n\n## Free 1-Click Cloud Hosting (For Android \"Add to Home Screen\")\n\n1. Push this folder to a GitHub repository.\n2. Connect the repository on **Render.com** (New \u2192 Web Service):\n   - **Build Command:** `npm install`\n   - **Start Command:** `npm start`\n3. Open your `https://your-app.onrender.com` URL in Chrome on your OnePlus phone and tap **\u22ee \u2192 Install app / Add to Home screen**.\n" },
+            { path: 'public/manifest.json', content: "{\n  \"name\": \"CardPick \u2014 Price & Card Optimizer\",\n  \"short_name\": \"CardPick\",\n  \"description\": \"Paste any e-commerce link to fetch prices across stores and find your best credit card cashback.\",\n  \"start_url\": \"/\",\n  \"display\": \"standalone\",\n  \"background_color\": \"#f1f5f9\",\n  \"theme_color\": \"#059669\",\n  \"icons\": [\n    {\n      \"src\": \"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%23059669'/%3E%3Crect x='28' y='52' width='136' height='88' rx='14' fill='none' stroke='%23fff' stroke-width='12'/%3E%3Cpath d='M28 84h136M52 116h32' stroke='%23fff' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E\",\n      \"sizes\": \"192x192\",\n      \"type\": \"image/svg+xml\",\n      \"purpose\": \"any maskable\"\n    }\n  ]\n}\n" },
+            { path: 'public/sw.js', content: "const CACHE_NAME = 'cardpick-pwa-v2';\nconst ASSETS = ['/', '/index.html', '/manifest.json'];\n\nself.addEventListener('install', (event) => {\n  event.waitUntil(\n    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())\n  );\n});\n\nself.addEventListener('activate', (event) => {\n  event.waitUntil(self.clients.claim());\n});\n\nself.addEventListener('fetch', (event) => {\n  if (event.request.method !== 'GET' || event.request.url.includes('/api/')) return;\n  event.respondWith(\n    fetch(event.request).catch(() => caches.match(event.request))\n  );\n});\n" },
+            { path: 'public/index.html', content: '<!DOCTYPE html>\n' + document.documentElement.outerHTML }
+          ];
+
+          for (const f of filesToPush) {
+            ghStatusBox.innerHTML = `Uploading <code>${f.path}</code>...`;
+            let sha = undefined;
+            try {
+              const getR = await fetch(`https://api.github.com/repos/${owner}/${repoName}/contents/${f.path}`, { headers });
+              if (getR.ok) {
+                const ex = await getR.json();
+                sha = ex.sha;
+              }
+            } catch (e) {}
+
+            const putR = await fetch(`https://api.github.com/repos/${owner}/${repoName}/contents/${f.path}`, {
+              method: 'PUT',
+              headers,
+              body: JSON.stringify({
+                message: `Deploy ${f.path} via CardPick 1-Tap Push`,
+                content: toBase64Utf8(f.content),
+                ...(sha ? { sha } : {})
+              })
+            });
+            if (!putR.ok) throw new Error(`Failed to upload ${f.path}`);
+          }
+
+          const repoUrl = `https://github.com/${owner}/${repoName}`;
+          const renderUrl = `https://dashboard.render.com/select-repo?type=web`;
+          ghStatusBox.innerHTML = `
+            <div style="color:#047857;font-weight:700;margin-bottom:6px;">✅ All 6 files pushed to GitHub!</div>
+            <div style="margin-bottom:6px;">Repo: <a href="${repoUrl}" target="_blank" rel="noopener noreferrer" style="color:#0284c7;font-weight:700;">${repoUrl} ↗</a></div>
+            <div>Next: <a href="${renderUrl}" target="_blank" rel="noopener noreferrer" style="color:#059669;font-weight:800;">Tap here to connect &amp; deploy on Render.com ↗</a></div>
+          `;
+          showToast('Pushed to GitHub!');
+        } catch (err) {
+          ghStatusBox.innerHTML = `<span style="color:var(--danger);font-weight:700;">Error: ${escapeHtml(err.message)}</span>`;
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Push All Files Now';
+        }
+      });
+
+      loadState();
+      renderResults(false);
+      checkBackendHealth(true);
+    })();
+  </script>
+
+</body></html>
