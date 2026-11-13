@@ -1,0 +1,19 @@
+{
+  "name": "cardpick-fullstack",
+  "version": "2.0.0",
+  "description": "Production-ready Multi-Store Price & Credit Card Cashback Optimizer with Node.js Express backend and PWA support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
