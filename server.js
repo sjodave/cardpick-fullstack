@@ -13,15 +13,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const BROWSER_HEADERS = {
+const DESKTOP_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
   'Accept-Language': 'en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
   'Cache-Control': 'no-cache'
 };
 
-const MOBILE_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Linux; Android 14; CPH2613) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+const BOT_PREVIEW_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (compatible; WhatsApp/2.23.20.0; +http://www.whatsapp.com/)',
   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   'Accept-Language': 'en-IN,en-US;q=0.9,en;q=0.8'
 };
@@ -34,62 +34,96 @@ function buildFetchUrl(targetUrl, apiKey) {
   return targetUrl;
 }
 
+// Extract clean product URL from messy share text (e.g. "Take a look at this ... on Flipkart https://dl.flipkart.com/s/...")
+function extractCleanUrlFromText(raw) {
+  const str = String(raw || '').trim();
+  const urlMatch = str.match(/https?:\/\/[^\s"'<>]+/i);
+  if (urlMatch) {
+    return urlMatch[0].replace(/[.,;!?)]+$/, '');
+  }
+  const bareMatch = str.match(/\b(?:(?:www|dl)\.)?(?:amazon\.in|amzn\.in|amzn\.to|flipkart\.com|fkrt\.it|fkrt\.cc|croma\.com|reliancedigital\.in|vijaysales\.com|myntra\.com|myntr\.it|ajio\.com|tatacliq\.com|nykaa\.com)\/[^\s"'<>]*/i);
+  if (bareMatch) {
+    return 'https://' + bareMatch[0].replace(/[.,;!?)]+$/, '');
+  }
+  return '';
+}
+
 function parsePriceNumber(raw) {
-  if (!raw) return 0;
+  if (raw === null || raw === undefined) return 0;
+  if (typeof raw === 'number') return raw >= 50 && raw <= 2000000 ? Math.round(raw) : 0;
   const str = String(raw).trim().split(/\r|\n/)[0];
   const m = str.match(/(?:₹|Rs\.?|INR)?\s*(\d[\d,]*(\.\d{1,2})?)/i);
   if (!m) return 0;
   const cleaned = m[1].replace(/,/g, '');
   const num = parseFloat(cleaned);
-  return Number.isFinite(num) && num >= 50 ? Math.round(num) : 0;
+  return Number.isFinite(num) && num >= 50 && num <= 2000000 ? Math.round(num) : 0;
+}
+
+// Parse Indian prices from search snippets / titles (must have ₹, Rs., or INR prefix)
+function parseExplicitRupeePrice(text) {
+  if (!text) return 0;
+  const matches = [...String(text).matchAll(/(?:₹|Rs\.?|INR)\s*([\d,]{3,9}(?:\.\d{1,2})?)/gi)];
+  for (const m of matches) {
+    const val = parseInt(m[1].replace(/,/g, ''), 10);
+    if (val >= 100 && val <= 1500000) return val;
+  }
+  return 0;
+}
+
+function parseBankDiscountAmount(text, productPrice) {
+  const t = String(text || '');
+  const m = t.match(/(?:flat|instant|extra|up\s*to|get|save)\s*(?:₹|rs\.?|inr)\s*([\d,]+)/i) ||
+            t.match(/(?:₹|rs\.?|inr)\s*([\d,]+)\s*(?:instant\s*discount|off\s*on|cashback|bank\s*discount)/i);
+  if (m) {
+    const val = parseInt(m[1].replace(/,/g, ''), 10);
+    if (val >= 50 && val <= 15000 && (!productPrice || val < productPrice * 0.4)) {
+      return val;
+    }
+  }
+  return 0;
 }
 
 function detectStoreId(hostname) {
   const h = (hostname || '').toLowerCase();
-  if (h.includes('amazon') || h.includes('amzn')) return { id: 'amazon', name: 'Amazon India' };
-  if (h.includes('flipkart') || h.includes('fkrt')) return { id: 'flipkart', name: 'Flipkart' };
-  if (h.includes('croma')) return { id: 'croma', name: 'Croma' };
-  if (h.includes('reliancedigital')) return { id: 'reliancedigital', name: 'Reliance Digital' };
-  if (h.includes('vijaysales')) return { id: 'vijaysales', name: 'Vijay Sales' };
-  if (h.includes('myntra') || h.includes('myntr')) return { id: 'myntra', name: 'Myntra' };
-  if (h.includes('ajio')) return { id: 'ajio', name: 'AJIO' };
-  if (h.includes('tatacliq')) return { id: 'tatacliq', name: 'Tata CLiQ' };
-  if (h.includes('nykaa')) return { id: 'nykaa', name: 'Nykaa' };
-  return { id: 'other', name: h.replace(/^www\./, '') || 'Online Store' };
+  if (h.includes('amazon') || h.includes('amzn')) return { id: 'amazon', name: 'Amazon India', site: 'amazon.in' };
+  if (h.includes('flipkart') || h.includes('fkrt')) return { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com' };
+  if (h.includes('croma')) return { id: 'croma', name: 'Croma', site: 'croma.com' };
+  if (h.includes('reliancedigital')) return { id: 'reliancedigital', name: 'Reliance Digital', site: 'reliancedigital.in' };
+  if (h.includes('vijaysales')) return { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com' };
+  if (h.includes('myntra') || h.includes('myntr')) return { id: 'myntra', name: 'Myntra', site: 'myntra.com' };
+  if (h.includes('ajio')) return { id: 'ajio', name: 'AJIO', site: 'ajio.com' };
+  if (h.includes('tatacliq')) return { id: 'tatacliq', name: 'Tata CLiQ', site: 'tatacliq.com' };
+  if (h.includes('nykaa')) return { id: 'nykaa', name: 'Nykaa', site: 'nykaa.com' };
+  return { id: 'other', name: h.replace(/^www\./, '') || 'Online Store', site: h };
 }
 
-// Convert long noisy Amazon/Flipkart product titles or URL slugs into a crisp 5-7 word search query
 function normalizeSearchQuery(rawTitle) {
   let s = String(rawTitle || '').trim();
   if (!s) return '';
 
-  // Remove store suffixes
-  s = s.replace(/\s*[:|–-]\s*(Amazon\.in|Flipkart\.com|Croma|Reliance Digital|Buy Online.*).*$/i, '');
+  // Remove URLs if any leaked in
+  s = s.replace(/https?:\/\/[^\s]+/gi, ' ');
+  // Remove Flipkart/Amazon share prefixes & suffixes
+  s = s.replace(/^(?:take a look at this|check out this|buy)\s+/i, '');
+  s = s.replace(/\s+on\s+(?:flipkart|amazon|myntra|croma|ajio).*$/i, '');
+  s = s.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Buy Online|Price in India.*).*$/i, '');
+  s = s.replace(/\b(?:Price in India|Buy Online|Specifications|Features|Review|Online at Best Price)\b.*$/i, '');
 
-  // Extract key storage/RAM specs before stripping parentheticals (e.g., 8GB, 128GB, 256GB, 512GB, 1TB, 5G)
+  // Preserve key specs like 128GB, 256GB, 512GB, 8GB, 12GB, 5G
   const specs = [];
-  const specMatches = s.match(/\b(\d+\s*(?:GB|TB)|5G|Wi-Fi|Cellular|ANC)\b/gi) || [];
+  const specMatches = s.match(/\b(\d+\s*(?:GB|TB)|5G|Wi-Fi|ANC)\b/gi) || [];
   for (const sp of specMatches) {
     const cleanSp = sp.replace(/\s+/g, '').toUpperCase();
     if (!specs.includes(cleanSp) && specs.length < 3) specs.push(cleanSp);
   }
 
-  // Strip parenthetical marketing blocks and pipe/comma clauses
   s = s.replace(/\([^)]*\)/g, ' ').replace(/\[[^\]]*\]/g, ' ');
-  s = s.split(/[|;]/)[0];
-  // Keep only first 2 comma segments if second has storage/color, else first segment
-  const commaParts = s.split(',');
-  s = commaParts[0];
-
-  // Strip marketing fluff phrases
-  s = s.replace(/\b(with\s+.*|for\s+men.*|for\s+women.*|compatible\s+with.*|includes\s+.*|up\s+to\s+\d+.*|no\s+cost\s+emi.*|exchange\s+offer.*|free\s+delivery.*)\b/gi, ' ');
+  s = s.split(/[|;]/)[0].split(',')[0];
+  s = s.replace(/\b(with\s+.*|for\s+men.*|for\s+women.*|compatible\s+with.*|includes\s+.*|no\s+cost\s+emi.*|exchange\s+offer.*)\b/gi, ' ');
   s = s.replace(/[^a-zA-Z0-9\s+.-]/g, ' ').replace(/\s+/g, ' ').trim();
 
-  // Take first 7 meaningful words
   const words = s.split(' ').filter(Boolean).slice(0, 7);
   let base = words.join(' ');
-
-  // Re-append storage/5G specs if they were inside parentheses and got stripped
   for (const sp of specs) {
     if (!new RegExp(`\\b${sp}\\b`, 'i').test(base)) {
       base += ' ' + sp;
@@ -98,28 +132,42 @@ function normalizeSearchQuery(rawTitle) {
   return base.trim();
 }
 
-function extractTitleFromSlug(urlStr) {
+function extractInfoFromUrl(urlStr) {
+  let slugTitle = '';
+  let productId = '';
   try {
     const u = new URL(urlStr);
-    const qParam = u.searchParams.get('k') || u.searchParams.get('q');
-    if (qParam && qParam.trim().length > 2) return normalizeSearchQuery(qParam);
+    const pidParam = u.searchParams.get('pid');
+    if (pidParam) productId = pidParam;
 
-    const stop = new Set(['dp', 'p', 's', 'gp', 'd', 'product', 'buy', 'shop', 'ref', 'itm', 'shoes', 'clothing', 'electronics', 'mobile', 'mobiles']);
-    const parts = u.pathname.split('/').filter(p => {
-      if (!p) return false;
-      if (stop.has(p.toLowerCase())) return false;
-      if (/^[A-Z0-9]{10}$/.test(p)) return false;
+    const qParam = u.searchParams.get('k') || u.searchParams.get('q');
+    if (qParam && qParam.trim().length > 2) {
+      return { slugTitle: normalizeSearchQuery(qParam), productId };
+    }
+
+    const parts = u.pathname.split('/').filter(Boolean);
+    for (const p of parts) {
+      if (/^B0[A-Z0-9]{8}$/i.test(p)) productId = p;
+      if (/^itm[a-z0-9]{8,}$/i.test(p) && !productId) productId = p;
+    }
+
+    const stop = new Set(['dp', 'p', 's', 'gp', 'd', 'product', 'buy', 'shop', 'ref', 'itm', 'dl']);
+    const slugParts = parts.filter(p => {
+      const lp = p.toLowerCase();
+      if (stop.has(lp)) return false;
+      if (/^B0[A-Z0-9]{8}$/i.test(p)) return false;
       if (/^itm[a-z0-9]+$/i.test(p)) return false;
       if (/^\d+$/.test(p)) return false;
-      return true;
+      return p.length >= 3;
     });
-    if (parts.length > 0) {
-      const longest = parts.sort((a, b) => b.length - a.length)[0];
+
+    if (slugParts.length > 0) {
+      const longest = slugParts.sort((a, b) => b.length - a.length)[0];
       const raw = decodeURIComponent(longest).replace(/[-_+]+/g, ' ').trim();
-      return normalizeSearchQuery(raw);
+      slugTitle = normalizeSearchQuery(raw);
     }
   } catch (e) {}
-  return '';
+  return { slugTitle, productId };
 }
 
 function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referencePrice) {
@@ -136,15 +184,14 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
   }
 
   if (referencePrice > 800 && candidatePrice > 0) {
-    if (candidatePrice < referencePrice * 0.45 || candidatePrice > referencePrice * 1.8) {
+    if (candidatePrice < referencePrice * 0.48 || candidatePrice > referencePrice * 1.75) {
       return false;
     }
   }
 
-  const qTokens = q.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(t => t.length >= 2 && !['with', 'for', 'and', 'the', 'new', 'buy', 'online', 'black', 'white', 'blue', 'green', 'silver', 'gold', 'grey', 'gray'].includes(t));
+  const qTokens = q.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(t => t.length >= 2 && !['with', 'for', 'and', 'the', 'new', 'buy', 'online', 'black', 'white', 'blue', 'green', 'silver', 'gold', 'grey', 'gray', 'gb', 'tb', '5g', 'ram', 'rom'].includes(t));
   if (qTokens.length === 0) return true;
 
-  // Brand token (first token) should almost always match
   if (qTokens[0].length >= 3 && !cand.includes(qTokens[0])) {
     return false;
   }
@@ -156,30 +203,157 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
   return (matched / qTokens.length) >= 0.5;
 }
 
-function parseBankDiscountAmount(text, productPrice) {
-  const t = String(text || '');
-  // Match patterns like "Flat ₹2,000 Instant Discount", "₹1500 off on ICICI", "Up to ₹3,000 off"
-  const m = t.match(/(?:flat|instant|extra|up\s*to|get|save)\s*(?:₹|rs\.?|inr)\s*([\d,]+)/i) ||
-            t.match(/(?:₹|rs\.?|inr)\s*([\d,]+)\s*(?:instant\s*discount|off\s*on|cashback|bank\s*discount)/i);
-  if (m) {
-    const val = parseInt(m[1].replace(/,/g, ''), 10);
-    if (val >= 50 && val <= 15000 && (!productPrice || val < productPrice * 0.4)) {
-      return val;
+// Parse Flipkart / Amazon / Croma product HTML including embedded JSON state
+function parseProductHtml(html) {
+  let title = '';
+  let price = 0;
+  let bankOffers = [];
+  let maxBankDiscount = 0;
+
+  if (!html) return { title, price, bankOffers, maxBankDiscount };
+  const $ = cheerio.load(html);
+
+  // 1. JSON-LD Product schema
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse($(el).html());
+      const items = Array.isArray(data) ? data : (data['@graph'] || [data]);
+      for (const item of items) {
+        if (item && (item['@type'] === 'Product' || item['@type'] === 'Book')) {
+          if (!title && item.name) title = String(item.name).trim();
+          const offers = Array.isArray(item.offers) ? item.offers[0] : item.offers;
+          if (!price && offers && (offers.price || offers.lowPrice)) {
+            price = parsePriceNumber(offers.price || offers.lowPrice);
+          }
+        }
+      }
+    } catch (e) {}
+  });
+
+  // 2. OpenGraph / Meta tags & DOM selectors
+  if (!title) {
+    title = $('#productTitle').text().trim() ||
+            $('span.VU-ZEz').text().trim() ||
+            $('h1.yhB1nd').text().trim() ||
+            $('h1.pd-title').text().trim() ||
+            $('meta[property="og:title"]').attr('content') ||
+            $('meta[name="twitter:title"]').attr('content') ||
+            $('title').text().trim();
+  }
+
+  if (!price) {
+    const amzOffscreen = $('#corePriceDisplay_desktop_feature_div .a-price.priceToPay .a-offscreen, #corePrice_feature_div .a-price .a-offscreen, #apex_desktop .a-price.priceToPay .a-offscreen').first().text();
+    const amzWhole = $('#corePriceDisplay_desktop_feature_div .a-price-whole, #corePrice_feature_div .a-price-whole').first().text();
+    const fkPrice = $('div.Nx9bqj.CxhGGd, div._30jeq3._16Jk6d, div.hl05eU .Nx9bqj').first().text();
+    const metaPrice = $('meta[property="product:price:amount"], meta[property="og:price:amount"], meta[name="twitter:data1"]').attr('content');
+    price = parsePriceNumber(amzOffscreen) || parsePriceNumber(amzWhole) || parsePriceNumber(fkPrice) || parsePriceNumber(metaPrice);
+  }
+
+  // 3. Regex scan inside embedded Flipkart/Next/React hydration state if price is still 0
+  if (!price) {
+    const stateMatch =
+      html.match(/"finalPrice"\s*:\s*\{[^}]*"value"\s*:\s*(\d+)/) ||
+      html.match(/"sellingPrice"\s*:\s*(\d+)/) ||
+      html.match(/"specialPrice"\s*:\s*(\d+)/) ||
+      html.match(/"price"\s*:\s*"(\d+)"/) ||
+      html.match(/₹\s*([\d,]{3,8})/);
+    if (stateMatch) {
+      price = parsePriceNumber(stateMatch[1]);
     }
   }
-  return 0;
+
+  // 4. Check OpenGraph description for price if still 0
+  if (!price) {
+    const desc = $('meta[property="og:description"], meta[name="description"]').attr('content') || '';
+    price = parseExplicitRupeePrice(desc) || parseExplicitRupeePrice(title);
+  }
+
+  // 5. Extract bank offers
+  $('.offers-items-content, .vsx-offers-count, .WT_R32, ._3j4Zjq, .bank-offer, #itembox-InstantBankDiscount').each((_, el) => {
+    const t = $(el).text().replace(/\s+/g, ' ').trim();
+    if (t && t.length > 10 && t.length < 200 && bankOffers.length < 4) {
+      bankOffers.push(t);
+      const d = parseBankDiscountAmount(t, price);
+      if (d > maxBankDiscount) maxBankDiscount = d;
+    }
+  });
+
+  if (/robot check|captcha|access denied|online shopping site in india|something went wrong/i.test(title)) {
+    title = '';
+  }
+
+  return { title, price, bankOffers, maxBankDiscount };
 }
 
-async function resolveAndExtractOriginProduct(inputUrl, scraperKey) {
+// Search Yahoo India for a specific URL, Product ID (pid / ASIN), or store query
+async function lookupProductViaWebIndex(query, targetSite, referencePrice, scraperKey) {
+  try {
+    const q = targetSite ? `${query} site:${targetSite}` : query;
+    const searchUrl = `https://in.search.yahoo.com/search?p=${encodeURIComponent(q)}`;
+    const resp = await axios.get(buildFetchUrl(searchUrl, scraperKey), {
+      headers: DESKTOP_HEADERS,
+      timeout: 9000
+    });
+    const $ = cheerio.load(resp.data || '');
+
+    let best = null;
+    $('div.algo, div.dd.algo').each((_, el) => {
+      if (best) return;
+      const block = $(el);
+      const rawTitle = block.find('h3.title').text().replace(/\s+/g, ' ').trim();
+      const snippet = block.find('.compText, .fc-falcon').text().replace(/\s+/g, ' ').trim();
+      let href = block.find('h3.title a').attr('href') || '';
+      const ruMatch = href.match(/\/RU=([^/]+)\//);
+      if (ruMatch) {
+        try { href = decodeURIComponent(ruMatch[1]); } catch (e) {}
+      }
+
+      // Skip generic search pages; require actual product page or clear title
+      if (!rawTitle) return;
+      const cleanTitle = rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Buy Online|Price in India.*).*$/i, '').trim();
+
+      const combined = `${rawTitle} ${snippet}`;
+      const pVal = parseExplicitRupeePrice(combined);
+      const disc = parseBankDiscountAmount(combined, pVal);
+
+      if (pVal > 0 && isRelevantCandidate(query, cleanTitle, pVal, referencePrice)) {
+        best = {
+          title: cleanTitle,
+          price: pVal,
+          saleDiscount: disc,
+          url: href,
+          snippet
+        };
+      } else if (!best && !targetSite && cleanTitle.length > 5) {
+        // Even if snippet didn't have price, we can still recover the exact product title for a blocked Flipkart URL
+        best = {
+          title: cleanTitle,
+          price: pVal || 0,
+          saleDiscount: disc,
+          url: href,
+          snippet
+        };
+      }
+    });
+    return best;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function resolveAndExtractOriginProduct(rawInput, inputUrl, scraperKey) {
   let finalUrl = inputUrl;
   let html = '';
 
-  // Step 1: Follow shortlink redirects (amzn.in, fkrt.it, etc.) using mobile headers
+  // Also check if user pasted share text that already has the product title before the URL!
+  const textBeforeUrl = String(rawInput || '').replace(/https?:\/\/[^\s]+/gi, '').replace(/^(?:take a look at this|check out this)\s+/i, '').replace(/\s+on\s+(?:flipkart|amazon).*$/i, '').trim();
+
+  // Attempt 1: Bot/Preview User-Agent (often bypasses Flipkart/Amazon datacenter blocks and returns full OG tags)
   try {
     const resp = await axios.get(buildFetchUrl(inputUrl, scraperKey), {
-      headers: MOBILE_HEADERS,
+      headers: BOT_PREVIEW_HEADERS,
       maxRedirects: 8,
-      timeout: 11000
+      timeout: 9000
     });
     html = typeof resp.data === 'string' ? resp.data : '';
     if (resp.request && resp.request.res && resp.request.res.responseUrl && !scraperKey) {
@@ -191,141 +365,62 @@ async function resolveAndExtractOriginProduct(inputUrl, scraperKey) {
     }
   }
 
+  let parsed = parseProductHtml(html);
+
+  // Attempt 2: Desktop User-Agent if Bot UA didn't yield price
+  if (!parsed.price || !parsed.title) {
+    try {
+      const resp2 = await axios.get(buildFetchUrl(finalUrl, scraperKey), {
+        headers: DESKTOP_HEADERS,
+        maxRedirects: 5,
+        timeout: 9000
+      });
+      if (resp2.request && resp2.request.res && resp2.request.res.responseUrl && !scraperKey) {
+        finalUrl = resp2.request.res.responseUrl;
+      }
+      const parsed2 = parseProductHtml(typeof resp2.data === 'string' ? resp2.data : '');
+      if (!parsed.title && parsed2.title) parsed.title = parsed2.title;
+      if (!parsed.price && parsed2.price) parsed.price = parsed2.price;
+      if (parsed2.bankOffers.length > 0) parsed.bankOffers = parsed2.bankOffers;
+      if (parsed2.maxBankDiscount > parsed.maxBankDiscount) parsed.maxBankDiscount = parsed2.maxBankDiscount;
+    } catch (e) {}
+  }
+
   let hostname = '';
   try { hostname = new URL(finalUrl).hostname; } catch (e) {}
   const storeInfo = detectStoreId(hostname);
+  const { slugTitle, productId } = extractInfoFromUrl(finalUrl);
 
-  let rawTitle = '';
-  let price = 0;
-  let bankOffers = [];
-  let maxBankDiscount = 0;
+  let bestTitle = parsed.title || textBeforeUrl || slugTitle;
+  let bestPrice = parsed.price;
+  let bestDiscount = parsed.maxBankDiscount;
 
-  if (html) {
-    const $ = cheerio.load(html);
-
-    // 1. JSON-LD Product schema
-    $('script[type="application/ld+json"]').each((_, el) => {
-      try {
-        const data = JSON.parse($(el).html());
-        const items = Array.isArray(data) ? data : (data['@graph'] || [data]);
-        for (const item of items) {
-          if (item && (item['@type'] === 'Product' || item['@type'] === 'Book')) {
-            if (!rawTitle && item.name) rawTitle = String(item.name).trim();
-            const offers = Array.isArray(item.offers) ? item.offers[0] : item.offers;
-            if (!price && offers && (offers.price || offers.lowPrice)) {
-              price = parsePriceNumber(offers.price || offers.lowPrice);
-            }
-          }
-        }
-      } catch (e) {}
-    });
-
-    // 2. Store-specific main product title
-    if (!rawTitle) {
-      rawTitle = $('#productTitle').text().trim() ||
-                 $('#title').text().trim() ||
-                 $('span.VU-ZEz').text().trim() ||
-                 $('h1.pd-title').text().trim() ||
-                 $('meta[property="og:title"]').attr('content') ||
-                 $('title').text().trim();
-    }
-
-    // 3. Store-specific main buybox price
-    if (!price) {
-      const amzOffscreen = $('#corePriceDisplay_desktop_feature_div .a-price.priceToPay .a-offscreen, #corePrice_feature_div .a-price .a-offscreen, #apex_desktop .a-price.priceToPay .a-offscreen, #priceblock_ourprice, #priceblock_dealprice').first().text();
-      const amzWhole = $('#corePriceDisplay_desktop_feature_div .a-price-whole, #corePrice_feature_div .a-price-whole, .a-price.priceToPay .a-price-whole').first().text();
-      const fkPrice = $('div.Nx9bqj.CxhGGd, div._30jeq3._16Jk6d, div.hl05eU .Nx9bqj').first().text();
-      const metaPrice = $('meta[property="product:price:amount"], meta[property="og:price:amount"]').attr('content');
-      price = parsePriceNumber(amzOffscreen) || parsePriceNumber(amzWhole) || parsePriceNumber(fkPrice) || parsePriceNumber(metaPrice);
-    }
-
-    // 4. Extract bank offers & sale discounts
-    $('.offers-items-content, .vsx-offers-count, .WT_R32, ._3j4Zjq, .bank-offer, #itembox-InstantBankDiscount').each((_, el) => {
-      const t = $(el).text().replace(/\s+/g, ' ').trim();
-      if (t && t.length > 10 && t.length < 200 && bankOffers.length < 4) {
-        bankOffers.push(t);
-        const d = parseBankDiscountAmount(t, price);
-        if (d > maxBankDiscount) maxBankDiscount = d;
+  // Attempt 3: If Flipkart/Amazon blocked Render's IP (so price or title is still missing), query Yahoo India by productId or slugTitle!
+  if (!bestPrice || !bestTitle) {
+    const lookupQ = productId ? `${slugTitle} ${productId}`.trim() : slugTitle;
+    if (lookupQ) {
+      const indexed = await lookupProductViaWebIndex(lookupQ, storeInfo.site !== 'other' ? storeInfo.site : '', 0, scraperKey);
+      if (indexed) {
+        if (!bestTitle && indexed.title) bestTitle = indexed.title;
+        if (!bestPrice && indexed.price > 0) bestPrice = indexed.price;
+        if (!bestDiscount && indexed.saleDiscount > 0) bestDiscount = indexed.saleDiscount;
+        if (indexed.url && finalUrl.includes('/s/')) finalUrl = indexed.url;
       }
-    });
+    }
   }
 
-  if (!rawTitle || /robot check|captcha|access denied|online shopping site/i.test(rawTitle)) {
-    rawTitle = extractTitleFromSlug(finalUrl) || extractTitleFromSlug(inputUrl) || '';
-  }
-
-  const searchQuery = normalizeSearchQuery(rawTitle) || extractTitleFromSlug(finalUrl) || extractTitleFromSlug(inputUrl);
+  const searchQuery = normalizeSearchQuery(bestTitle) || slugTitle || normalizeSearchQuery(rawInput);
 
   return {
-    title: rawTitle || searchQuery || inputUrl,
-    searchQuery: searchQuery || rawTitle || inputUrl,
+    title: bestTitle || searchQuery || inputUrl,
+    searchQuery: searchQuery || bestTitle || inputUrl,
+    productId,
     originStore: storeInfo,
-    originPrice: price,
-    originSaleDiscount: maxBankDiscount,
+    originPrice: bestPrice,
+    originSaleDiscount: bestDiscount,
     originUrl: finalUrl,
-    bankOffers
+    bankOffers: parsed.bankOffers
   };
-}
-
-// Search engines & stores for multi-platform prices
-async function searchCrossPlatformWeb(searchQuery, referencePrice, scraperKey) {
-  const results = [];
-  if (!searchQuery) return results;
-
-  // Query Yahoo India Search / DuckDuckGo Lite for live indexed product pages across stores
-  const storeTargets = [
-    { id: 'amazon', name: 'Amazon India', site: 'amazon.in' },
-    { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com' },
-    { id: 'croma', name: 'Croma', site: 'croma.com' },
-    { id: 'reliancedigital', name: 'Reliance Digital', site: 'reliancedigital.in' },
-    { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com' }
-  ];
-
-  await Promise.allSettled(storeTargets.map(async (st) => {
-    try {
-      const q = `${searchQuery} site:${st.site}`;
-      const searchUrl = `https://in.search.yahoo.com/search?p=${encodeURIComponent(q)}`;
-      const resp = await axios.get(buildFetchUrl(searchUrl, scraperKey), {
-        headers: BROWSER_HEADERS,
-        timeout: 9000
-      });
-      const $ = cheerio.load(resp.data || '');
-
-      $('div.algo, div.dd.algo').each((_, el) => {
-        if (results.some(r => r.merchantId === st.id)) return;
-        const block = $(el);
-        const title = block.find('h3.title').text().replace(/\s+/g, ' ').trim();
-        const snippet = block.find('.compText, .fc-falcon').text().replace(/\s+/g, ' ').trim();
-        let href = block.find('h3.title a').attr('href') || '';
-        // Unwrap Yahoo redirect URL if present
-        const ruMatch = href.match(/\/RU=([^/]+)\//);
-        if (ruMatch) {
-          try { href = decodeURIComponent(ruMatch[1]); } catch (e) {}
-        }
-
-        const combined = `${title} ${snippet}`;
-        // Look for ₹ or Rs. price in title or snippet
-        const priceMatches = combined.match(/(?:₹|Rs\.?|INR)\s*([\d,]{3,9})/gi) || [];
-        for (const pm of priceMatches) {
-          const pVal = parsePriceNumber(pm);
-          if (pVal > 0 && isRelevantCandidate(searchQuery, title, pVal, referencePrice)) {
-            const disc = parseBankDiscountAmount(combined, pVal);
-            results.push({
-              merchantId: st.id,
-              storeName: st.name,
-              price: pVal,
-              saleDiscount: disc,
-              productTitle: title.replace(/\s*[:|–-]\s*(Amazon\.in|Flipkart\.com|Croma|Reliance Digital).*$/i, '').trim(),
-              url: href || `https://www.${st.site}`
-            });
-            break;
-          }
-        }
-      });
-    } catch (e) {}
-  }));
-
-  return results;
 }
 
 async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scraperKey) {
@@ -370,16 +465,17 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
           });
         }
       }
-      if (results.length >= 2) return results;
+      if (results.length >= 3) return results;
     } catch (e) {}
   }
 
-  // 2. Direct Store Search + Cross-Platform Search Engine Fallback in parallel
+  // 2. Direct Store Scraping + Yahoo India Cross-Platform Search in parallel
   const enc = encodeURIComponent(cleanTitle);
   const directTargets = [
     {
       merchantId: 'amazon',
       storeName: 'Amazon India',
+      site: 'amazon.in',
       searchUrl: `https://www.amazon.in/s?k=${enc}`,
       parse: ($) => {
         let match = null;
@@ -392,8 +488,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
           const price = parsePriceNumber(offscreen) || parsePriceNumber(whole);
           if (price > 0 && title && isRelevantCandidate(cleanTitle, title, price, referencePrice)) {
             const href = card.find('h2 a').attr('href');
-            const cardText = card.text();
-            const disc = parseBankDiscountAmount(cardText, price);
+            const disc = parseBankDiscountAmount(card.text(), price);
             match = {
               price,
               saleDiscount: disc,
@@ -408,6 +503,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     {
       merchantId: 'flipkart',
       storeName: 'Flipkart',
+      site: 'flipkart.com',
       searchUrl: `https://www.flipkart.com/search?q=${enc}`,
       parse: ($) => {
         let match = null;
@@ -440,6 +536,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     {
       merchantId: 'croma',
       storeName: 'Croma',
+      site: 'croma.com',
       searchUrl: `https://www.croma.com/searchB?q=${enc}`,
       parse: ($) => {
         let match = null;
@@ -462,12 +559,20 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     }
   ];
 
-  const [directSettled, webResults] = await Promise.all([
+  const webTargets = [
+    { id: 'amazon', name: 'Amazon India', site: 'amazon.in', fallbackUrl: `https://www.amazon.in/s?k=${enc}` },
+    { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', fallbackUrl: `https://www.flipkart.com/search?q=${enc}` },
+    { id: 'croma', name: 'Croma', site: 'croma.com', fallbackUrl: `https://www.croma.com/searchB?q=${enc}` },
+    { id: 'reliancedigital', name: 'Reliance Digital', site: 'reliancedigital.in', fallbackUrl: `https://www.reliancedigital.in/search?q=${enc}` },
+    { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', fallbackUrl: `https://www.vijaysales.com/search/${enc}` }
+  ];
+
+  const [directSettled, webSettled] = await Promise.all([
     Promise.allSettled(directTargets.map(async (t) => {
       try {
         const resp = await axios.get(buildFetchUrl(t.searchUrl, scraperKey), {
-          headers: BROWSER_HEADERS,
-          timeout: 9500
+          headers: DESKTOP_HEADERS,
+          timeout: 8500
         });
         const $ = cheerio.load(resp.data || '');
         const parsed = t.parse($);
@@ -484,18 +589,31 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
       } catch (e) {}
       return null;
     })),
-    searchCrossPlatformWeb(cleanTitle, referencePrice, scraperKey)
+    Promise.allSettled(webTargets.map(async (wt) => {
+      const found = await lookupProductViaWebIndex(cleanTitle, wt.site, referencePrice, scraperKey);
+      if (found && found.price > 0) {
+        return {
+          merchantId: wt.id,
+          storeName: wt.name,
+          price: found.price,
+          saleDiscount: found.saleDiscount || 0,
+          productTitle: found.title,
+          url: found.url || wt.fallbackUrl
+        };
+      }
+      return null;
+    }))
   ]);
 
   for (const item of directSettled) {
-    if (item.status === 'fulfilled' && item.value) {
+    if (item.status === 'fulfilled' && item.value && !results.some(r => r.merchantId === item.value.merchantId)) {
       results.push(item.value);
     }
   }
 
-  for (const wr of webResults) {
-    if (!results.some(r => r.merchantId === wr.merchantId)) {
-      results.push(wr);
+  for (const item of webSettled) {
+    if (item.status === 'fulfilled' && item.value && !results.some(r => r.merchantId === item.value.merchantId)) {
+      results.push(item.value);
     }
   }
 
@@ -505,7 +623,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    service: 'CardPick Multi-Store Price & Card Backend v2.2',
+    service: 'CardPick Multi-Store Live Engine v3.0',
     hasSerpApi: Boolean(SERPAPI_KEY),
     hasScraperApi: Boolean(SCRAPERAPI_KEY)
   });
@@ -518,15 +636,14 @@ app.post('/api/fetch-prices', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Provide a product URL or product name' });
     }
 
-    const input = String(queryOrUrl).trim();
-    const isUrl = /^https?:\/\//i.test(input) || /\.(in|com|co|it)\//i.test(input);
+    const rawInput = String(queryOrUrl).trim();
+    const extractedUrl = extractCleanUrlFromText(rawInput);
 
-    let searchQuery = normalizeSearchQuery(input);
+    let searchQuery = normalizeSearchQuery(rawInput);
     let originData = null;
 
-    if (isUrl) {
-      const normalizedUrl = /^https?:\/\//i.test(input) ? input : `https://${input}`;
-      originData = await resolveAndExtractOriginProduct(normalizedUrl, scraperApiKey);
+    if (extractedUrl) {
+      originData = await resolveAndExtractOriginProduct(rawInput, extractedUrl, scraperApiKey);
       if (originData && originData.searchQuery) {
         searchQuery = originData.searchQuery;
       }
@@ -535,20 +652,28 @@ app.post('/api/fetch-prices', async (req, res) => {
     const refPrice = originData && originData.originPrice > 0 ? originData.originPrice : 0;
     const stores = await searchStorePrices(searchQuery, refPrice, serpApiKey, scraperApiKey);
 
-    if (originData && originData.originPrice > 0 && originData.originStore.id !== 'other') {
+    // Guarantee origin store is present if we resolved a product URL
+    if (originData && originData.originStore && originData.originStore.id !== 'other') {
       const idx = stores.findIndex(s => s.merchantId === originData.originStore.id);
-      const originEntry = {
-        merchantId: originData.originStore.id,
-        storeName: originData.originStore.name,
-        price: originData.originPrice,
-        saleDiscount: originData.originSaleDiscount || 0,
-        productTitle: originData.title,
-        url: originData.originUrl
-      };
-      if (idx >= 0) {
-        stores[idx] = originEntry;
-      } else {
-        stores.unshift(originEntry);
+      if (originData.originPrice > 0) {
+        const originEntry = {
+          merchantId: originData.originStore.id,
+          storeName: originData.originStore.name,
+          price: originData.originPrice,
+          saleDiscount: originData.originSaleDiscount || 0,
+          productTitle: originData.title,
+          url: originData.originUrl
+        };
+        if (idx >= 0) {
+          // Keep direct product URL from user's pasted link!
+          stores[idx].url = originData.originUrl;
+          if (!stores[idx].price) stores[idx].price = originData.originPrice;
+        } else {
+          stores.unshift(originEntry);
+        }
+      } else if (idx >= 0) {
+        // Even if direct origin scrape had no price, overwrite the Flipkart/Amazon URL with the exact pasted URL!
+        stores[idx].url = originData.originUrl;
       }
     }
 
@@ -568,5 +693,5 @@ app.post('/api/fetch-prices', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`CardPick Full-Stack Server v2.2 running on http://localhost:${PORT}`);
+  console.log(`CardPick Full-Stack Server v3.0 running on http://localhost:${PORT}`);
 });
