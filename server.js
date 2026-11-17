@@ -203,6 +203,13 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
     return false;
   }
 
+  // Category minimum price floor: if searching for a smartphone, iPhone, OnePlus, Galaxy, Pixel,OPPO, Vivo, Xiaomi, Realme, iQOO, laptop, MacBook, iPad, or TV (and not an accessory), reject any price under ₹4,500 (such as ₹307 cases/screen guards!)
+  const isHighTicketDevice = /\b(iphone|oneplus|nord|galaxy|pixel|oppo|find\s*x|reno|vivo|iqoo|realme|xiaomi|redmi|poco|nothing\s*phone|motorola|edge|razr|macbook|ipad|laptop|television|smart\s*tv|ps5|playstation)\b/i.test(q) &&
+                             !/\b(buds|earbuds|neckband|airpods|watch|band|charger|cable|adapter|case|cover|glass|protector|power\s*bank)\b/i.test(q);
+  if (isHighTicketDevice && candidatePrice > 0 && candidatePrice < 4500) {
+    return false;
+  }
+
   if (referencePrice > 800 && candidatePrice > 0) {
     if (candidatePrice < referencePrice * 0.48 || candidatePrice > referencePrice * 1.65) {
       return false;
@@ -443,8 +450,10 @@ function parseProductHtml(html) {
 }
 
 // Extract Lowest Ever, Average, and Highest Price from PriceHistory.app / BuyHatke snippets & pages
-function parsePriceHistoryStats(text, currentPrices) {
+function parsePriceHistoryStats(text, currentPrices, cleanQuery) {
   const t = String(text || '').replace(/\s+/g, ' ');
+  const isPhoneOrLaptop = /\b(iphone|oneplus|nord|galaxy|pixel|oppo|find\s*x|reno|vivo|iqoo|realme|xiaomi|redmi|poco|macbook|ipad|laptop)\b/i.test(cleanQuery || '');
+  const minValid = isPhoneOrLaptop ? 4500 : 75;
   let lowest = 0;
   let average = 0;
   let highest = 0;
@@ -455,9 +464,9 @@ function parsePriceHistoryStats(text, currentPrices) {
   const highMatch = t.match(/Highest\s*(?:Price)?\s*[:|-]?\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i) ||
                     t.match(/average\s+and\s+highest\s+prices\s+are\s*(?:₹|Rs\.?|INR)?\s*[\d,]+\s+and\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i);
 
-  if (lowMatch) lowest = parseInt(lowMatch[1].replace(/,/g, ''), 10) || 0;
-  if (avgMatch) average = parseInt(avgMatch[1].replace(/,/g, ''), 10) || 0;
-  if (highMatch) highest = parseInt(highMatch[1].replace(/,/g, ''), 10) || 0;
+  if (lowMatch) { const v = parseInt(lowMatch[1].replace(/,/g, ''), 10) || 0; if (v >= minValid) lowest = v; }
+  if (avgMatch) { const v = parseInt(avgMatch[1].replace(/,/g, ''), 10) || 0; if (v >= minValid) average = v; }
+  if (highMatch) { const v = parseInt(highMatch[1].replace(/,/g, ''), 10) || 0; if (v >= minValid) highest = v; }
 
   const validCurr = (currentPrices || []).filter(p => p > 50);
   if (validCurr.length > 0) {
@@ -983,8 +992,53 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     }
   }
 
+  // Phase C: Broad non-site-restricted search ("<cleanTitle> price in india amazon flipkart croma") if results is still empty
+  if (results.length === 0) {
+    try {
+      const broadQ = `${cleanTitle} price in india buy online`;
+      const broadUrls = [
+        `https://in.search.yahoo.com/search?p=${encodeURIComponent(broadQ)}`,
+        `https://html.duckduckgo.com/html/?q=${encodeURIComponent(broadQ)}`
+      ];
+      for (const bUrl of broadUrls) {
+        if (results.length >= 2) break;
+        try {
+          const resp = await axios.get(buildFetchUrl(bUrl, scraperKey), { headers: DESKTOP_HEADERS, timeout: 7500 });
+          const $ = cheerio.load(resp.data || '');
+          $('div.algo, div.dd.algo, .result, .web-result').each((_, el) => {
+            const block = $(el);
+            const rawTitle = (block.find('h3.title').text() || block.find('.result__title').text() || '').replace(/\s+/g, ' ').trim();
+            const snippet = (block.find('.compText, .fc-falcon').text() || block.find('.result__snippet').text() || '').replace(/\s+/g, ' ').trim();
+            let href = block.find('h3.title a').attr('href') || block.find('.result__url').attr('href') || block.find('.result__a').attr('href') || '';
+            const ruMatch = href.match(/\/RU=([^/]+)\//);
+            if (ruMatch) { try { href = decodeURIComponent(ruMatch[1]); } catch (e) {} }
+            const uddg = href.match(/uddg=([^&]+)/);
+            if (uddg) { try { href = decodeURIComponent(uddg[1]); } catch (e) {} }
+
+            const store = detectStoreFromNameOrUrl(`${href} ${rawTitle}`);
+            if (store.id === 'other' || results.some(r => r.merchantId === store.id)) return;
+            const prices = extractAllRupeePrices(`${rawTitle} ${snippet}`).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, effectiveRefPrice));
+            if (prices.length > 0) {
+              const dealInfo = extractStructuredDealInfo(`${rawTitle} ${snippet}`, prices[0]);
+              results.push({
+                merchantId: store.id,
+                storeName: store.name,
+                price: prices[0],
+                saleDiscount: dealInfo.totalSaleDiscount || 0,
+                dealSummary: dealInfo.dealSummary || '',
+                matchedBanks: dealInfo.matchedBanks || [],
+                productTitle: rawTitle.replace(/\s*[:|–-]\s*(?:Amazon|Flipkart|Croma|Reliance|Vijay Sales|Myntra|Nykaa).*$/i, '').trim() || cleanTitle,
+                url: href || `https://www.${store.site}`
+              });
+            }
+          });
+        } catch (e) {}
+      }
+    } catch (e) {}
+  }
+
   const allStorePrices = results.map(r => r.price).filter(p => p > 0);
-  const priceHistory = parsePriceHistoryStats(historyTextAccumulator, allStorePrices);
+  const priceHistory = parsePriceHistoryStats(historyTextAccumulator, allStorePrices, cleanTitle);
   return { stores: results, priceHistory };
 }
 
