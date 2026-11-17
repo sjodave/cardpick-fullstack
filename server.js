@@ -442,10 +442,41 @@ function parseProductHtml(html) {
   return { title, price, bankOffers, dealInfo };
 }
 
+// Extract Lowest Ever, Average, and Highest Price from PriceHistory.app / BuyHatke snippets & pages
+function parsePriceHistoryStats(text, currentPrices) {
+  const t = String(text || '').replace(/\s+/g, ' ');
+  let lowest = 0;
+  let average = 0;
+  let highest = 0;
+
+  const lowMatch = t.match(/Lowest(?:\s+Ever)?\s*(?:Price)?\s*[:|-]?\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i);
+  const avgMatch = t.match(/Average\s*(?:Price)?\s*[:|-]?\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i) ||
+                   t.match(/average\s+and\s+highest\s+prices\s+are\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i);
+  const highMatch = t.match(/Highest\s*(?:Price)?\s*[:|-]?\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i) ||
+                    t.match(/average\s+and\s+highest\s+prices\s+are\s*(?:₹|Rs\.?|INR)?\s*[\d,]+\s+and\s*(?:₹|Rs\.?|INR)?\s*([\d,]{2,9})/i);
+
+  if (lowMatch) lowest = parseInt(lowMatch[1].replace(/,/g, ''), 10) || 0;
+  if (avgMatch) average = parseInt(avgMatch[1].replace(/,/g, ''), 10) || 0;
+  if (highMatch) highest = parseInt(highMatch[1].replace(/,/g, ''), 10) || 0;
+
+  const validCurr = (currentPrices || []).filter(p => p > 50);
+  if (validCurr.length > 0) {
+    const minCurr = Math.min(...validCurr);
+    const maxCurr = Math.max(...validCurr);
+    const sumCurr = validCurr.reduce((a, b) => a + b, 0);
+    if (!lowest || lowest > minCurr) lowest = minCurr;
+    if (!average) average = Math.round(sumCurr / validCurr.length);
+    if (!highest || highest < maxCurr) highest = maxCurr;
+  }
+
+  return { lowestPrice: lowest, averagePrice: average, highestPrice: highest };
+}
+
 // Layer 1: Scrape Indian Multi-Category Aggregators (BuyHatke, PriceHistory.app, Smartprix, 91mobiles)
 // BuyHatke indexes beauty, personal care, fashion, groceries, medicines, AND electronics across Myntra, Nykaa, NykaaMan, Meesho, Tira, Amazon, Flipkart, Netmeds!
 async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scraperKey) {
   const storeResults = [];
+  let historyTextAccumulator = '';
   try {
     const q = `${cleanQuery} price in india (site:buyhatke.com OR site:pricehistory.app OR site:smartprix.com OR site:91mobiles.com)`;
     const searchUrl = `https://in.search.yahoo.com/search?p=${encodeURIComponent(q)}`;
@@ -469,6 +500,9 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
       // First parse BuyHatke / PriceHistory search snippets directly!
       // BuyHatke snippets look like: "Be Bodywise 1% Salicylic Acid Body Wash (250 ml)... ₹360. Buy now · Amazon ... ₹331. Buy now · Meesho"
       const combined = `${rawTitle} ${snippet}`;
+      if (/Lowest|Average|Highest/i.test(combined)) {
+        historyTextAccumulator += ' ' + combined;
+      }
       const buyNowParts = combined.split(/Buy\s+now/i);
       for (let i = 0; i < buyNowParts.length - 1; i++) {
         const leftPart = buyNowParts[i];
@@ -508,6 +542,10 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
         });
         const $p = cheerio.load(pageResp.data || '');
         const pageTitle = $p('h1').first().text().trim() || agg.rawTitle;
+        const fullPageText = $p.root().text();
+        if (/Lowest|Average|Highest/i.test(fullPageText)) {
+          historyTextAccumulator += ' ' + fullPageText.slice(0, 8000);
+        }
 
         // Parse Smartprix / 91mobiles / BuyHatke store cards
         $p('li.sm-store-item, div.pg-prc-tbl-row, tr.store_row, div.store_pricelist, .prc-grid, .store-row, a[href*="buyhatke"], div[class*="store"], div[class*="card"]').each((_, rowEl) => {
@@ -540,7 +578,7 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
       } catch (e) {}
     }));
   } catch (e) {}
-  return storeResults;
+  return { storeResults, historyTextAccumulator };
 }
 
 // Layer 2 & 3: Multi-Engine Web Index Lookup (Yahoo India + DuckDuckGo HTML)
@@ -831,7 +869,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     }
   ];
 
-  const [aggResults, directSettled] = await Promise.all([
+  const [aggData, directSettled] = await Promise.all([
     fetchFromIndianPriceAggregators(cleanTitle, referencePrice, scraperKey),
     Promise.allSettled(directTargets.map(async (t) => {
       try {
@@ -863,6 +901,8 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
       results.push(item.value);
     }
   }
+  const aggResults = (aggData && aggData.storeResults) || [];
+  const historyTextAccumulator = (aggData && aggData.historyTextAccumulator) || '';
   for (const agg of aggResults) {
     if (!results.some(r => r.merchantId === agg.merchantId)) {
       results.push(agg);
@@ -943,7 +983,9 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     }
   }
 
-  return results;
+  const allStorePrices = results.map(r => r.price).filter(p => p > 0);
+  const priceHistory = parsePriceHistoryStats(historyTextAccumulator, allStorePrices);
+  return { stores: results, priceHistory };
 }
 
 app.get('/api/health', (req, res) => {
@@ -976,7 +1018,9 @@ app.post('/api/fetch-prices', async (req, res) => {
     }
 
     const refPrice = originData && originData.originPrice > 0 ? originData.originPrice : 0;
-    const stores = await searchStorePrices(searchQuery, refPrice, serpApiKey, scraperApiKey);
+    const searchOut = await searchStorePrices(searchQuery, refPrice, serpApiKey, scraperApiKey);
+    const stores = searchOut.stores || [];
+    let priceHistory = searchOut.priceHistory || { lowestPrice: 0, averagePrice: 0, highestPrice: 0 };
 
     if (originData && originData.originStore && originData.originStore.id !== 'other') {
       const idx = stores.findIndex(s => s.merchantId === originData.originStore.id);
@@ -1006,11 +1050,21 @@ app.post('/api/fetch-prices', async (req, res) => {
       }
     }
 
+    // Recompute fallback priceHistory if originData added a new store price
+    if (stores.length > 0 && (!priceHistory.lowestPrice || !priceHistory.averagePrice)) {
+      const pList = stores.map(s => s.price).filter(p => p > 0);
+      if (pList.length > 0) {
+        if (!priceHistory.lowestPrice) priceHistory.lowestPrice = Math.min(...pList);
+        if (!priceHistory.averagePrice) priceHistory.averagePrice = Math.round(pList.reduce((a, b) => a + b, 0) / pList.length);
+        if (!priceHistory.highestPrice) priceHistory.highestPrice = Math.max(...pList);
+      }
+    }
     return res.json({
       ok: true,
       productTitle: searchQuery,
       fullTitle: (originData && originData.title) || searchQuery,
       originData,
+      priceHistory,
       stores
     });
   } catch (err) {
