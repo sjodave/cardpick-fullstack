@@ -36,7 +36,12 @@ const BRAND_STORES = {
   redmi: { id: 'xiaomi', name: 'Xiaomi Store (Mi.com)', site: 'mi.com/in', searchUrl: (q) => `https://www.mi.com/in/search/${encodeURIComponent(q)}` },
   vivo: { id: 'vivo', name: 'Vivo India Store', site: 'vivo.com/in', searchUrl: (q) => `https://shop.vivo.com/in/sp/search?searchKey=${encodeURIComponent(q)}` },
   iqoo: { id: 'iqoo', name: 'iQOO India Store', site: 'iqoo.com/in', searchUrl: (q) => `https://shop.iqoo.com/in/sp/search?searchKey=${encodeURIComponent(q)}` },
-  realme: { id: 'realme', name: 'Realme Store India', site: 'realme.com/in', searchUrl: (q) => `https://buy.realme.com/in/search?keyword=${encodeURIComponent(q)}` }
+  realme: { id: 'realme', name: 'Realme Store India', site: 'realme.com/in', searchUrl: (q) => `https://buy.realme.com/in/search?keyword=${encodeURIComponent(q)}` },
+  bodywise: { id: 'bebodywise', name: 'Be Bodywise Official', site: 'bebodywise.com', searchUrl: (q) => `https://bebodywise.com/search?q=${encodeURIComponent(q)}` },
+  bebodywise: { id: 'bebodywise', name: 'Be Bodywise Official', site: 'bebodywise.com', searchUrl: (q) => `https://bebodywise.com/search?q=${encodeURIComponent(q)}` },
+  minimalist: { id: 'minimalist', name: 'Minimalist Official', site: 'beminimalist.co', searchUrl: (q) => `https://beminimalist.co/search?q=${encodeURIComponent(q)}` },
+  mamaearth: { id: 'mamaearth', name: 'Mamaearth Official', site: 'mamaearth.in', searchUrl: (q) => `https://mamaearth.in/product-search?search=${encodeURIComponent(q)}` },
+  dermaco: { id: 'dermaco', name: 'The Derma Co Official', site: 'thedermaco.com', searchUrl: (q) => `https://thedermaco.com/product-search?search=${encodeURIComponent(q)}` }
 };
 
 function buildFetchUrl(targetUrl, apiKey) {
@@ -53,7 +58,7 @@ function extractCleanUrlFromText(raw) {
   if (urlMatch) {
     return urlMatch[0].replace(/[.,;!?)]+$/, '');
   }
-  const bareMatch = str.match(/\b(?:(?:www|dl|shop|buy)\.)?(?:amazon\.in|amzn\.in|amzn\.to|flipkart\.com|fkrt\.it|fkrt\.cc|croma\.com|reliancedigital\.in|vijaysales\.com|myntra\.com|myntr\.it|ajio\.com|tatacliq\.com|nykaa\.com|oppo\.com|oneplus\.in|samsung\.com|mi\.com|vivo\.com|realme\.com)\/[^\s"'<>]*/i);
+  const bareMatch = str.match(/\b(?:(?:www|dl|shop|buy)\.)?(?:amazon\.in|amzn\.in|amzn\.to|flipkart\.com|fkrt\.it|fkrt\.cc|croma\.com|reliancedigital\.in|vijaysales\.com|myntra\.com|myntr\.it|ajio\.com|tatacliq\.com|nykaa\.com|nykaaman\.com|nykaafashion\.com|meesho\.com|pharmeasy\.in|1mg\.com|netmeds\.com|zepto\.com|zeptonow\.com|blinkit\.com|tirabeauty\.com|bebodywise\.com|oppo\.com|oneplus\.in|samsung\.com|mi\.com|vivo\.com|realme\.com)\/[^\s"'<>]*/i);
   if (bareMatch) {
     return 'https://' + bareMatch[0].replace(/[.,;!?)]+$/, '');
   }
@@ -73,11 +78,15 @@ function parsePriceNumber(raw) {
 
 function extractAllRupeePrices(text) {
   if (!text) return [];
-  const matches = [...String(text).matchAll(/(?:₹|Rs\.?|INR)\s*([\d,]{3,9}(?:\.\d{1,2})?)/gi)];
+  const matches = [...String(text).matchAll(/(?:₹|Rs\.?|INR)\s*([\d,]{2,9}(?:\.\d{1,2})?)/gi)];
   const nums = [];
   for (const m of matches) {
-    const val = parseInt(m[1].replace(/,/g, ''), 10);
-    if (val >= 100 && val <= 1500000 && !nums.includes(val)) {
+    const val = Math.round(parseFloat(m[1].replace(/,/g, '')));
+    // Skip unit-price strings like "₹2/ml" or "₹1.4/ml" by checking what immediately follows the match
+    const afterIdx = m.index + m[0].length;
+    const afterSlice = String(text).slice(afterIdx, afterIdx + 8).toLowerCase();
+    if (/^\s*\/\s*(?:ml|g|gm|kg|pc|unit|100)/.test(afterSlice)) continue;
+    if (val >= 75 && val <= 1500000 && !nums.includes(val)) {
       nums.push(val);
     }
   }
@@ -88,13 +97,23 @@ function detectStoreFromNameOrUrl(raw) {
   const h = String(raw || '').toLowerCase();
   if (h.includes('amazon') || h.includes('amzn')) return { id: 'amazon', name: 'Amazon India', site: 'amazon.in' };
   if (h.includes('flipkart') || h.includes('fkrt')) return { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com' };
+  if (h.includes('nykaaman')) return { id: 'nykaa', name: 'Nykaa Man', site: 'nykaaman.com' };
+  if (h.includes('nykaa')) return { id: 'nykaa', name: 'Nykaa', site: 'nykaa.com' };
+  if (h.includes('myntra') || h.includes('myntr')) return { id: 'myntra', name: 'Myntra', site: 'myntra.com' };
+  if (h.includes('meesho')) return { id: 'meesho', name: 'Meesho', site: 'meesho.com' };
+  if (h.includes('tira')) return { id: 'tira', name: 'Tira Beauty', site: 'tirabeauty.com' };
+  if (h.includes('bebodywise') || h.includes('bodywise')) return { id: 'bebodywise', name: 'Be Bodywise Official', site: 'bebodywise.com' };
+  if (h.includes('zepto')) return { id: 'zepto', name: 'Zepto', site: 'zepto.com' };
+  if (h.includes('blinkit')) return { id: 'blinkit', name: 'Blinkit', site: 'blinkit.com' };
+  if (h.includes('pharmeasy')) return { id: 'pharmeasy', name: 'PharmEasy', site: 'pharmeasy.in' };
+  if (h.includes('1mg')) return { id: 'tata1mg', name: 'Tata 1mg', site: '1mg.com' };
+  if (h.includes('netmeds')) return { id: 'netmeds', name: 'Netmeds', site: 'netmeds.com' };
+  if (h.includes('apollo')) return { id: 'apollo', name: 'Apollo 24|7', site: 'apollo247.com' };
   if (h.includes('croma')) return { id: 'croma', name: 'Croma', site: 'croma.com' };
   if (h.includes('reliance')) return { id: 'reliancedigital', name: 'Reliance Digital', site: 'reliancedigital.in' };
   if (h.includes('vijay sales') || h.includes('vijaysales')) return { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com' };
   if (h.includes('tata cliq') || h.includes('tatacliq')) return { id: 'tatacliq', name: 'Tata CLiQ', site: 'tatacliq.com' };
-  if (h.includes('myntra') || h.includes('myntr')) return { id: 'myntra', name: 'Myntra', site: 'myntra.com' };
   if (h.includes('ajio')) return { id: 'ajio', name: 'AJIO', site: 'ajio.com' };
-  if (h.includes('nykaa')) return { id: 'nykaa', name: 'Nykaa', site: 'nykaa.com' };
   if (h.includes('oppo')) return { id: 'oppo', name: 'OPPO India Store', site: 'oppo.com/in' };
   if (h.includes('oneplus')) return { id: 'oneplus', name: 'OnePlus Store India', site: 'oneplus.in' };
   if (h.includes('samsung')) return { id: 'samsung', name: 'Samsung Shop India', site: 'samsung.com/in' };
@@ -106,37 +125,51 @@ function detectStoreFromNameOrUrl(raw) {
   return { id: 'other', name: raw || 'Online Store', site: '' };
 }
 
-// Stage 1: Canonical Product & Spec Fingerprinting
+// Stage 1: Canonical Product & Spec Fingerprinting (Supports Electronics AND Beauty/FMCG/Pharmacy)
 function buildProductFingerprint(rawTitle) {
   let s = String(rawTitle || '').trim();
-  if (!s) return { cleanQuery: '', brand: '', modelTokens: [], storageGb: 0, ramGb: 0 };
+  if (!s) return { cleanQuery: '', brand: '', modelTokens: [], storageGb: 0, volumeMl: 0 };
 
   s = s.replace(/https?:\/\/[^\s]+/gi, ' ');
+  // Convert URL slug tokens like "1percent" -> "1%"
+  s = s.replace(/(\d+)\s*percent\b/gi, '$1%');
   s = s.replace(/^(?:take a look at this|check out this|buy)\s+/i, '');
-  s = s.replace(/\s+on\s+(?:flipkart|amazon|myntra|croma|ajio).*$/i, '');
-  s = s.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Smartprix|91mobiles|Buy Online|Price in India.*).*$/i, '');
+  s = s.replace(/\s+on\s+(?:flipkart|amazon|myntra|croma|ajio|nykaa|nykaaman|meesho).*$/i, '');
+  s = s.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Nykaa|NykaaMan|Smartprix|91mobiles|BuyHatke|Buy Online|Price in India.*).*$/i, '');
   s = s.replace(/\b(?:Price in India|Buy Online|Specifications|Features|Review|Online at Best Price|Full Specs)\b.*$/i, '');
 
   const gbMatches = [...s.matchAll(/\b(\d+)\s*GB\b/gi)].map(m => parseInt(m[1], 10));
   const storageGb = gbMatches.find(n => n >= 64) || 0;
-  const ramGb = gbMatches.find(n => n >= 4 && n <= 32 && n !== storageGb) || 0;
+
+  const mlMatches = [...s.matchAll(/\b(\d+)\s*(?:ml|g|gm)\b/gi)].map(m => parseInt(m[1], 10));
+  const volumeMl = mlMatches[0] || 0;
 
   s = s.replace(/\([^)]*\)/g, ' ').replace(/\[[^\]]*\]/g, ' ');
   s = s.split(/[|;]/)[0].split(',')[0];
-  s = s.replace(/\b(smartphone|mobile\s+phone|with\s+.*|for\s+men.*|for\s+women.*|compatible\s+with.*|includes\s+.*|no\s+cost\s+emi.*|exchange\s+offer.*)\b/gi, ' ');
-  s = s.replace(/[^a-zA-Z0-9\s+.-]/g, ' ').replace(/\s+/g, ' ').trim();
+  s = s.replace(/\b(smartphone|mobile\s+phone|with\s+.*|for\s+men.*|for\s+women.*|compatible\s+with.*|includes\s+.*|no\s+cost\s+emi.*|exchange\s+offer.*|treats\s+.*|prevents\s+.*)\b/gi, ' ');
+  s = s.replace(/[^a-zA-Z0-9%\s+.-]/g, ' ').replace(/\s+/g, ' ').trim();
 
   const colorStop = new Set(['mist', 'grey', 'gray', 'black', 'white', 'silver', 'gold', 'blue', 'green', 'titanium', 'pink', 'purple', 'red', 'orange', 'yellow', 'starlight', 'midnight', 'teal', 'ultramarine', 'desert', 'natural']);
-  const words = s.split(' ').filter(w => w && !colorStop.has(w.toLowerCase()) && !/^\d+gb$/i.test(w)).slice(0, 5);
+  const words = s.split(' ').filter(w => w && !colorStop.has(w.toLowerCase()) && !/^\d+gb$/i.test(w)).slice(0, 7);
 
-  const brand = (words[0] || '').toLowerCase();
+  let brand = (words[0] || '').toLowerCase();
+  if (brand === 'be' && words[1] && words[1].toLowerCase() === 'bodywise') {
+    brand = 'bebodywise';
+  }
+
   let cleanQuery = words.join(' ');
   if (storageGb && !new RegExp(`\\b${storageGb}\\s*GB\\b`, 'i').test(cleanQuery)) {
     cleanQuery += ` ${storageGb}GB`;
   }
+  if (volumeMl && !new RegExp(`\\b${volumeMl}\\s*(?:ml|g|gm)\\b`, 'i').test(cleanQuery)) {
+    cleanQuery += ` ${volumeMl}ml`;
+  }
 
-  const modelTokens = words.map(w => w.toLowerCase()).filter(w => w.length >= 2 && !['5g', '4g', 'ram', 'rom', 'the', 'new'].includes(w));
-  return { cleanQuery: cleanQuery.trim(), brand, modelTokens, storageGb, ramGb };
+  const modelTokens = words
+    .map(w => w.toLowerCase().replace(/%$/, ''))
+    .filter(w => w.length >= 2 && !['5g', '4g', 'ram', 'rom', 'the', 'new', 'be', 'for', 'and', 'with'].includes(w));
+
+  return { cleanQuery: cleanQuery.trim(), brand, modelTokens, storageGb, volumeMl };
 }
 
 function normalizeSearchQuery(rawTitle) {
@@ -145,7 +178,7 @@ function normalizeSearchQuery(rawTitle) {
 
 function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referencePrice) {
   const fp = buildProductFingerprint(queryTitle);
-  const cand = String(candidateTitle || '').toLowerCase();
+  const cand = String(candidateTitle || '').toLowerCase().replace(/(\d+)\s*percent\b/gi, '$1%');
   const q = String(queryTitle || '').toLowerCase();
 
   const accessoryWords = [
@@ -157,7 +190,7 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
     if (cand.includes(w) && !q.includes(w)) return false;
   }
 
-  // Storage check: if query has a specific storage (e.g. 256GB) and candidate explicitly names a DIFFERENT storage (e.g. 512GB), reject
+  // Reject wrong phone storage variant
   if (fp.storageGb) {
     const candGbs = [...cand.matchAll(/\b(64|128|256|512|1024)\s*gb\b/gi)].map(m => parseInt(m[1], 10));
     if (candGbs.length > 0 && !candGbs.includes(fp.storageGb)) {
@@ -165,17 +198,26 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
     }
   }
 
+  // Reject multi-packs / kits if query is a single item
+  if (!/\b(pack|combo|kit|set\s+of)\b/i.test(q) && /\b(pack\s+of\s+[234]|combo\s+set|set\s+of\s+[234]|back\s+acne\s+kit)\b/i.test(cand)) {
+    return false;
+  }
+
   if (referencePrice > 800 && candidatePrice > 0) {
     if (candidatePrice < referencePrice * 0.48 || candidatePrice > referencePrice * 1.65) {
+      return false;
+    }
+  } else if (referencePrice >= 150 && referencePrice <= 800 && candidatePrice > 0) {
+    if (candidatePrice < referencePrice * 0.45 || candidatePrice > referencePrice * 2.2) {
       return false;
     }
   }
 
   if (fp.modelTokens.length === 0) return true;
-  // Require brand token + model number token match
+
+  // Only enforce strict digit-token matching for multi-character alphanumeric model codes (e.g., "x10", "s24", "m35") — not percentages like "1%" or "2%"
   for (const token of fp.modelTokens) {
-    // If token has digits (like "x10", "16", "s24", "nord"), it MUST appear in candidate title
-    if (/\d/.test(token) && !cand.includes(token)) {
+    if (/[a-z]/i.test(token) && /\d/.test(token) && !cand.includes(token)) {
       return false;
     }
   }
@@ -184,10 +226,10 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
   for (const t of fp.modelTokens) {
     if (cand.includes(t)) matched++;
   }
-  return (matched / fp.modelTokens.length) >= 0.65;
+  return (matched / fp.modelTokens.length) >= 0.55;
 }
 
-// Stage 3: Deal & Offer Breakdown Parser (Separates Coupon/WOW Deal vs Bank Card Instant Offers)
+// Stage 3: Deal & Offer Breakdown Parser (Handles WOW! Deal, Myntra "Best Price ₹... with coupon", Amazon coupons, and Bank Instant Discounts)
 function extractStructuredDealInfo(text, listedPrice) {
   const t = String(text || '').replace(/\s+/g, ' ');
   let couponDiscount = 0;
@@ -197,11 +239,13 @@ function extractStructuredDealInfo(text, listedPrice) {
   const matchedBanks = [];
   const offerSnippets = [];
 
-  // 1. Check for "Buy at ₹1,18,999" / "WOW! DEAL" / "Effective Price ₹..."
-  const buyAtMatches = [...t.matchAll(/(?:buy\s+at|wow!?\s*deal[^₹]*|effective\s+price[^₹]*|net\s+effective\s+price[^₹]*|special\s+deal\s+price[^₹]*)(?:₹|rs\.?|inr)\s*([\d,]{3,9})/gi)];
+  // 1. Check for "Buy at ₹...", "Best Price ₹... with coupon" (Myntra), "WOW! DEAL", "Effective Price ₹..."
+  const buyAtMatches = [
+    ...t.matchAll(/(?:buy\s+at|best\s+price|wow!?\s*deal[^₹]*|effective\s+price[^₹]*|net\s+effective\s+price[^₹]*|special\s+deal\s+price[^₹]*)\s*(?:₹|rs\.?|inr)\s*([\d,]{2,9})/gi)
+  ];
   for (const m of buyAtMatches) {
     const dealP = parseInt(m[1].replace(/,/g, ''), 10);
-    if (listedPrice > 500 && dealP > listedPrice * 0.55 && dealP < listedPrice) {
+    if (listedPrice >= 150 && dealP > listedPrice * 0.5 && dealP < listedPrice) {
       const diff = listedPrice - dealP;
       if (diff > wowDealDiscount) {
         wowDealDiscount = diff;
@@ -217,12 +261,12 @@ function extractStructuredDealInfo(text, listedPrice) {
   ];
   for (const m of couponMatches) {
     const val = parseInt(m[1].replace(/,/g, ''), 10);
-    if (val >= 50 && val <= 25000 && (!listedPrice || val <= listedPrice * 0.35)) {
+    if (val >= 25 && val <= 25000 && (!listedPrice || val <= listedPrice * 0.4)) {
       if (val > couponDiscount) couponDiscount = val;
     }
   }
 
-  // 3. Check for Bank Instant Discounts & identify which banks qualify (ICICI, HDFC, Axis, SBI, IndusInd, Kotak)
+  // 3. Check for Bank Instant Discounts & identify qualifying banks
   const bankRegexes = [
     /(?:flat|instant|extra|up\s*to|get|save|additional)\s*(?:₹|rs\.?|inr)\s*([\d,]{2,7})\s*(?:off|instant\s*discount|discount|cashback)[^.]{0,90}?(icici|hdfc|axis|sbi|indusind|kotak|all\s+bank|credit\s+card)/gi,
     /(icici|hdfc|axis|sbi|indusind|kotak)\s*(?:bank)?\s*(?:credit\s*cards?)?[^.]{0,60}?(?:flat|instant|up\s*to|off|discount)\s*(?:of\s*)?(?:₹|rs\.?|inr)\s*([\d,]{2,7})/gi
@@ -231,7 +275,7 @@ function extractStructuredDealInfo(text, listedPrice) {
   for (const m of t.matchAll(bankRegexes[0])) {
     const val = parseInt(m[1].replace(/,/g, ''), 10);
     const bankRaw = (m[2] || '').toLowerCase();
-    if (val >= 100 && val <= 30000 && (!listedPrice || val <= listedPrice * 0.35)) {
+    if (val >= 50 && val <= 30000 && (!listedPrice || val <= listedPrice * 0.35)) {
       if (val > bankInstantDiscount) bankInstantDiscount = val;
       if (bankRaw && !matchedBanks.includes(bankRaw)) matchedBanks.push(bankRaw);
       offerSnippets.push(m[0].trim().slice(0, 140));
@@ -240,32 +284,20 @@ function extractStructuredDealInfo(text, listedPrice) {
   for (const m of t.matchAll(bankRegexes[1])) {
     const bankRaw = (m[1] || '').toLowerCase();
     const val = parseInt(m[2].replace(/,/g, ''), 10);
-    if (val >= 100 && val <= 30000 && (!listedPrice || val <= listedPrice * 0.35)) {
+    if (val >= 50 && val <= 30000 && (!listedPrice || val <= listedPrice * 0.35)) {
       if (val > bankInstantDiscount) bankInstantDiscount = val;
       if (bankRaw && !matchedBanks.includes(bankRaw)) matchedBanks.push(bankRaw);
       offerSnippets.push(m[0].trim().slice(0, 140));
     }
   }
 
-  // Generic instant discount fallback if bank name wasn't in same clause
-  if (!bankInstantDiscount) {
-    const genMatches = [...t.matchAll(/(?:flat|instant)\s*(?:₹|rs\.?|inr)\s*([\d,]{3,6})\s*(?:instant\s*)?(?:discount|off)\s*(?:on\s*(?:credit|bank)\s*cards?)?/gi)];
-    for (const m of genMatches) {
-      const val = parseInt(m[1].replace(/,/g, ''), 10);
-      if (val >= 250 && val <= 25000 && (!listedPrice || val <= listedPrice * 0.35)) {
-        if (val > bankInstantDiscount) bankInstantDiscount = val;
-      }
-    }
-  }
-
-  // Combine total upfront sale/deal discount without double-counting (WOW! Deal already bundles coupon + bank/exchange)
   const totalSaleDiscount = wowDealDiscount > 0
     ? wowDealDiscount
     : (couponDiscount + bankInstantDiscount);
 
   let dealSummary = '';
   if (wowDealDiscount > 0) {
-    dealSummary = `WOW! Deal: Buy at ₹${wowDealPrice.toLocaleString('en-IN')} (−₹${wowDealDiscount.toLocaleString('en-IN')} bundle/bank/exchange deal)`;
+    dealSummary = `Deal / Coupon Price: Buy at ₹${wowDealPrice.toLocaleString('en-IN')} (−₹${wowDealDiscount.toLocaleString('en-IN')} off listed ₹${listedPrice.toLocaleString('en-IN')})`;
   } else {
     const parts = [];
     if (couponDiscount > 0) parts.push(`Coupon −₹${couponDiscount.toLocaleString('en-IN')}`);
@@ -293,7 +325,7 @@ function extractInfoFromUrl(urlStr) {
   let productId = '';
   try {
     const u = new URL(urlStr);
-    const pidParam = u.searchParams.get('pid');
+    const pidParam = u.searchParams.get('pid') || u.searchParams.get('skuId') || u.searchParams.get('productId');
     if (pidParam) productId = pidParam;
 
     const qParam = u.searchParams.get('k') || u.searchParams.get('q');
@@ -305,9 +337,10 @@ function extractInfoFromUrl(urlStr) {
     for (const p of parts) {
       if (/^B0[A-Z0-9]{8}$/i.test(p)) productId = p;
       if (/^itm[a-z0-9]{8,}$/i.test(p) && !productId) productId = p;
+      if (/^\d{6,10}$/.test(p) && !productId) productId = p;
     }
 
-    const stop = new Set(['dp', 'p', 's', 'gp', 'd', 'product', 'buy', 'shop', 'ref', 'itm', 'dl']);
+    const stop = new Set(['dp', 'p', 's', 'gp', 'd', 'product', 'buy', 'shop', 'ref', 'itm', 'dl', 'pn', 'pvid']);
     const slugParts = parts.filter(p => {
       const lp = p.toLowerCase();
       if (stop.has(lp)) return false;
@@ -319,7 +352,7 @@ function extractInfoFromUrl(urlStr) {
 
     if (slugParts.length > 0) {
       const longest = slugParts.sort((a, b) => b.length - a.length)[0];
-      const raw = decodeURIComponent(longest).replace(/[-_+]+/g, ' ').trim();
+      const raw = decodeURIComponent(longest).replace(/[-_+]+/g, ' ').replace(/(\d+)\s*percent\b/gi, '$1%').trim();
       slugTitle = normalizeSearchQuery(raw);
     }
   } catch (e) {}
@@ -355,6 +388,7 @@ function parseProductHtml(html) {
             $('span.VU-ZEz').text().trim() ||
             $('h1.yhB1nd').text().trim() ||
             $('h1.pd-title').text().trim() ||
+            $('h1.css-1gc4x7i').text().trim() ||
             $('meta[property="og:title"]').attr('content') ||
             $('meta[name="twitter:title"]').attr('content') ||
             $('title').text().trim();
@@ -364,13 +398,16 @@ function parseProductHtml(html) {
     const amzOffscreen = $('#corePriceDisplay_desktop_feature_div .a-price.priceToPay .a-offscreen, #corePrice_feature_div .a-price .a-offscreen, #apex_desktop .a-price.priceToPay .a-offscreen').first().text();
     const amzWhole = $('#corePriceDisplay_desktop_feature_div .a-price-whole, #corePrice_feature_div .a-price-whole').first().text();
     const fkPrice = $('div.Nx9bqj.CxhGGd, div._30jeq3._16Jk6d, div.hl05eU .Nx9bqj').first().text();
+    const nykaaPrice = $('span.css-1jczs19').first().text();
     const metaPrice = $('meta[property="product:price:amount"], meta[property="og:price:amount"], meta[name="twitter:data1"]').attr('content');
-    price = parsePriceNumber(amzOffscreen) || parsePriceNumber(amzWhole) || parsePriceNumber(fkPrice) || parsePriceNumber(metaPrice);
+    price = parsePriceNumber(amzOffscreen) || parsePriceNumber(amzWhole) || parsePriceNumber(fkPrice) || parsePriceNumber(nykaaPrice) || parsePriceNumber(metaPrice);
   }
 
   if (!price) {
     const stateMatch =
       html.match(/"finalPrice"\s*:\s*\{[^}]*"value"\s*:\s*(\d+)/) ||
+      html.match(/"offerPrice"\s*:\s*(\d+)/) ||
+      html.match(/"discountedPrice"\s*:\s*(\d+)/) ||
       html.match(/"sellingPrice"\s*:\s*(\d+)/) ||
       html.match(/"specialPrice"\s*:\s*(\d+)/) ||
       html.match(/"price"\s*:\s*"(\d+)"/);
@@ -405,16 +442,16 @@ function parseProductHtml(html) {
   return { title, price, bankOffers, dealInfo };
 }
 
-// Layer 1: Scrape Indian Price Comparison Aggregators (Smartprix & 91mobiles) via Web Index & Direct Page Parse
+// Layer 1: Scrape Indian Multi-Category Aggregators (BuyHatke, PriceHistory.app, Smartprix, 91mobiles)
+// BuyHatke indexes beauty, personal care, fashion, groceries, medicines, AND electronics across Myntra, Nykaa, NykaaMan, Meesho, Tira, Amazon, Flipkart, Netmeds!
 async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scraperKey) {
   const storeResults = [];
   try {
-    // Search Yahoo India for Smartprix or 91mobiles product page for this exact model
-    const q = `${cleanQuery} price in india (site:smartprix.com OR site:91mobiles.com OR site:mysmartprice.com)`;
+    const q = `${cleanQuery} price in india (site:buyhatke.com OR site:pricehistory.app OR site:smartprix.com OR site:91mobiles.com)`;
     const searchUrl = `https://in.search.yahoo.com/search?p=${encodeURIComponent(q)}`;
     const resp = await axios.get(buildFetchUrl(searchUrl, scraperKey), {
       headers: DESKTOP_HEADERS,
-      timeout: 8000
+      timeout: 8500
     });
     const $ = cheerio.load(resp.data || '');
 
@@ -428,12 +465,41 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
       if (ruMatch) {
         try { href = decodeURIComponent(ruMatch[1]); } catch (e) {}
       }
-      if (href && (href.includes('smartprix.com') || href.includes('91mobiles.com') || href.includes('mysmartprice.com')) && aggUrls.length < 2) {
+
+      // First parse BuyHatke / PriceHistory search snippets directly!
+      // BuyHatke snippets look like: "Be Bodywise 1% Salicylic Acid Body Wash (250 ml)... ₹360. Buy now · Amazon ... ₹331. Buy now · Meesho"
+      const combined = `${rawTitle} ${snippet}`;
+      const buyNowParts = combined.split(/Buy\s+now/i);
+      for (let i = 0; i < buyNowParts.length - 1; i++) {
+        const leftPart = buyNowParts[i];
+        const rightPart = buyNowParts[i + 1];
+        const prices = extractAllRupeePrices(leftPart);
+        const storeMatch = rightPart.match(/^\s*[·•|-]?\s*([A-Za-z0-9]+)|$/);
+        const storeHint = (storeMatch && storeMatch[1]) || href;
+        const store = detectStoreFromNameOrUrl(storeHint);
+        if (store.id !== 'other' && prices.length > 0) {
+          const pVal = prices[prices.length - 1];
+          if (isRelevantCandidate(cleanQuery, leftPart, pVal, referencePrice) && !storeResults.some(r => r.merchantId === store.id)) {
+            storeResults.push({
+              merchantId: store.id,
+              storeName: store.name,
+              price: pVal,
+              saleDiscount: 0,
+              dealSummary: '',
+              matchedBanks: [],
+              productTitle: cleanQuery,
+              url: `https://www.${store.site}`
+            });
+          }
+        }
+      }
+
+      if (href && (href.includes('buyhatke.com') || href.includes('smartprix.com') || href.includes('91mobiles.com') || href.includes('pricehistory.app')) && aggUrls.length < 3) {
         aggUrls.push({ href, rawTitle, snippet });
       }
     });
 
-    // Fetch top aggregator page and parse its store price table
+    // Fetch top aggregator pages to extract full multi-store comparison rows
     await Promise.allSettled(aggUrls.map(async (agg) => {
       try {
         const pageResp = await axios.get(buildFetchUrl(agg.href, scraperKey), {
@@ -443,9 +509,10 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
         const $p = cheerio.load(pageResp.data || '');
         const pageTitle = $p('h1').first().text().trim() || agg.rawTitle;
 
-        // Parse Smartprix / 91mobiles price table rows
-        $p('li.sm-store-item, div.pg-prc-tbl-row, tr.store_row, div.store_pricelist, .prc-grid, .store-row').each((_, rowEl) => {
+        // Parse Smartprix / 91mobiles / BuyHatke store cards
+        $p('li.sm-store-item, div.pg-prc-tbl-row, tr.store_row, div.store_pricelist, .prc-grid, .store-row, a[href*="buyhatke"], div[class*="store"], div[class*="card"]').each((_, rowEl) => {
           const rowText = $p(rowEl).text().replace(/\s+/g, ' ').trim();
+          if (rowText.length > 260) return;
           const imgAlt = $p(rowEl).find('img').attr('alt') || '';
           const combinedStoreHint = `${imgAlt} ${rowText}`;
           const store = detectStoreFromNameOrUrl(combinedStoreHint);
@@ -454,7 +521,7 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
           const prices = extractAllRupeePrices(rowText);
           if (prices.length === 0) return;
           const pVal = prices[0];
-          if (!isRelevantCandidate(cleanQuery, pageTitle, pVal, referencePrice)) return;
+          if (!isRelevantCandidate(cleanQuery, `${pageTitle} ${rowText}`, pVal, referencePrice)) return;
 
           const dealInfo = extractStructuredDealInfo(rowText, pVal);
           if (!storeResults.some(r => r.merchantId === store.id)) {
@@ -465,8 +532,8 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
               saleDiscount: dealInfo.totalSaleDiscount || 0,
               dealSummary: dealInfo.dealSummary || '',
               matchedBanks: dealInfo.matchedBanks || [],
-              productTitle: pageTitle.replace(/\s*Price in India.*$/i, '').trim(),
-              url: `https://www.${store.site}/search?q=${encodeURIComponent(cleanQuery)}`
+              productTitle: pageTitle.replace(/\s*(?:Price History of|Price in India).*$/i, '').trim() || cleanQuery,
+              url: `https://www.${store.site}`
             });
           }
         });
@@ -476,7 +543,7 @@ async function fetchFromIndianPriceAggregators(cleanQuery, referencePrice, scrap
   return storeResults;
 }
 
-// Layer 2 & 3: Multi-Engine Web Index Lookup + Deep Product Page (PDP) Deal Inspection
+// Layer 2 & 3: Multi-Engine Web Index Lookup (Yahoo India + DuckDuckGo HTML)
 async function lookupProductViaWebIndex(query, targetSite, referencePrice, scraperKey) {
   const q = targetSite ? `${query} site:${targetSite}` : query;
 
@@ -529,7 +596,7 @@ async function lookupProductViaWebIndex(query, targetSite, referencePrice, scrap
       const candidates = eng.parse($);
 
       for (const c of candidates) {
-        const cleanTitle = c.rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|OPPO|OnePlus|Samsung|Buy Online|Price in India.*).*$/i, '').trim();
+        const cleanTitle = c.rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Nykaa|NykaaMan|Meesho|Zepto|Be Bodywise|OPPO|OnePlus|Samsung|Buy Online|Price in India.*).*$/i, '').trim();
         const combined = `${c.rawTitle} ${c.snippet}`;
         const prices = extractAllRupeePrices(combined);
 
@@ -543,12 +610,12 @@ async function lookupProductViaWebIndex(query, targetSite, referencePrice, scrap
             let saleDisc = dealInfo.totalSaleDiscount;
             let dealSummary = dealInfo.dealSummary;
 
-            if (validPrices.length >= 2 && maxP <= (referencePrice ? referencePrice * 1.15 : maxP) && minP >= maxP * 0.72 && minP < maxP) {
+            if (validPrices.length >= 2 && maxP <= (referencePrice ? referencePrice * 1.25 : maxP) && minP >= maxP * 0.65 && minP < maxP) {
               listedPrice = maxP;
               const gap = maxP - minP;
               if (gap > saleDisc) {
                 saleDisc = gap;
-                dealSummary = `Deal Price ₹${minP.toLocaleString('en-IN')} (−₹${gap.toLocaleString('en-IN')} off listed ₹${maxP.toLocaleString('en-IN')})`;
+                dealSummary = `Coupon / Deal Price ₹${minP.toLocaleString('en-IN')} (−₹${gap.toLocaleString('en-IN')} off listed ₹${maxP.toLocaleString('en-IN')})`;
               }
             }
 
@@ -574,13 +641,13 @@ async function resolveAndExtractOriginProduct(rawInput, inputUrl, scraperKey) {
   let finalUrl = inputUrl;
   let html = '';
 
-  const textBeforeUrl = String(rawInput || '').replace(/https?:\/\/[^\s]+/gi, '').replace(/^(?:take a look at this|check out this)\s+/i, '').replace(/\s+on\s+(?:flipkart|amazon).*$/i, '').trim();
+  const textBeforeUrl = String(rawInput || '').replace(/https?:\/\/[^\s]+/gi, '').replace(/^(?:take a look at this|check out this)\s+/i, '').replace(/\s+on\s+(?:flipkart|amazon|nykaa|myntra).*$/i, '').trim();
 
   try {
     const resp = await axios.get(buildFetchUrl(inputUrl, scraperKey), {
       headers: BOT_PREVIEW_HEADERS,
       maxRedirects: 8,
-      timeout: 9000
+      timeout: 8500
     });
     html = typeof resp.data === 'string' ? resp.data : '';
     if (resp.request && resp.request.res && resp.request.res.responseUrl && !scraperKey) {
@@ -599,7 +666,7 @@ async function resolveAndExtractOriginProduct(rawInput, inputUrl, scraperKey) {
       const resp2 = await axios.get(buildFetchUrl(finalUrl, scraperKey), {
         headers: DESKTOP_HEADERS,
         maxRedirects: 5,
-        timeout: 9000
+        timeout: 8500
       });
       if (resp2.request && resp2.request.res && resp2.request.res.responseUrl && !scraperKey) {
         finalUrl = resp2.request.res.responseUrl;
@@ -627,7 +694,9 @@ async function resolveAndExtractOriginProduct(rawInput, inputUrl, scraperKey) {
   if (!bestPrice || !bestTitle) {
     const lookupQ = productId ? `${slugTitle} ${productId}`.trim() : slugTitle;
     if (lookupQ) {
-      const indexed = await lookupProductViaWebIndex(lookupQ, storeInfo.site || '', 0, scraperKey);
+      // For NykaaMan (6005003), also check nykaa.com since both share the exact same product catalog and SKU!
+      const siteFilter = storeInfo.site === 'nykaaman.com' ? 'nykaa.com' : (storeInfo.site || '');
+      const indexed = await lookupProductViaWebIndex(lookupQ, siteFilter, 0, scraperKey);
       if (indexed) {
         if (!bestTitle && indexed.title) bestTitle = indexed.title;
         if (!bestPrice && indexed.price > 0) bestPrice = indexed.price;
@@ -663,7 +732,9 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
   const results = [];
   const activeSerpKey = serpApiKey || SERPAPI_KEY;
 
-  // 1. SerpApi Google Shopping India (if key configured)
+  // Detect whether query is Beauty / Personal Care / Pharmacy / Fashion vs Electronics
+  const isBeautyOrPersonalCare = /\b(body\s*wash|face\s*wash|serum|lotion|cream|shampoo|sunscreen|salicylic|niacinamide|benzoyl|lactic|aha|bha|moisturizer|cleanser|perfume|deodorant|bodywise|minimalist|nykaa|cetaphil|cerave|derma)\b/i.test(cleanTitle);
+
   if (activeSerpKey) {
     try {
       const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(cleanTitle)}&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
@@ -757,44 +828,16 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
         });
         return match;
       }
-    },
-    {
-      merchantId: 'croma',
-      storeName: 'Croma',
-      site: 'croma.com',
-      searchUrl: `https://www.croma.com/searchB?q=${enc}`,
-      parse: ($) => {
-        let match = null;
-        $('li.product-item, div.cp-product').each((_, el) => {
-          if (match) return;
-          const card = $(el);
-          const title = card.find('h3.product-title, .product-title').first().text().trim();
-          const price = parsePriceNumber(card.find('span.amount').first().text());
-          if (price > 0 && title && isRelevantCandidate(cleanTitle, title, price, referencePrice)) {
-            const dealInfo = extractStructuredDealInfo(card.text(), price);
-            match = {
-              price,
-              saleDiscount: dealInfo.totalSaleDiscount,
-              dealSummary: dealInfo.dealSummary,
-              matchedBanks: dealInfo.matchedBanks,
-              productTitle: title,
-              url: `https://www.croma.com/searchB?q=${enc}`
-            };
-          }
-        });
-        return match;
-      }
     }
   ];
 
-  // Run Layer 1 (Indian Price Aggregators) and Layer 2 (Direct Store Scraping) in parallel
   const [aggResults, directSettled] = await Promise.all([
     fetchFromIndianPriceAggregators(cleanTitle, referencePrice, scraperKey),
     Promise.allSettled(directTargets.map(async (t) => {
       try {
         const resp = await axios.get(buildFetchUrl(t.searchUrl, scraperKey), {
           headers: DESKTOP_HEADERS,
-          timeout: 8500
+          timeout: 8000
         });
         const $ = cheerio.load(resp.data || '');
         const parsed = t.parse($);
@@ -828,14 +871,22 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 
   const effectiveRefPrice = referencePrice || (results[0] && results[0].price) || 0;
 
-  // Build list of stores + Official Brand Store to check via Web Index + Deep PDP Inspection
-  const webTargets = [
-    { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', fallbackUrl: `https://www.flipkart.com/search?q=${enc}` },
-    { id: 'amazon', name: 'Amazon India', site: 'amazon.in', fallbackUrl: `https://www.amazon.in/s?k=${enc}` },
-    { id: 'croma', name: 'Croma', site: 'croma.com', fallbackUrl: `https://www.croma.com/searchB?q=${enc}` },
-    { id: 'reliancedigital', name: 'Reliance Digital', site: 'reliancedigital.in', fallbackUrl: `https://www.reliancedigital.in/search?q=${enc}` },
-    { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', fallbackUrl: `https://www.vijaysales.com/search/${enc}` }
-  ];
+  // Choose category-appropriate stores for Web Index lookup
+  const webTargets = isBeautyOrPersonalCare
+    ? [
+        { id: 'nykaa', name: 'Nykaa / Nykaa Man', site: 'nykaa.com', fallbackUrl: `https://www.nykaa.com/search/result/?q=${enc}` },
+        { id: 'myntra', name: 'Myntra', site: 'myntra.com', fallbackUrl: `https://www.myntra.com/${enc.replace(/%20/g, '-')}` },
+        { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', fallbackUrl: `https://www.flipkart.com/search?q=${enc}` },
+        { id: 'amazon', name: 'Amazon India', site: 'amazon.in', fallbackUrl: `https://www.amazon.in/s?k=${enc}` },
+        { id: 'zepto', name: 'Zepto', site: 'zepto.com', fallbackUrl: `https://www.zepto.com/search?query=${enc}` }
+      ]
+    : [
+        { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', fallbackUrl: `https://www.flipkart.com/search?q=${enc}` },
+        { id: 'amazon', name: 'Amazon India', site: 'amazon.in', fallbackUrl: `https://www.amazon.in/s?k=${enc}` },
+        { id: 'croma', name: 'Croma', site: 'croma.com', fallbackUrl: `https://www.croma.com/searchB?q=${enc}` },
+        { id: 'reliancedigital', name: 'Reliance Digital', site: 'reliancedigital.in', fallbackUrl: `https://www.reliancedigital.in/search?q=${enc}` },
+        { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', fallbackUrl: `https://www.vijaysales.com/search/${enc}` }
+      ];
 
   if (fp.brand && BRAND_STORES[fp.brand]) {
     const bs = BRAND_STORES[fp.brand];
@@ -857,12 +908,11 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
       let finalSummary = found.dealSummary || '';
       let finalBanks = found.matchedBanks || [];
 
-      // Layer 3: Deep PDP Deal Inspection for discovered product URLs
-      if (found.url && (found.url.includes('/p/') || found.url.includes('/dp/') || found.url.includes('/product'))) {
+      if (found.url && (found.url.includes('/p/') || found.url.includes('/dp/') || found.url.includes('/product') || found.url.includes('/buy'))) {
         try {
           const pResp = await axios.get(buildFetchUrl(found.url, scraperKey), {
             headers: BOT_PREVIEW_HEADERS,
-            timeout: 6500
+            timeout: 6000
           });
           const pParsed = parseProductHtml(typeof pResp.data === 'string' ? pResp.data : '');
           if (pParsed.price > 0) finalPrice = pParsed.price;
@@ -893,31 +943,13 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
     }
   }
 
-  // Also run Deep PDP Deal Inspection on any direct-search result (like Amazon) whose saleDiscount is still 0
-  await Promise.allSettled(results.map(async (r) => {
-    if (r.saleDiscount === 0 && r.url && (r.url.includes('/dp/') || r.url.includes('/p/'))) {
-      try {
-        const pResp = await axios.get(buildFetchUrl(r.url, scraperKey), {
-          headers: BOT_PREVIEW_HEADERS,
-          timeout: 6000
-        });
-        const pParsed = parseProductHtml(typeof pResp.data === 'string' ? pResp.data : '');
-        if (pParsed.dealInfo.totalSaleDiscount > 0) {
-          r.saleDiscount = pParsed.dealInfo.totalSaleDiscount;
-          r.dealSummary = pParsed.dealInfo.dealSummary;
-          r.matchedBanks = pParsed.dealInfo.matchedBanks;
-        }
-      } catch (e) {}
-    }
-  }));
-
   return results;
 }
 
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    service: 'CardPick Multi-Store Live Engine v4.0',
+    service: 'CardPick Multi-Store Live Engine v5.0',
     hasSerpApi: Boolean(SERPAPI_KEY),
     hasScraperApi: Boolean(SCRAPERAPI_KEY)
   });
@@ -990,5 +1022,5 @@ app.post('/api/fetch-prices', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`CardPick Full-Stack Server v4.0 running on http://localhost:${PORT}`);
+  console.log(`CardPick Full-Stack Server v5.0 running on http://localhost:${PORT}`);
 });
