@@ -957,8 +957,20 @@ async function resolveAndExtractOriginProduct(rawInput, inputUrl, scraperKey) {
   const storeInfo = detectStoreFromNameOrUrl(hostname);
   const { slugTitle, productId } = extractInfoFromUrl(finalUrl);
 
-  let bestTitle = parsed.title || textBeforeUrl || slugTitle;
-  let bestPrice = parsed.price;
+  // Combine slugTitle and textBeforeUrl so if share text says "Nord 6" but URL slug says "oneplus-nord-6-quick-silver-256-gb", we keep the full brand "OnePlus Nord 6 256GB"!
+  let bestTitle = parsed.title || ((slugTitle && textBeforeUrl && slugTitle.length > textBeforeUrl.length) ? `${slugTitle} ${textBeforeUrl}` : (slugTitle || textBeforeUrl));
+
+  // Also check Flipkart's ctx= base64 JSON parameter (e.g. {"displayPrice":"48999"}) as fallback originPrice!
+  let ctxPrice = 0;
+  try {
+    const uObj = new URL(finalUrl);
+    const ctxB64 = uObj.searchParams.get('ctx');
+    if (ctxB64) {
+      const ctxJson = JSON.parse(Buffer.from(ctxB64, 'base64').toString('utf8'));
+      if (ctxJson && ctxJson.displayPrice) ctxPrice = parsePriceNumber(ctxJson.displayPrice);
+    }
+  } catch (e) {}
+  let bestPrice = parsed.price || ctxPrice;
   let bestDiscount = parsed.dealInfo.couponDiscount;
   let bestBankDiscount = parsed.dealInfo.bankInstantDiscount;
   let bestDealSummary = parsed.dealInfo.dealSummary;
@@ -1139,8 +1151,89 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
       }
     }
 
-    // If SerpApi already found 2+ stores, return immediately without waiting for slow fallback scrapers!
-    if (results.length >= 2) {
+    // 1C: Also check inline_shopping from organic response
+    if (orgRes.status === 'fulfilled' && orgRes.value && orgRes.value.data) {
+      const inlineShop = orgRes.value.data.inline_shopping || orgRes.value.data.shopping_results || [];
+      for (const item of inlineShop) {
+        const store = detectStoreFromNameOrUrl(item.source || item.merchant || '');
+        const price = parsePriceNumber(item.extracted_price || item.price);
+        if (!price || store.id === 'other') continue;
+        if (!isRelevantCandidate(cleanTitle, item.title || cleanTitle, price, referencePrice)) continue;
+        if (!results.some(r => r.merchantId === store.id)) {
+          results.push({
+            merchantId: store.id,
+            storeName: store.name,
+            price,
+            saleDiscount: 0,
+            bankInstantDiscount: 0,
+            dealSummary: '',
+            matchedBanks: [],
+            productTitle: item.title || cleanTitle,
+            url: item.link || item.product_link || ''
+          });
+        }
+      }
+    }
+
+    // 1D: Guarantee Amazon.in & Flipkart are explicitly checked via dedicated SerpApi query if either is still missing!
+    const mustHaveStores = [
+      { id: 'amazon', name: 'Amazon India', site: 'amazon.in', fallbackUrl: `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}` },
+      { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', fallbackUrl: `https://www.flipkart.com/search?q=${encodeURIComponent(cleanTitle)}` }
+    ].filter(ms => !results.some(r => r.merchantId === ms.id));
+
+    if (mustHaveStores.length > 0) {
+      await Promise.allSettled(mustHaveStores.map(async (ms) => {
+        try {
+          const siteQ = `${cleanTitle} site:${ms.site}`;
+          const siteUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(siteQ)}&num=10&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
+          const sResp = await axios.get(siteUrl, { timeout: 9000 });
+          const sOrgs = (sResp.data && sResp.data.organic_results) || [];
+          for (const item of sOrgs) {
+            if (results.some(r => r.merchantId === ms.id)) break;
+            const rawTitle = String(item.title || '').trim();
+            const snippet = String(item.snippet || '').trim();
+            const combined = `${rawTitle} ${snippet}`;
+            if (!isRelevantCandidate(cleanTitle, rawTitle, 0, 0)) continue;
+
+            let richP = 0;
+            if (item.rich_snippet && item.rich_snippet.top && item.rich_snippet.top.detected_extensions) {
+              richP = parsePriceNumber(item.rich_snippet.top.detected_extensions.price);
+            }
+            const snipPrices = extractAllRupeePrices(combined).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
+            let pVal = (richP && isRelevantCandidate(cleanTitle, rawTitle, richP, referencePrice)) ? richP : (snipPrices[0] || 0);
+
+            // If Google's Amazon.in organic snippet omitted the rupee number, read the discovered Amazon /dp/ page via Jina Reader!
+            if (!pVal && item.link && (item.link.includes('/dp/') || item.link.includes('/p/'))) {
+              try {
+                const md = await fetchViaJinaReader(item.link, 7000);
+                const mdPrices = extractAllRupeePrices(md).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
+                if (mdPrices.length > 0) pVal = mdPrices[0];
+              } catch (e) {}
+            }
+
+            if (pVal > 0) {
+              const dealInfo = extractStructuredDealInfo(combined, pVal);
+              results.push({
+                merchantId: ms.id,
+                storeName: ms.name,
+                price: pVal,
+                saleDiscount: dealInfo.couponDiscount || 0,
+                bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+                dealSummary: dealInfo.dealSummary || '',
+                matchedBanks: dealInfo.matchedBanks || [],
+                productTitle: rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Buy Online|Price in India.*).*$/i, '').trim() || cleanTitle,
+                url: item.link || ms.fallbackUrl
+              });
+            }
+          }
+        } catch (e) {}
+      }));
+    }
+
+    // Only skip fallback scrapers if BOTH Amazon and Flipkart are already found!
+    const hasAmazon = results.some(r => r.merchantId === 'amazon');
+    const hasFlipkart = results.some(r => r.merchantId === 'flipkart');
+    if (hasAmazon && hasFlipkart && results.length >= 2) {
       const allStorePrices = results.map(r => r.price).filter(p => p > 0);
       const priceHistory = parsePriceHistoryStats(serpHistoryText, allStorePrices, cleanTitle);
       return { stores: results, priceHistory };
@@ -1322,7 +1415,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    service: 'CardPick Multi-Store Live Engine v6.5 (SerpApi Enabled)',
+    service: 'CardPick Multi-Store Live Engine v6.6 (SerpApi + Amazon Deep-Check)',
     hasSerpApi: Boolean(SERPAPI_KEY),
     hasScraperApi: Boolean(SCRAPERAPI_KEY)
   });
