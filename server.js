@@ -6,7 +6,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SERPAPI_KEY = process.env.SERPAPI_KEY || '';
+const SERPAPI_KEY = process.env.SERPAPI_KEY || 'f8326bc33594a64328e3c11f18049a6e5d38a01e653b1105109856ec7144f812';
 const SCRAPERAPI_KEY = process.env.SCRAPERAPI_KEY || '';
 
 app.use(cors());
@@ -967,7 +967,37 @@ async function resolveAndExtractOriginProduct(rawInput, inputUrl, scraperKey) {
     const lookupQ = productId ? `${slugTitle} ${productId}`.trim() : slugTitle;
     if (lookupQ) {
       const siteFilter = storeInfo.site === 'nykaaman.com' ? 'nykaa.com' : (storeInfo.site || '');
-      const indexed = await lookupProductViaWebIndex(lookupQ, siteFilter, 0, scraperKey);
+      let indexed = null;
+      if (SERPAPI_KEY) {
+        try {
+          const sq = siteFilter ? `${lookupQ} site:${siteFilter}` : lookupQ;
+          const sUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(sq)}&gl=in&hl=en&api_key=${encodeURIComponent(SERPAPI_KEY)}`;
+          const sResp = await axios.get(sUrl, { timeout: 10000 });
+          const org = (sResp.data && sResp.data.organic_results) || [];
+          for (const item of org) {
+            const cTitle = String(item.title || '').replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Nykaa|NykaaMan|Buy Online|Price in India.*).*$/i, '').trim();
+            const richPrice = item.rich_snippet && item.rich_snippet.top && item.rich_snippet.top.detected_extensions && item.rich_snippet.top.detected_extensions.price;
+            const snippetPrices = extractAllRupeePrices(`${item.title || ''} ${item.snippet || ''}`);
+            const pVal = parsePriceNumber(richPrice) || snippetPrices[0] || 0;
+            if (cTitle.length > 4) {
+              const dealInfo = extractStructuredDealInfo(`${item.title || ''} ${item.snippet || ''}`, pVal);
+              indexed = {
+                title: cTitle,
+                price: pVal,
+                saleDiscount: dealInfo.couponDiscount || 0,
+                bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+                dealSummary: dealInfo.dealSummary || '',
+                url: item.link || ''
+              };
+              if (pVal > 0) break;
+            }
+          }
+        } catch (e) {}
+      }
+      if (!indexed || !indexed.price) {
+        const webIdx = await lookupProductViaWebIndex(lookupQ, siteFilter, 0, scraperKey);
+        if (webIdx) indexed = webIdx;
+      }
       if (indexed) {
         if (!bestTitle && indexed.title) bestTitle = indexed.title;
         if (!bestPrice && indexed.price > 0) bestPrice = indexed.price;
@@ -1005,32 +1035,116 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 
   const isBeautyOrPersonalCare = /\b(body\s*wash|face\s*wash|serum|lotion|cream|shampoo|sunscreen|salicylic|niacinamide|benzoyl|lactic|aha|bha|moisturizer|cleanser|perfume|deodorant|bodywise|minimalist|nykaa|cetaphil|cerave|derma)\b/i.test(cleanTitle);
 
+  let serpHistoryText = '';
   if (activeSerpKey) {
-    try {
-      const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(cleanTitle)}&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
-      const resp = await axios.get(serpUrl, { timeout: 12000 });
-      const shopping = (resp.data && resp.data.shopping_results) || [];
+    const shopUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(cleanTitle)}&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
+    const orgQ = `${cleanTitle} price in india (site:amazon.in OR site:flipkart.com OR site:croma.com OR site:vijaysales.com OR site:reliancedigital.in OR site:oneplus.in OR site:oppo.com OR site:nykaa.com OR site:myntra.com OR site:91mobiles.com OR site:smartprix.com OR site:pricehistory.app OR site:buyhatke.com)`;
+    const orgUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(orgQ)}&num=20&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
+
+    const [shopRes, orgRes] = await Promise.allSettled([
+      axios.get(shopUrl, { timeout: 12000 }),
+      axios.get(orgUrl, { timeout: 12000 })
+    ]);
+
+    // 1A: Parse SerpApi Google Shopping results
+    if (shopRes.status === 'fulfilled' && shopRes.value && shopRes.value.data) {
+      const shopping = shopRes.value.data.shopping_results || [];
       for (const item of shopping) {
         const store = detectStoreFromNameOrUrl(item.source || '');
         const price = parsePriceNumber(item.extracted_price || item.price);
         if (!price || store.id === 'other') continue;
         if (!isRelevantCandidate(cleanTitle, item.title || cleanTitle, price, referencePrice)) continue;
 
+        const dealInfo = extractStructuredDealInfo(`${item.title || ''} ${(item.extensions || []).join(' ')}`, price);
         if (!results.some(r => r.merchantId === store.id)) {
           results.push({
             merchantId: store.id,
             storeName: store.name,
             price,
-            saleDiscount: 0,
-            bankInstantDiscount: 0,
-            dealSummary: '',
-            matchedBanks: [],
-            productTitle: item.title,
+            saleDiscount: dealInfo.couponDiscount || 0,
+            bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+            dealSummary: dealInfo.dealSummary || '',
+            matchedBanks: dealInfo.matchedBanks || [],
+            productTitle: item.title || cleanTitle,
             url: item.link || item.product_link || ''
           });
         }
       }
-    } catch (e) {}
+    }
+
+    // 1B: Parse SerpApi Google Organic results (captures Flipkart, Amazon, OnePlus.in, 91mobiles, Smartprix, PriceHistory.app, BuyHatke!)
+    if (orgRes.status === 'fulfilled' && orgRes.value && orgRes.value.data) {
+      const organics = orgRes.value.data.organic_results || [];
+      for (const item of organics) {
+        const rawTitle = String(item.title || '').trim();
+        const snippet = String(item.snippet || '').trim();
+        const link = String(item.link || '').trim();
+        const combined = `${rawTitle} ${snippet}`;
+
+        if (!isRelevantCandidate(cleanTitle, rawTitle, 0, 0)) continue;
+        serpHistoryText += ' ' + combined;
+
+        // Check rich_snippet price first, then snippet rupee prices
+        let richPrice = 0;
+        if (item.rich_snippet && item.rich_snippet.top && item.rich_snippet.top.detected_extensions) {
+          richPrice = parsePriceNumber(item.rich_snippet.top.detected_extensions.price);
+        }
+        const snippetPrices = extractAllRupeePrices(combined).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
+        const pVal = (richPrice && isRelevantCandidate(cleanTitle, rawTitle, richPrice, referencePrice)) ? richPrice : (snippetPrices[0] || 0);
+
+        const directStore = detectStoreFromNameOrUrl(`${link} ${item.source || ''}`);
+        if (directStore.id !== 'other' && pVal > 0 && !results.some(r => r.merchantId === directStore.id)) {
+          const dealInfo = extractStructuredDealInfo(combined, pVal);
+          results.push({
+            merchantId: directStore.id,
+            storeName: directStore.name,
+            price: pVal,
+            saleDiscount: dealInfo.couponDiscount || 0,
+            bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+            dealSummary: dealInfo.dealSummary || '',
+            matchedBanks: dealInfo.matchedBanks || [],
+            productTitle: rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Nykaa|NykaaMan|Buy Online|Price in India.*).*$/i, '').trim() || cleanTitle,
+            url: link
+          });
+        }
+
+        // Also parse aggregator snippets (91mobiles, Smartprix, GadgetsNow, Beebom, BuyHatke) returned by Google!
+        if (/(?:91mobiles|smartprix|gadgetsnow|beebom|buyhatke|pricehistory)/i.test(link) && pVal > 0) {
+          const inlineStores = [
+            { id: 'amazon', name: 'Amazon India', site: 'amazon.in', rx: /Amazon(?:\.in)?[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
+            { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', rx: /Flipkart(?:\.com)?[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
+            { id: 'croma', name: 'Croma', site: 'croma.com', rx: /Croma[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
+            { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', rx: /Vijay\s*Sales[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i }
+          ];
+          for (const is of inlineStores) {
+            if (results.some(r => r.merchantId === is.id)) continue;
+            const m = combined.match(is.rx);
+            const storeP = m ? parsePriceNumber(m[1]) : (combined.toLowerCase().includes(is.id) ? pVal : 0);
+            if (storeP > 0 && isRelevantCandidate(cleanTitle, rawTitle, storeP, referencePrice)) {
+              const dealInfo = extractStructuredDealInfo(combined, storeP);
+              results.push({
+                merchantId: is.id,
+                storeName: is.name,
+                price: storeP,
+                saleDiscount: dealInfo.couponDiscount || 0,
+                bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+                dealSummary: dealInfo.dealSummary || '',
+                matchedBanks: dealInfo.matchedBanks || [],
+                productTitle: cleanTitle,
+                url: is.id === 'amazon' ? `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}` : `https://www.${is.site}/search?q=${encodeURIComponent(cleanTitle)}`
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // If SerpApi already found 2+ stores, return immediately without waiting for slow fallback scrapers!
+    if (results.length >= 2) {
+      const allStorePrices = results.map(r => r.price).filter(p => p > 0);
+      const priceHistory = parsePriceHistoryStats(serpHistoryText, allStorePrices, cleanTitle);
+      return { stores: results, priceHistory };
+    }
   }
 
   const enc = encodeURIComponent(cleanTitle);
@@ -1201,14 +1315,14 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
   }
 
   const allStorePrices = results.map(r => r.price).filter(p => p > 0);
-  const priceHistory = parsePriceHistoryStats(historyTextAccumulator, allStorePrices, cleanTitle);
+  const priceHistory = parsePriceHistoryStats(serpHistoryText + ' ' + historyTextAccumulator, allStorePrices, cleanTitle);
   return { stores: results, priceHistory };
 }
 
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    service: 'CardPick Multi-Store Live Engine v6.2',
+    service: 'CardPick Multi-Store Live Engine v6.5 (SerpApi Enabled)',
     hasSerpApi: Boolean(SERPAPI_KEY),
     hasScraperApi: Boolean(SCRAPERAPI_KEY)
   });
