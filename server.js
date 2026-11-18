@@ -214,7 +214,7 @@ function isRelevantCandidate(queryTitle, candidateTitle, candidatePrice, referen
     { rx: /\blite\b/i, checkInQ: /\blite\b/i },
     { rx: /\bultra\b/i, checkInQ: /\bultra\b/i },
     { rx: /\bpro\b/i, checkInQ: /\bpro\b/i },
-    { rx: /\bplus\b|\+/i, checkInQ: /\bplus\b|\+/i },
+    { rx: /\bplus\b|(?<!\d\s*(?:gb|tb)\s*)\+(?!\s*\d+\s*(?:gb|tb))/i, checkInQ: /\bplus\b|(?<!\d\s*(?:gb|tb)\s*)\+(?!\s*\d+\s*(?:gb|tb))/i },
     { rx: /\bfe\b/i, checkInQ: /\bfe\b/i },
     { rx: /\bmini\b/i, checkInQ: /\bmini\b/i },
     { rx: /\bfold\b/i, checkInQ: /\bfold\b/i },
@@ -1049,13 +1049,18 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 
   let serpHistoryText = '';
   if (activeSerpKey) {
+    // Strip trailing storage like "256GB" for a broader model query when needed
+    const coreModelQuery = cleanTitle.replace(/\b\d+\s*(?:GB|TB|ml)\b/gi, '').replace(/\s+/g, ' ').trim();
     const shopUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(cleanTitle)}&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
-    const orgQ = `${cleanTitle} price in india (site:amazon.in OR site:flipkart.com OR site:croma.com OR site:vijaysales.com OR site:reliancedigital.in OR site:oneplus.in OR site:oppo.com OR site:nykaa.com OR site:myntra.com OR site:91mobiles.com OR site:smartprix.com OR site:pricehistory.app OR site:buyhatke.com)`;
-    const orgUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(orgQ)}&num=20&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
+    const orgQ = `${cleanTitle} price in india amazon flipkart`;
+    const orgUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(orgQ)}&num=15&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
+    const phQ = `${coreModelQuery} "Lowest" "Average" site:pricehistory.app OR site:91mobiles.com`;
+    const phUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(phQ)}&num=10&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
 
-    const [shopRes, orgRes] = await Promise.allSettled([
-      axios.get(shopUrl, { timeout: 12000 }),
-      axios.get(orgUrl, { timeout: 12000 })
+    const [shopRes, orgRes, phRes] = await Promise.allSettled([
+      axios.get(shopUrl, { timeout: 11000 }),
+      axios.get(orgUrl, { timeout: 11000 }),
+      axios.get(phUrl, { timeout: 11000 })
     ]);
 
     // 1A: Parse SerpApi Google Shopping results
@@ -1084,153 +1089,97 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
       }
     }
 
-    // 1B: Parse SerpApi Google Organic results (captures Flipkart, Amazon, OnePlus.in, 91mobiles, Smartprix, PriceHistory.app, BuyHatke!)
-    if (orgRes.status === 'fulfilled' && orgRes.value && orgRes.value.data) {
-      const organics = orgRes.value.data.organic_results || [];
-      for (const item of organics) {
-        const rawTitle = String(item.title || '').trim();
-        const snippet = String(item.snippet || '').trim();
-        const link = String(item.link || '').trim();
-        const combined = `${rawTitle} ${snippet}`;
+    // Combine organic results from both orgRes and phRes!
+    const allOrganics = [
+      ...((orgRes.status === 'fulfilled' && orgRes.value && orgRes.value.data && orgRes.value.data.organic_results) || []),
+      ...((phRes.status === 'fulfilled' && phRes.value && phRes.value.data && phRes.value.data.organic_results) || [])
+    ];
 
-        if (!isRelevantCandidate(cleanTitle, rawTitle, 0, 0)) continue;
-        serpHistoryText += ' ' + combined;
+    for (const item of allOrganics) {
+      const rawTitle = String(item.title || '').trim();
+      const snippet = String(item.snippet || '').trim();
+      const link = String(item.link || '').trim();
+      const combined = `${rawTitle} ${snippet}`;
 
-        // Check rich_snippet price first, then snippet rupee prices
-        let richPrice = 0;
-        if (item.rich_snippet && item.rich_snippet.top && item.rich_snippet.top.detected_extensions) {
-          richPrice = parsePriceNumber(item.rich_snippet.top.detected_extensions.price);
+      if (!isRelevantCandidate(cleanTitle, rawTitle, 0, 0)) continue;
+      serpHistoryText += ' ' + combined;
+
+      let richPrice = 0;
+      if (item.rich_snippet && item.rich_snippet.top && item.rich_snippet.top.detected_extensions) {
+        richPrice = parsePriceNumber(item.rich_snippet.top.detected_extensions.price);
+      }
+      const snippetPrices = extractAllRupeePrices(combined).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
+      const pVal = (richPrice && isRelevantCandidate(cleanTitle, rawTitle, richPrice, referencePrice)) ? richPrice : (snippetPrices[0] || 0);
+
+      // Direct store organic result
+      const directStore = detectStoreFromNameOrUrl(`${link} ${item.source || ''}`);
+      if (directStore.id !== 'other' && pVal > 0 && !results.some(r => r.merchantId === directStore.id)) {
+        const dealInfo = extractStructuredDealInfo(combined, pVal);
+        results.push({
+          merchantId: directStore.id,
+          storeName: directStore.name,
+          price: pVal,
+          saleDiscount: dealInfo.couponDiscount || 0,
+          bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+          dealSummary: dealInfo.dealSummary || '',
+          matchedBanks: dealInfo.matchedBanks || [],
+          productTitle: rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Nykaa|NykaaMan|Buy Online|Price in India.*).*$/i, '').trim() || cleanTitle,
+          url: link
+        });
+      }
+
+      // PriceHistory.app snippet that tracks Amazon.in or Flipkart (e.g. "This product's current Price in India is ₹46,999... Store Name: amazon.in | Store Product Code: B0GRB3FBBB")
+      if (link.includes('pricehistory.app')) {
+        const currPriceMatch = combined.match(/current\s+Price\s+in\s+India\s+is\s*(?:₹|Rs\.?|INR)\s*([\d,]{3,9})/i);
+        const phCurrPrice = currPriceMatch ? parsePriceNumber(currPriceMatch[1]) : pVal;
+        const asinMatch = combined.match(/\b(B0[A-Z0-9]{8})\b/);
+        if (phCurrPrice > 0 && isRelevantCandidate(cleanTitle, rawTitle, phCurrPrice, referencePrice)) {
+          if ((/amazon/i.test(combined) || asinMatch || !/flipkart/i.test(combined)) && !results.some(r => r.merchantId === 'amazon')) {
+            results.push({
+              merchantId: 'amazon',
+              storeName: 'Amazon India',
+              price: phCurrPrice,
+              saleDiscount: 0,
+              bankInstantDiscount: 0,
+              dealSummary: '',
+              matchedBanks: [],
+              productTitle: rawTitle.replace(/\s*[-|]\s*Price History.*$/i, '').trim() || cleanTitle,
+              url: asinMatch ? `https://www.amazon.in/dp/${asinMatch[1]}` : `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}`
+            });
+          }
         }
-        const snippetPrices = extractAllRupeePrices(combined).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
-        const pVal = (richPrice && isRelevantCandidate(cleanTitle, rawTitle, richPrice, referencePrice)) ? richPrice : (snippetPrices[0] || 0);
+      }
 
-        const directStore = detectStoreFromNameOrUrl(`${link} ${item.source || ''}`);
-        if (directStore.id !== 'other' && pVal > 0 && !results.some(r => r.merchantId === directStore.id)) {
-          const dealInfo = extractStructuredDealInfo(combined, pVal);
-          results.push({
-            merchantId: directStore.id,
-            storeName: directStore.name,
-            price: pVal,
-            saleDiscount: dealInfo.couponDiscount || 0,
-            bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
-            dealSummary: dealInfo.dealSummary || '',
-            matchedBanks: dealInfo.matchedBanks || [],
-            productTitle: rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Croma|Reliance Digital|Vijay Sales|Myntra|Nykaa|NykaaMan|Buy Online|Price in India.*).*$/i, '').trim() || cleanTitle,
-            url: link
-          });
-        }
-
-        // Also parse aggregator snippets (91mobiles, Smartprix, GadgetsNow, Beebom, BuyHatke) returned by Google!
-        if (/(?:91mobiles|smartprix|gadgetsnow|beebom|buyhatke|pricehistory)/i.test(link) && pVal > 0) {
-          const inlineStores = [
-            { id: 'amazon', name: 'Amazon India', site: 'amazon.in', rx: /Amazon(?:\.in)?[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
-            { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', rx: /Flipkart(?:\.com)?[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
-            { id: 'croma', name: 'Croma', site: 'croma.com', rx: /Croma[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
-            { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', rx: /Vijay\s*Sales[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i }
-          ];
-          for (const is of inlineStores) {
-            if (results.some(r => r.merchantId === is.id)) continue;
-            const m = combined.match(is.rx);
-            const storeP = m ? parsePriceNumber(m[1]) : (combined.toLowerCase().includes(is.id) ? pVal : 0);
-            if (storeP > 0 && isRelevantCandidate(cleanTitle, rawTitle, storeP, referencePrice)) {
-              const dealInfo = extractStructuredDealInfo(combined, storeP);
-              results.push({
-                merchantId: is.id,
-                storeName: is.name,
-                price: storeP,
-                saleDiscount: dealInfo.couponDiscount || 0,
-                bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
-                dealSummary: dealInfo.dealSummary || '',
-                matchedBanks: dealInfo.matchedBanks || [],
-                productTitle: cleanTitle,
-                url: is.id === 'amazon' ? `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}` : `https://www.${is.site}/search?q=${encodeURIComponent(cleanTitle)}`
-              });
-            }
+      // Aggregator snippets (91mobiles, Smartprix, GadgetsNow, Beebom, BuyHatke) that list store prices inline (e.g. "Amazon. ₹46,999 Go To Store. Flipkart. ₹47,884")
+      if (/(?:91mobiles|smartprix|gadgetsnow|beebom|buyhatke)/i.test(link)) {
+        const inlineStores = [
+          { id: 'amazon', name: 'Amazon India', site: 'amazon.in', rx: /Amazon(?:\.in)?(?:\s*Price)?[^₹\d]{0,35}(?:₹|Rs\.?|INR)\s*([\d,]{3,9})/i, rxRev: /(?:₹|Rs\.?|INR)\s*([\d,]{3,9})[^₹\d]{0,30}(?:Buy\s+From\s+|at\s+|on\s+)Amazon/i },
+          { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', rx: /Flipkart(?:\.com)?(?:\s*Price)?[^₹\d]{0,35}(?:₹|Rs\.?|INR)\s*([\d,]{3,9})/i, rxRev: /(?:₹|Rs\.?|INR)\s*([\d,]{3,9})[^₹\d]{0,30}(?:Buy\s+From\s+|at\s+|on\s+)Flipkart/i },
+          { id: 'croma', name: 'Croma', site: 'croma.com', rx: /Croma[^₹\d]{0,35}(?:₹|Rs\.?|INR)\s*([\d,]{3,9})/i, rxRev: /(?:₹|Rs\.?|INR)\s*([\d,]{3,9})[^₹\d]{0,30}(?:Buy\s+From\s+|at\s+|on\s+)Croma/i },
+          { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', rx: /Vijay\s*Sales[^₹\d]{0,35}(?:₹|Rs\.?|INR)\s*([\d,]{3,9})/i, rxRev: null }
+        ];
+        for (const is of inlineStores) {
+          if (results.some(r => r.merchantId === is.id)) continue;
+          const m = combined.match(is.rx) || (is.rxRev ? combined.match(is.rxRev) : null);
+          const storeP = m ? parsePriceNumber(m[1]) : 0;
+          if (storeP > 0 && isRelevantCandidate(cleanTitle, rawTitle, storeP, referencePrice)) {
+            const dealInfo = extractStructuredDealInfo(combined, storeP);
+            results.push({
+              merchantId: is.id,
+              storeName: is.name,
+              price: storeP,
+              saleDiscount: dealInfo.couponDiscount || 0,
+              bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+              dealSummary: dealInfo.dealSummary || '',
+              matchedBanks: dealInfo.matchedBanks || [],
+              productTitle: cleanTitle,
+              url: is.id === 'amazon' ? `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}` : `https://www.${is.site}/search?q=${encodeURIComponent(cleanTitle)}`
+            });
           }
         }
       }
     }
 
-    // 1C: Also check inline_shopping from organic response
-    if (orgRes.status === 'fulfilled' && orgRes.value && orgRes.value.data) {
-      const inlineShop = orgRes.value.data.inline_shopping || orgRes.value.data.shopping_results || [];
-      for (const item of inlineShop) {
-        const store = detectStoreFromNameOrUrl(item.source || item.merchant || '');
-        const price = parsePriceNumber(item.extracted_price || item.price);
-        if (!price || store.id === 'other') continue;
-        if (!isRelevantCandidate(cleanTitle, item.title || cleanTitle, price, referencePrice)) continue;
-        if (!results.some(r => r.merchantId === store.id)) {
-          results.push({
-            merchantId: store.id,
-            storeName: store.name,
-            price,
-            saleDiscount: 0,
-            bankInstantDiscount: 0,
-            dealSummary: '',
-            matchedBanks: [],
-            productTitle: item.title || cleanTitle,
-            url: item.link || item.product_link || ''
-          });
-        }
-      }
-    }
-
-    // 1D: Guarantee Amazon.in & Flipkart are explicitly checked via dedicated SerpApi query if either is still missing!
-    const mustHaveStores = [
-      { id: 'amazon', name: 'Amazon India', site: 'amazon.in', fallbackUrl: `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}` },
-      { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', fallbackUrl: `https://www.flipkart.com/search?q=${encodeURIComponent(cleanTitle)}` }
-    ].filter(ms => !results.some(r => r.merchantId === ms.id));
-
-    if (mustHaveStores.length > 0) {
-      await Promise.allSettled(mustHaveStores.map(async (ms) => {
-        try {
-          const siteQ = `${cleanTitle} site:${ms.site}`;
-          const siteUrl = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(siteQ)}&num=10&gl=in&hl=en&api_key=${encodeURIComponent(activeSerpKey)}`;
-          const sResp = await axios.get(siteUrl, { timeout: 9000 });
-          const sOrgs = (sResp.data && sResp.data.organic_results) || [];
-          for (const item of sOrgs) {
-            if (results.some(r => r.merchantId === ms.id)) break;
-            const rawTitle = String(item.title || '').trim();
-            const snippet = String(item.snippet || '').trim();
-            const combined = `${rawTitle} ${snippet}`;
-            if (!isRelevantCandidate(cleanTitle, rawTitle, 0, 0)) continue;
-
-            let richP = 0;
-            if (item.rich_snippet && item.rich_snippet.top && item.rich_snippet.top.detected_extensions) {
-              richP = parsePriceNumber(item.rich_snippet.top.detected_extensions.price);
-            }
-            const snipPrices = extractAllRupeePrices(combined).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
-            let pVal = (richP && isRelevantCandidate(cleanTitle, rawTitle, richP, referencePrice)) ? richP : (snipPrices[0] || 0);
-
-            // If Google's Amazon.in organic snippet omitted the rupee number, read the discovered Amazon /dp/ page via Jina Reader!
-            if (!pVal && item.link && (item.link.includes('/dp/') || item.link.includes('/p/'))) {
-              try {
-                const md = await fetchViaJinaReader(item.link, 7000);
-                const mdPrices = extractAllRupeePrices(md).filter(p => isRelevantCandidate(cleanTitle, rawTitle, p, referencePrice));
-                if (mdPrices.length > 0) pVal = mdPrices[0];
-              } catch (e) {}
-            }
-
-            if (pVal > 0) {
-              const dealInfo = extractStructuredDealInfo(combined, pVal);
-              results.push({
-                merchantId: ms.id,
-                storeName: ms.name,
-                price: pVal,
-                saleDiscount: dealInfo.couponDiscount || 0,
-                bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
-                dealSummary: dealInfo.dealSummary || '',
-                matchedBanks: dealInfo.matchedBanks || [],
-                productTitle: rawTitle.replace(/\s*[:|–-]\s*(?:Amazon\.in|Flipkart\.com|Flipkart|Buy Online|Price in India.*).*$/i, '').trim() || cleanTitle,
-                url: item.link || ms.fallbackUrl
-              });
-            }
-          }
-        } catch (e) {}
-      }));
-    }
-
-    // Only skip fallback scrapers if BOTH Amazon and Flipkart are already found!
     const hasAmazon = results.some(r => r.merchantId === 'amazon');
     const hasFlipkart = results.some(r => r.merchantId === 'flipkart');
     if (hasAmazon && hasFlipkart && results.length >= 2) {
@@ -1239,7 +1188,6 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
       return { stores: results, priceHistory };
     }
   }
-
   const enc = encodeURIComponent(cleanTitle);
   const directTargets = [
     {
@@ -1415,7 +1363,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    service: 'CardPick Multi-Store Live Engine v6.6 (SerpApi + Amazon Deep-Check)',
+    service: 'CardPick Multi-Store Live Engine v6.8 (3-Way SerpApi + PriceHistory)',
     hasSerpApi: Boolean(SERPAPI_KEY),
     hasScraperApi: Boolean(SCRAPERAPI_KEY)
   });
