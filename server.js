@@ -89,14 +89,19 @@ function parsePriceNumber(raw) {
 
 function extractAllRupeePrices(text) {
   if (!text) return [];
-  const matches = [...String(text).matchAll(/(?:₹|Rs\.?|INR)\s*([\d,]{2,9}(?:\.\d{1,2})?)/gi)];
+  const str = String(text);
+  const matches = [
+    ...str.matchAll(/(?:₹|Rs\.?|INR)\s*([\d,]{2,9}(?:\.\d{1,2})?)/gi),
+    ...str.matchAll(/(?:Price(?:\s+in\s+India)?|List\s+Price|Regular\s+Price|Selling\s+Price|Effective\s+Price|MRP)\s*[:|-]?\s*(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/gi)
+  ];
   const nums = [];
   for (const m of matches) {
     const val = Math.round(parseFloat(m[1].replace(/,/g, '')));
-    const afterIdx = m.index + m[0].length;
-    const afterSlice = String(text).slice(afterIdx, afterIdx + 10).toLowerCase();
-    // Skip unit prices like "₹1.4/ml" or EMI strings like "₹2,500/month"
+    const afterIdx = (m.index || 0) + m[0].length;
+    const afterSlice = str.slice(afterIdx, afterIdx + 12).toLowerCase();
+    // Skip unit prices like "₹1.4/ml", EMI strings, or benchmark scores
     if (/^\s*\/\s*(?:ml|g|gm|kg|pc|unit|100|mo|month|m\b)/.test(afterSlice)) continue;
+    if (/^\s*(?:mah|mp|hz|gb|tb|w\b|watt|points|score)/i.test(afterSlice)) continue;
     if (val >= 75 && val <= 1500000 && !nums.includes(val)) {
       nums.push(val);
     }
@@ -604,6 +609,114 @@ async function fetchFromJinaAndAggregators(cleanQuery, referencePrice, scraperKe
     } catch (e) {}
   }));
 
+  // Layer 1B: Query Bing India RSS Feed (format=rss&setmkt=en-IN) + Jina Search Proxy — never blocked by US datacenter CAPTCHAs!
+  const multiQueries = [
+    `${cleanQuery} price in india amazon flipkart`,
+    `${cleanQuery} price in india 91mobiles smartprix buyhatke`
+  ];
+
+  await Promise.allSettled(multiQueries.map(async (mq) => {
+    try {
+      const rssUrl = `https://www.bing.com/search?q=${encodeURIComponent(mq)}&format=rss&setmkt=en-IN&cc=IN`;
+      const resp = await axios.get(buildFetchUrl(rssUrl, scraperKey), {
+        headers: DESKTOP_HEADERS,
+        timeout: 8000
+      });
+      const xml = typeof resp.data === 'string' ? resp.data : '';
+      const $x = cheerio.load(xml, { xmlMode: true });
+
+      $x('item').each((_, el) => {
+        const itemTitle = $x(el).find('title').text().replace(/\s+/g, ' ').trim();
+        const itemDesc = $x(el).find('description').text().replace(/\s+/g, ' ').trim();
+        const itemLink = $x(el).find('link').text().trim();
+        const combined = `${itemTitle} ${itemDesc}`;
+
+        if (!isRelevantCandidate(cleanQuery, itemTitle, 0, 0)) return;
+        historyTextAccumulator += ' ' + combined;
+
+        // Check direct store match from URL or title
+        const directStore = detectStoreFromNameOrUrl(`${itemLink} ${itemTitle}`);
+        const prices = extractAllRupeePrices(combined).filter(p => isRelevantCandidate(cleanQuery, itemTitle, p, referencePrice));
+
+        if (directStore.id !== 'other' && prices.length > 0 && !storeResults.some(r => r.merchantId === directStore.id)) {
+          const dealInfo = extractStructuredDealInfo(combined, prices[0]);
+          storeResults.push({
+            merchantId: directStore.id,
+            storeName: directStore.name,
+            price: prices[0],
+            saleDiscount: dealInfo.couponDiscount || 0,
+            bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+            dealSummary: dealInfo.dealSummary || '',
+            matchedBanks: dealInfo.matchedBanks || [],
+            productTitle: itemTitle.replace(/\s*[:|–-]\s*(?:Amazon|Flipkart|Croma|Reliance|Vijay Sales|Myntra|Nykaa).*$/i, '').trim() || cleanQuery,
+            url: itemLink || `https://www.${directStore.site}`
+          });
+        }
+
+        // Also check aggregator snippets that mention Amazon / Flipkart / Croma / Vijay Sales / Reliance Digital prices inline
+        const inlineStores = [
+          { id: 'amazon', name: 'Amazon India', site: 'amazon.in', rx: /Amazon(?:\.in)?[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
+          { id: 'flipkart', name: 'Flipkart', site: 'flipkart.com', rx: /Flipkart(?:\.com)?[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
+          { id: 'croma', name: 'Croma', site: 'croma.com', rx: /Croma[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i },
+          { id: 'vijaysales', name: 'Vijay Sales', site: 'vijaysales.com', rx: /Vijay\s*Sales[^₹\d]{0,40}(?:₹|Rs\.?|INR)?\s*(\d{1,2},\d{2},\d{3}|\d{2},\d{3}|\d{3,6})/i }
+        ];
+        for (const is of inlineStores) {
+          if (storeResults.some(r => r.merchantId === is.id)) continue;
+          const m = combined.match(is.rx);
+          if (m) {
+            const pVal = parsePriceNumber(m[1]);
+            if (pVal > 0 && isRelevantCandidate(cleanQuery, itemTitle, pVal, referencePrice)) {
+              const dealInfo = extractStructuredDealInfo(combined, pVal);
+              storeResults.push({
+                merchantId: is.id,
+                storeName: is.name,
+                price: pVal,
+                saleDiscount: dealInfo.couponDiscount || 0,
+                bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+                dealSummary: dealInfo.dealSummary || '',
+                matchedBanks: dealInfo.matchedBanks || [],
+                productTitle: cleanQuery,
+                url: is.id === 'amazon' ? `https://www.amazon.in/s?k=${encodeURIComponent(cleanQuery)}` : `https://www.${is.site}/search?q=${encodeURIComponent(cleanQuery)}`
+              });
+            }
+          }
+        }
+
+        // If an aggregator snippet (91mobiles, GadgetsNow, Beebom, Smartprix) states "price in India starts from Rs. 46,999" or "Price in India is ₹46,999" without naming a store in the same sentence, attribute it to Amazon & Flipkart if still empty
+        if (prices.length > 0 && /(?:91mobiles|smartprix|gadgetsnow|beebom|cashify|pricehistory|buyhatke)/i.test(itemLink)) {
+          const baseP = prices[0];
+          const dealInfo = extractStructuredDealInfo(combined, baseP);
+          if (/amazon/i.test(combined) && !storeResults.some(r => r.merchantId === 'amazon')) {
+            storeResults.push({
+              merchantId: 'amazon',
+              storeName: 'Amazon India',
+              price: baseP,
+              saleDiscount: dealInfo.couponDiscount || 0,
+              bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+              dealSummary: dealInfo.dealSummary || '',
+              matchedBanks: dealInfo.matchedBanks || [],
+              productTitle: cleanQuery,
+              url: `https://www.amazon.in/s?k=${encodeURIComponent(cleanQuery)}`
+            });
+          }
+          if (/flipkart/i.test(combined) && !storeResults.some(r => r.merchantId === 'flipkart')) {
+            storeResults.push({
+              merchantId: 'flipkart',
+              storeName: 'Flipkart',
+              price: baseP,
+              saleDiscount: dealInfo.couponDiscount || 0,
+              bankInstantDiscount: dealInfo.bankInstantDiscount || 0,
+              dealSummary: dealInfo.dealSummary || '',
+              matchedBanks: dealInfo.matchedBanks || [],
+              productTitle: cleanQuery,
+              url: `https://www.flipkart.com/search?q=${encodeURIComponent(cleanQuery)}`
+            });
+          }
+        }
+      });
+    } catch (e) {}
+  }));
+
   // Also query Yahoo India for Smartprix / 91mobiles / BuyHatke / PriceHistory snippets
   try {
     const q = `${cleanQuery} price in india (site:91mobiles.com OR site:smartprix.com OR site:buyhatke.com OR site:pricehistory.app OR site:gadgets.beebom.com)`;
@@ -612,7 +725,7 @@ async function fetchFromJinaAndAggregators(cleanQuery, referencePrice, scraperKe
       headers: DESKTOP_HEADERS,
       timeout: 8000
     });
-    const $ = cheerio.load(resp.data || '');
+    const $ = cheerio.load(resp.data || '', eng.isXml ? { xmlMode: true } : undefined);
 
     $('div.algo, div.dd.algo').each((_, el) => {
       const block = $(el);
@@ -690,6 +803,20 @@ async function lookupProductViaWebIndex(query, targetSite, referencePrice, scrap
   const q = targetSite ? `${query} site:${targetSite}` : query;
 
   const engines = [
+    {
+      url: `https://www.bing.com/search?q=${encodeURIComponent(q)}&format=rss&setmkt=en-IN&cc=IN`,
+      isXml: true,
+      parse: ($) => {
+        const items = [];
+        $('item').each((_, el) => {
+          const rawTitle = $(el).find('title').text().replace(/\s+/g, ' ').trim();
+          const snippet = $(el).find('description').text().replace(/\s+/g, ' ').trim();
+          const href = $(el).find('link').text().trim();
+          if (rawTitle) items.push({ rawTitle, snippet, href });
+        });
+        return items;
+      }
+    },
     {
       url: `https://in.search.yahoo.com/search?p=${encodeURIComponent(q)}`,
       parse: ($) => {
@@ -1081,7 +1208,7 @@ async function searchStorePrices(searchQuery, referencePrice, serpApiKey, scrape
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    service: 'CardPick Multi-Store Live Engine v6.0',
+    service: 'CardPick Multi-Store Live Engine v6.2',
     hasSerpApi: Boolean(SERPAPI_KEY),
     hasScraperApi: Boolean(SCRAPERAPI_KEY)
   });
